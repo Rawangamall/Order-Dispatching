@@ -1,6 +1,12 @@
 const express= require("express");
 const mongoose=require("mongoose");
 var bodyParser = require('body-parser')
+const UserRoute=require("./Routes/UserRoute");
+
+
+// const cors=require("cors");
+// const path=require("path");
+
 
 //server
 const server = express();
@@ -27,6 +33,7 @@ server.use(bodyParser.json())
 
 //Routes 
 
+server.use(UserRoute);
 
 
 //Not Found Middleware
