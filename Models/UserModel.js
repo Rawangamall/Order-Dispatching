@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+const bcrypt = require('bcrypt');
 
 //create schema object
 const validateEmail = function(email) {
@@ -19,6 +20,11 @@ const schema=new mongoose.Schema({
    
 },
 );
+
+schema.methods.correctPassword = async function(candidatePassword , userPassword){
+  return await bcrypt.compare(candidatePassword,userPassword)
+}
+
 schema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
 
 //mapping
