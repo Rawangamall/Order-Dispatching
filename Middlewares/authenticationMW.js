@@ -1,28 +1,29 @@
 const mongoose=require("mongoose");
 const JWT= require("jsonwebtoken");
+const { promisify } = require("util")
 
 require("./../Models/UserModel")
 const UserSchema=mongoose.model("user");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 
-exports.login = catchAsync(async (req,res,next)=>{
-    const {email , password }  = req.body;
+exports.auth = catchAsync(async (req,res,next)=>{
+ 
+ let token;
+ if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+    token = req.headers.authorization.split(' ')[1];
+ }
+ if(!token){
+    return next(new AppError('You\'re not logged in, please go to login page',401));
+ }
 
-    if(!email || !password){
-    return next(new AppError(` Missing paramters for login`, 404));
-    }
+const decoded = await promisify(JWT.verify)(token,process.env.JWT_SECRET);
 
-const user = await UserSchema.findOne({email:email}).select("+password");
-
-if(!user || !(await user.correctPassword(password, user.password))){
-    return next(new AppError(`Incorrect email or password`, 401));
+//verify if the user of that token still exist
+const user = await UserSchema.findById(decoded.id);
+if(!user){
+    return next(new AppError("The user of that token no longer exist"),401)
 }
 
-const token = JWT.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
-
-res.status(200).json({
-    status:"success" , 
-    token
-});
+ next()
 });

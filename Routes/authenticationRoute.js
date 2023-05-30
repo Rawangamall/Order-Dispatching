@@ -1,8 +1,8 @@
 const express=require("express");
 const router=express.Router();
-const authentication = require("./../Middlewares/authenticationMW")
+const loginController=require("./../Controllers/loginController");
   
 router.route("/login")
-      .post(authentication.login)
+      .post(loginController.login)
 
 module.exports=router;
