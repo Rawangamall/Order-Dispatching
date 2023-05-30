@@ -1,6 +1,7 @@
 const express= require("express");
 const mongoose=require("mongoose");
 var bodyParser = require('body-parser')
+require('dotenv').config({ path: 'config.env' });
 
 const UserRoute=require("./Routes/UserRoute");
 const AuthenticationRoute=require("./Routes/authenticationRoute");
