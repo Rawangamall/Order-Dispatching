@@ -20,9 +20,7 @@ exports.getAll = (request, response, next) => {
           { lastName: { $regex: searchKey, $options: "i" } },
           { email: { $regex: searchKey, $options: "i" } },
         ],
-      },
-      { role: role },
-  
+      }
     ],
   };
 
