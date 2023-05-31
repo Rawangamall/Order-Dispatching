@@ -1,6 +1,6 @@
 const express=require("express");
 const router=express.Router();
-const userController=require("./../Controllers/DriverController");
+const DriverController=require("./../Controllers/DriverController");
 const validateMW=require("./../Core/Validations/validateMW");
 const {DriverValidPOST, DriverValidPUT, DriverValidId} =require("./../Core/Validations/DriverVlidation");
 const authenticationMW = require("./../Middlewares/authenticationMW")
