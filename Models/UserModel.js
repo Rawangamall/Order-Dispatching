@@ -15,8 +15,8 @@ const schema=new mongoose.Schema({
     password:String ,
     image:String ,
     Role:String ,
-    phoneNumber:Number 
-   
+    phoneNumber:Number ,
+    active:{type:Boolean,default:true}
 },
 );
 schema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
