@@ -8,7 +8,7 @@ router.route("/login")
 router.route("/forgetpassword")
        .post(loginController.forgetpassword);
 
-router.route("/resetpassword/:token")
+router.route("/resetpassword")
       .patch(loginController.resetpassword);
 
 module.exports=router;

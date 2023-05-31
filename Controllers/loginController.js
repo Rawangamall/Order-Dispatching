@@ -1,5 +1,6 @@
 const mongoose=require("mongoose");
 const JWT= require("jsonwebtoken");
+const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
 require("./../Models/UserModel")
@@ -8,6 +9,9 @@ const UserSchema=mongoose.model("user");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 const sendEmail = require("./../utils/email");
+
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds)
 
 
 exports.login = catchAsync(async (req,res,next)=>{
@@ -40,8 +44,7 @@ exports.forgetpassword = catchAsync(async (req,res,next)=>{
     const resetToken = await user.createPasswordRandomToken()
     await user.save({validateBeforeSave : false });
 
-    const resetURL = `${req.protocol}://${req.get('host')}/api/v1/resetpassword/${resetToken}`;
-    const message = `Hi ${user.firstName}\n Forgot your password? No worries, we’ve got you covered. Submit with new password and click the link ${resetURL} to reset it.🚚`
+    const message = `<p>Hi ${user.firstName}<br>Forgot your password? No worries, we’ve got you covered. Submit with that code <span style="color:red; font-weight:bold;">${resetToken}</span> and new password to reset it.🚚</p>`
 
 try{    await sendEmail({
      to: user.email,
@@ -63,7 +66,7 @@ res.status(200).json({ message:"success send email"});
 
 exports.resetpassword = catchAsync(async (req,res,next)=>{
 
-const hashToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+const hashToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
 
 const user = await UserSchema.findOne({passwordResetToken: hashToken ,
      passwordResetExpires : {$gt : Date.now()}
@@ -74,8 +77,8 @@ const user = await UserSchema.findOne({passwordResetToken: hashToken ,
     }
 
 if(req.body.password === req.body.confirmPassword){
-user.password = req.body.password 
-user.passwordResetToken = undefined
+user.password = bcrypt.hashSync(req.body.password ,salt) 
+user.passwordResetToken = undefined    //to be removed from db
 user.passwordResetExpires = undefined
 await user.save();
 }else{
