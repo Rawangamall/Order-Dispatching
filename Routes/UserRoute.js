@@ -2,16 +2,12 @@ const express=require("express");
 const router=express.Router();
 const userController=require("./../Controllers/UserController");
 const validateMW=require("./../Core/Validations/validateMW");
-
-
 const {UserValidPOST,UserValidPUT,UserValidId}=require("./../Core/Validations/UserValidation");
+const authenticationMW = require("./../Middlewares/authenticationMW")
 
- 
-
-  
   
 router.route("/users")
-       .get(userController.getAll )
+       .get(authenticationMW.auth ,userController.getAll )
        .post(UserValidPOST ,validateMW, userController.addUser)
 
 router.route("/users/:id")
@@ -19,6 +15,6 @@ router.route("/users/:id")
         .put(UserValidPUT ,validateMW,userController.updateUser)
         .delete(UserValidId ,validateMW,userController.deleteUser )
 
-
+      
 
 module.exports=router;

@@ -1,9 +1,11 @@
 const express= require("express");
 const mongoose=require("mongoose");
 var bodyParser = require('body-parser')
+require('dotenv').config({ path: 'config.env' });
+
 const UserRoute=require("./Routes/UserRoute");
-
-
+const loginRoute =require("./Routes/loginRoute");
+const AppError = require("./utils/appError");
 // const cors=require("cors");
 // const path=require("path");
 
@@ -32,16 +34,23 @@ server.use(express.urlencoded({extended:false}));
 server.use(bodyParser.json())
 
 //Routes 
-
+server.use(loginRoute);
 server.use(UserRoute);
 
 
 //Not Found Middleware
 server.use((request,response,next)=>{
-    response.status(404).json({message:"Not Found"})
+  response.status(404).json({message:`${request.originalUrl} not found on this server!`})
 })
 
-//ERROR handeling Middleware
-server.use((error,request,response,next)=>{
-    response.status(500).json({message:error+""});
-})
+//Global error handeling Middleware
+server.use((error, request, response, next) => {
+    if (error.statusCode && error.statusCode !== 500) {
+      // Preserve the specific status code from the AppError instance
+      response.status(error.statusCode).json({ message: error.message });
+    } else {
+      // Fallback to the default 500 status code handling
+      response.status(500).json({ message: error + "" });
+    }
+  });
+  
