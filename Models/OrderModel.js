@@ -7,13 +7,13 @@ const validateEmail = function(email) {
   };
 
 const orderSchema = new mongoose.Schema({
-  OrderCode: { type: Number, required: true },
-  CustomerID: { type: Number, required: true },
+  _id: { type: Object, required: true },  //order code
+  CustomerID: { type: Object, required: true },
   CustomerName: { type: String, required: true },
   CustomerEmail: { type: String,validate:[validateEmail,"invalid email"],unique:true , required: true },
   Governate: { type: String, required: true },
-  Area: { type: String, required: true },
   City: { type: String, required: true },
+  Area: { type: String, required: true },
   CustomerGroup: { type: String, required: true },
   TotalPrice: { type: Number, required: true },
   Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
@@ -25,8 +25,6 @@ const orderSchema = new mongoose.Schema({
   DriverID: { type: Number, required: true }
 });
 
-schema.plugin(AutoIncrement,{id:'OrderCode',inc_field:"_id"});
+orderSchema.plugin(AutoIncrement,{id:'Order_Code',inc_field:" _id"});
 
-const Order = mongoose.model('Order', orderSchema);
-
-module.exports = Order;
+ mongoose.model('order', orderSchema);
