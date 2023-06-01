@@ -7,28 +7,28 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 
 
 router.route("/orders")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getAll);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/Assigned")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getAssignedOrders);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/Reassigned")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getReassignedOrders);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/Picked")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getPickedOrders);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/Cancelled")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getCancelledOrders);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/Delivered")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getDeliveredOrders);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/NewOrders")
-      .get(orderController.getAll);  //authenticationMW.auth ,
+      .get(orderController.getNewOrdersOrders);  //authenticationMW.auth ,validateMW
 
-// router.route("/orders/:_id")
+// router.route("/orders/:_id")    //update & details
 //       .get()
-//       .put()
+//       .patch()
 
 module.exports=router;
