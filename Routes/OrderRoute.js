@@ -9,6 +9,24 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 router.route("/orders")
       .get(orderController.getAll);  //authenticationMW.auth ,
 
+router.route("/orders/Assigned")
+      .get(orderController.getAll);  //authenticationMW.auth ,
+
+router.route("/orders/Reassigned")
+      .get(orderController.getAll);  //authenticationMW.auth ,
+
+router.route("/orders/Picked")
+      .get(orderController.getAll);  //authenticationMW.auth ,
+
+router.route("/orders/Cancelled")
+      .get(orderController.getAll);  //authenticationMW.auth ,
+
+router.route("/orders/Delivered")
+      .get(orderController.getAll);  //authenticationMW.auth ,
+
+router.route("/orders/NewOrders")
+      .get(orderController.getAll);  //authenticationMW.auth ,
+
 // router.route("/orders/:_id")
 //       .get()
 //       .put()
