@@ -18,12 +18,12 @@ const orderSchema = new mongoose.Schema({
   },
   TotalPrice: { type: Number, required: true },
   Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
- Product:[{
+  Product:[{
   ItemCode: { type: String, required: true },
   ItemName: { type: String, required: true },
   Quantity: { type: Number, required: true },
   Price: { type: Number, required: true },
- }],
+  }],
   PaymentMethod: { type: String, enum: ['cash', 'online'], required: true },
 //  DriverID: { type: Number,ref: "Driver", required: true }
 });
