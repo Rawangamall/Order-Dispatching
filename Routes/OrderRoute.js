@@ -27,9 +27,9 @@ router.route("/orders/Delivered")
 router.route("/orders/NewOrders")
       .get(orderController.getNewOrdersOrders);  //authenticationMW.auth ,validateMW
 
-router.route("/orders/:_id")    //update & details
+router.route("/orders/:_id")    
       .get(orderController.getoneOrder)
       .patch(orderController.updateOrder)
 
-      
+
 module.exports=router;

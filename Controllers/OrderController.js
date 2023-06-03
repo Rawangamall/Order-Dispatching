@@ -96,12 +96,20 @@ exports.getoneOrder = catchAsync(async (req, res, next) => {
     next(new AppError("Invalid order ID!", 400));
   }
 
-  const data = await orderSchema.findById(req.params._id);
+  const query = {
+    $and: [
+      {
+        $or: [
+          { _id: { $eq: orderId } },
+        ]
+      }
+         ]
+  };
+  const data = await orderSchema.findOne(query);
 
   if (!data) {
-    next(new AppError("There's no order with this code!", 404));
+    return next(new AppError("There's no data", 401));
   }
-
   res.status(200).json(data);
 
 });
