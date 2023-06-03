@@ -138,7 +138,7 @@ exports.getAssignedOrders = catchAsync(async (req, res, next) => {
           { "Address.City": { $regex: searchKey, $options: "i" } },
           { "Address.Area": { $regex: searchKey, $options: "i" } },
           { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
+
         ],
       },
       {Status : "assign"}
@@ -185,7 +185,7 @@ exports.getReassignedOrders = catchAsync(async (req, res, next) => {
           { "Address.City": { $regex: searchKey, $options: "i" } },
           { "Address.Area": { $regex: searchKey, $options: "i" } },
           { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
+
         ],
       },
       {Status : "reassigned"}
@@ -232,7 +232,7 @@ exports.getPickedOrders = catchAsync(async (req, res, next) => {
           { "Address.City": { $regex: searchKey, $options: "i" } },
           { "Address.Area": { $regex: searchKey, $options: "i" } },
           { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
+
         ],
       },
       {Status : "picked"}
@@ -279,7 +279,7 @@ exports.getCancelledOrders = catchAsync(async (req, res, next) => {
           { "Address.City": { $regex: searchKey, $options: "i" } },
           { "Address.Area": { $regex: searchKey, $options: "i" } },
           { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
+
         ],
       },
       {Status : "cancelled"}
@@ -326,7 +326,6 @@ exports.getDeliveredOrders = catchAsync(async (req, res, next) => {
           { "Address.City": { $regex: searchKey, $options: "i" } },
           { "Address.Area": { $regex: searchKey, $options: "i" } },
           { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
         ],
       },
       {Status : "delivered"}
@@ -373,7 +372,6 @@ exports.getNewOrdersOrders = catchAsync(async (req, res, next) => {
           { "Address.City": { $regex: searchKey, $options: "i" } },
           { "Address.Area": { $regex: searchKey, $options: "i" } },
           { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
         ],
       },
       {Status : "confirm"}
