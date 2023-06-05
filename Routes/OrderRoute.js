@@ -31,5 +31,5 @@ router.route("/orders/:_id")
       .get(orderController.getoneOrder)
       .patch(orderController.updateOrder)
 
-
+router.route("/orders/add").post(orderController.addorder)
 module.exports=router;

@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
   TotalPrice: { type: Number, required: true },
   Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
   Product:[{
-  ItemCode: { type: String, required: true },
+  ItemCode: { type: Number, required: true },
   ItemName: { type: String, required: true },
   Quantity: { type: Number, required: true },
   Price: { type: Number, required: true },

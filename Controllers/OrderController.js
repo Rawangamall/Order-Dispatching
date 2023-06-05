@@ -90,23 +90,13 @@ exports.updateOrder = catchAsync(async (req, res, next) => {
 });
 
 exports.getoneOrder = catchAsync(async (req, res, next) => {
-  const orderId = req.params._id;
 
+  const orderId = req.params._id;
   if (!mongoose.Types.ObjectId.isValid(orderId)) {
     next(new AppError("Invalid order ID!", 400));
   }
 
-  const query = {
-    $and: [
-      {
-        $or: [
-          { _id: { $eq: orderId } },
-        ]
-      }
-         ]
-  };
-  const data = await orderSchema.findOne(query);
-
+const data = await orderSchema.findOne({_id:orderId})
   if (!data) {
     return next(new AppError("There's no data", 401));
   }
@@ -116,6 +106,35 @@ exports.getoneOrder = catchAsync(async (req, res, next) => {
 
 
 
+exports.addorder = async (request, response, next) => {
+  try {
+    const user = new orderSchema({
+      _id: request.body._id,
+      CustomerID: request.body.CustomerID,
+      CustomerName: request.body.CustomerName,
+      CustomerEmail: request.body.CustomerEmail,
+      Address:{
+        Area: request.body.Address.Area,
+        City: request.body.Address.City,
+        Governate: request.body.Address.Governate
+
+      },
+      Product: {
+        ItemCode:request.body.Product[0].ItemCode , 
+        ItemName:request.body.Product[0].ItemName , 
+        Price:request.body.Product[0].Price , 
+        Quantity:request.body.Product[0].Quantity 
+      },
+      PaymentMethod: request.body.PaymentMethod,
+      Status: request.body.Status,
+      TotalPrice: request.body.TotalPrice
+    });
+    const data = await user.save();
+    response.status(201).json(data);
+  } catch (error) {
+    next(error);
+  }
+};
 exports.getAssignedOrders = catchAsync(async (req, res, next) => {
 
   const searchKey = req.body.searchKey?.toLowerCase() || "";
