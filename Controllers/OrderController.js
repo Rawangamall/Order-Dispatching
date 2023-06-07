@@ -4,7 +4,32 @@ const orderSchema = mongoose.model("order");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
-const { response } = require("express");
+
+
+exports.createOrder = (io) => async (req, res) => {
+ // console.log("inside controller",io)
+  try {
+    const orderData = req.body;
+
+    // Emit the order data to the order dispatching system
+    io.emit('newOrder', orderData);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        order: orderData,
+      },
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'An error occurred while processing the order',
+    });
+  }
+};
+
+
 exports.getAll = catchAsync(async (req, res, next) => {
   //search
   const searchKey = req.body.searchKey || "";
@@ -106,35 +131,44 @@ const data = await orderSchema.findOne({_id:orderId})
 
 
 
+
+
+
 exports.addorder = async (request, response, next) => {
   try {
-    const user = new orderSchema({
-      _id: request.body._id,
-      CustomerID: request.body.CustomerID,
-      CustomerName: request.body.CustomerName,
-      CustomerEmail: request.body.CustomerEmail,
-      Address:{
-        Area: request.body.Address.Area,
-        City: request.body.Address.City,
-        Governate: request.body.Address.Governate
 
-      },
-      Product: {
-        ItemCode:request.body.Product[0].ItemCode , 
-        ItemName:request.body.Product[0].ItemName , 
-        Price:request.body.Product[0].Price , 
-        Quantity:request.body.Product[0].Quantity 
-      },
-      PaymentMethod: request.body.PaymentMethod,
-      Status: request.body.Status,
-      TotalPrice: request.body.TotalPrice
-    });
-    const data = await user.save();
+   const products = request.body.Product.map((product) => {
+  return {
+    ItemCode: product.ItemCode,
+    ItemName: product.ItemName,
+    Price: product.Price,
+    Quantity: product.Quantity
+  };
+});
+
+const order = new orderSchema({
+  _id: request.body._id,
+  CustomerID: request.body.CustomerID,
+  CustomerName: request.body.CustomerName,
+  CustomerEmail: request.body.CustomerEmail,
+  Address: {
+    Area: request.body.Address.Area,
+    City: request.body.Address.City,
+    Governate: request.body.Address.Governate
+  },
+  Product: products,
+  PaymentMethod: request.body.PaymentMethod,
+  Status: request.body.Status,
+  TotalPrice: request.body.TotalPrice
+});
+
+    const data = await order.save();
     response.status(201).json(data);
   } catch (error) {
     next(error);
   }
 };
+
 exports.getAssignedOrders = catchAsync(async (req, res, next) => {
 
   const searchKey = req.body.searchKey?.toLowerCase() || "";
