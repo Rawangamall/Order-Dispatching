@@ -10,6 +10,7 @@ const salt = bcrypt.genSaltSync(saltRounds)
 
 exports.getAll = (request, response, next) => {
   const searchKey = request.body.searchKey?.toLowerCase()|| "";
+  const role = request.body.role || "";
  
 
   const query = {

@@ -4,6 +4,7 @@ var bodyParser = require('body-parser')
 require('dotenv').config({ path: 'config.env' });
 
 const UserRoute=require("./Routes/UserRoute");
+const RoleRoute=require("./Routes/RoleRoute");
 const loginRoute =require("./Routes/loginRoute");
 const AppError = require("./utils/appError");
 // const cors=require("cors");
@@ -34,7 +35,8 @@ server.use(express.urlencoded({extended:false}));
 server.use(bodyParser.json())
 
 //Routes 
-server.use(loginRoute);
+// server.use(loginRoute);
+server.use(RoleRoute);
 server.use(UserRoute);
 
 
