@@ -7,7 +7,7 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 
   
 router.route("/users")
-       .get(authenticationMW.auth ,userController.getAll )
+       .get(authenticationMW.auth,userController.getAll )
        .post(UserValidPOST ,validateMW, userController.addUser)
 
 router.route("/users/:id")

@@ -5,15 +5,22 @@ require('dotenv').config({ path: 'config.env' });
 
 const UserRoute=require("./Routes/UserRoute");
 const RoleRoute=require("./Routes/RoleRoute");
+const DriverRoute=require("./Routes/DriverRoute");
 const loginRoute =require("./Routes/loginRoute");
+const OrderRoute =require("./Routes/OrderRoute");
+
 const AppError = require("./utils/appError");
 // const cors=require("cors");
 // const path=require("path");
 
 
+
 //server
-const server = express();
+const app = express();
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 let port=process.env.PORT||8080;
+
 
 //db connection
 mongoose.set('strictQuery', true);  //warning
@@ -30,23 +37,27 @@ mongoose.set('strictQuery', true);  //warning
         })
 
 //body parse
-server.use(express.json());
-server.use(express.urlencoded({extended:false}));
-server.use(bodyParser.json())
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+app.use(bodyParser.json());
 
 //Routes 
-// server.use(loginRoute);
-server.use(RoleRoute);
-server.use(UserRoute);
+
+
+app.use(loginRoute);
+app.use(RoleRoute);
+app.use(UserRoute);
+app.use(OrderRoute(io));
+app.use(DriverRoute);
 
 
 //Not Found Middleware
-server.use((request,response,next)=>{
+app.use((request,response,next)=>{
   response.status(404).json({message:`${request.originalUrl} not found on this server!`})
 })
 
 //Global error handeling Middleware
-server.use((error, request, response, next) => {
+app.use((error, request, response, next) => {
     if (error.statusCode && error.statusCode !== 500) {
       // Preserve the specific status code from the AppError instance
       response.status(error.statusCode).json({ message: error.message });

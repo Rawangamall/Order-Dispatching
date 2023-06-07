@@ -12,7 +12,6 @@ exports.getAll = (request, response, next) => {
   const searchKey = request.body.searchKey?.toLowerCase()|| "";
   const role = request.body.role || "";
  
-
   const query = {
     $and: [
       {
@@ -21,9 +20,7 @@ exports.getAll = (request, response, next) => {
           { lastName: { $regex: searchKey, $options: "i" } },
           { email: { $regex: searchKey, $options: "i" } },
         ],
-      },
-      { role: role },
-  
+      }
     ],
   };
 
@@ -117,70 +114,3 @@ exports.deleteUser=(request,response,next)=>{
         next(error);
     })
 }
-
-exports.filterUser=(request,response,next)=>{
-    UserSchema.find({
-
-        Role:request.params.Role,
-        active:request.params.active
- 
-    })
-    .then((data)=>{
-        response.status(200).json(data);
-    })
-    .catch(error=>{
-        next(error);
-    })
-}
-
-exports.searchUser=(request,response,next)=>{
-    UserSchema.find({
-        firstName:request.params.firstName
-    })
-    .then((data)=>{
-        response.status(200).json(data);
-    })
-    .catch(error=>{
-        next(error);
-    })
-}
-
-// exports.searchUser=(request,response,next)=>{
-   
-//             //Search for Books
-//             const searchKey = request.body.searchKey?.toLowerCase();
-//             const firstName = request.body.firstName?.toLowerCase();
-//             const lastName = request.body.lastName?.toLowerCase();
-//             const phoneNumber = request.body.phoneNumber?.toLowerCase();
-//             const email = request.body.email?.toLowerCase();
-
-//             if(firstName==""){firstName=searchKey;}
-//             if(lastName==""){lastName=searchKey;}
-//             if(phoneNumber==""){phoneNumber=searchKey;}
-//             if(email==""){email=searchKey;}
-
-//             UserSchema.find({
-//                 $or: [
-//                   { firstName: firstName },
-//                   { lastName: lastName },
-//                   { phoneNumber: phoneNumber },
-//                   { email: email }
-                 
-//                 ],
-//                 'noOfCopies': { $gt: 1 }
-//               },{title:1,publisher:1,author:1,available:1,noBorrowed:1,noOfCurrentBorrowed:1,noOfCopies:1,availableCopies: { $subtract: ['$noOfCopies', '$noOfCurrentBorrowed'] } }
-//               )
-//               .then(data=>{
-//                     if(data=="")
-//                     {
-//                         next(new Error("This Book is not found, Invalid Input"));
-//                     }
-//                     else{
-//                         response.status(200).json({data})
-//                     }
-//                 })
-//                 .catch(error=>{next(error);
-//                 })}
-//                 else{response.status(404).json({result:"Please update your profile data!! and login again"});}
-//          }
-
