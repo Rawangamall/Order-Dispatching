@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence')(mongoose);
+const location = require("./LocationModel");
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -11,26 +12,26 @@ const validateEmail = function(email) {
 
 const schema=new mongoose.Schema({
     _id : Number,
-    DriverCode:Number,
-    DriverName:String,
+    driverCode:Number,
+    driverName:String,
     status: String,
-    enum: {
-      values: [
+    enum: [
         "active",
         "not active"
       ],
-      message: "{Values} is not a status",
-    },
-      availability: String,
-    enum: {
-      values: [
+      default: 'not active',
+    availability: String,
+      enum: [
         "free",
         "busy"
       ],
-      message: "{Values} is not an availabilty",
-    },
+      default: 'free',
     email:{type: String,validate:[validateEmail,"invalid email"]},
     phoneNumber: Number ,
+    locationId : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref : 'Governate'
+    }],
     orderCount: Number,
     passwordResetToken: String,
     passwordResetExpires: Date
