@@ -14,18 +14,18 @@ const schema=new mongoose.Schema({
     _id : Number,
     driverCode:Number,
     driverName:String,
-    status: String,
+    status:{type : String,
     enum: [
         "active",
         "not active"
       ],
-      default: 'not active',
-    availability: String,
+      default: 'not active'},
+    availability: {type : String,
       enum: [
         "free",
         "busy"
       ],
-      default: 'free',
+      default: 'free'},
     email:{type: String,validate:[validateEmail,"invalid email"]},
     phoneNumber: Number ,
     locationId : [{
@@ -51,7 +51,7 @@ schema.methods.correctPassword = async function(candidatePassword , userPassword
   };
 
 
-schema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
+schema.plugin(AutoIncrement,{id:'driver_id',inc_field:"_id"});
 
 //mapping
 mongoose.model("driver",schema);

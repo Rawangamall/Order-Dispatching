@@ -4,7 +4,7 @@ var bodyParser = require('body-parser')
 require('dotenv').config({ path: 'config.env' });
 
 const UserRoute=require("./Routes/UserRoute");
-// const DriverRoute=require("./Routes/DriverRoute");
+const DriverRoute=require("./Routes/DriverRoute");
 const loginRoute =require("./Routes/loginRoute");
 const OrderRoute =require("./Routes/OrderRoute");
 
@@ -44,7 +44,7 @@ app.use(bodyParser.json());
 app.use(loginRoute);
 app.use(UserRoute);
 app.use(OrderRoute(io));
-// app.use(DriverRoute);
+app.use(DriverRoute);
 
 
 //Not Found Middleware

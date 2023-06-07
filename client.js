@@ -11,12 +11,10 @@ mongoose.connect('mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.ne
   .then(() => {
     console.log("DB connected");
     
-    // Listen for the 'connect' event
     socket.on('connect', () => {
       console.log('Connected to the server');
     });
 
-    // Listen for the 'newOrder' event
     socket.on('newOrder', async (orderData) => {
         console.log("out try",orderData)
       try {
