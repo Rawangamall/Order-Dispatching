@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence')(mongoose);
-const location = require("./LocationModel");
+// const location = require("./LocationModel");
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -10,33 +10,36 @@ const validateEmail = function(email) {
     return regex.test(email);
   };
 
-const schema=new mongoose.Schema({
-    _id : Number,
-    driverCode:Number,
-    driverName:String,
-    status:{type : String,
-    enum: [
-        "active",
-        "not active"
-      ],
-      default: 'not active'},
-    availability: {type : String,
-      enum: [
-        "free",
-        "busy"
-      ],
-      default: 'free'},
-    email:{type: String,validate:[validateEmail,"invalid email"]},
-    phoneNumber: Number ,
-    locationId : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref : 'Governate'
+  const schema = new mongoose.Schema({
+    _id: Number,
+    driverName: String,
+    status: {
+      type: String,
+      enum: ["active", "not active"],
+      default: 'active'
+    },
+    availability: {
+      type: String,
+      enum: ["free", "busy"],
+      default: 'free'
+    },
+    email: {
+      type: String,
+      validate: [validateEmail, "invalid email"]
+    },
+    phoneNumber: String, // Changed to String for preserving leading zeros
+    areas: [{
+      type: Number,
+      ref: 'Area'
     }],
-    orderCount: Number,
+    orderCount: {
+      type: Number,
+      default: 0
+    },
     passwordResetToken: String,
     passwordResetExpires: Date
-},
-);
+  });
+  
 
 
 schema.methods.correctPassword = async function(candidatePassword , userPassword){

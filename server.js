@@ -37,7 +37,7 @@ mongoose.set('strictQuery', true);  //warning
         })
 
 //body parse
-app.use(express.json());
+app.use(express.json());3
 app.use(express.urlencoded({extended:false}));
 app.use(bodyParser.json());
 

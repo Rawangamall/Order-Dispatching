@@ -46,6 +46,7 @@ mongoose.connect('mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.ne
 
         const data = await order.save();
         console.log('Order saved:', data);
+        
       } catch (error) {
         console.error('Error saving order:', error);
       }
