@@ -1,6 +1,6 @@
 const mongoose = require('mongoose')
 const AutoIncrement = require('mongoose-sequence')(mongoose);
-const location = require("./LocationModel");
+// const location = require("./LocationModel");
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
@@ -12,24 +12,27 @@ const validateEmail = function(email) {
 
 const schema=new mongoose.Schema({
     _id : Number,
-    driverCode:Number,
+    driverCode: Number ,
     driverName:String,
-    status: String,
-    enum: [
+    status: {type: String,
+    enum: {
+        values:[
         "active",
         "not active"
-      ],
-      default: 'not active',
-    availability: String,
-      enum: [
+      ]},
+    },
+    availability: {type: String,
+      enum: {
+        values: [
         "free",
         "busy"
-      ],
-      default: 'free',
+      ]
+    }
+    },
     email:{type: String,validate:[validateEmail,"invalid email"]},
     phoneNumber: Number ,
     locationId : [{
-        type: mongoose.Schema.Types.ObjectId,
+        type: Number,
         ref : 'Governate'
     }],
     orderCount: Number,
@@ -51,7 +54,7 @@ schema.methods.correctPassword = async function(candidatePassword , userPassword
   };
 
 
-schema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
+schema.plugin(AutoIncrement,{id:'driver_id',inc_field:"_id"});
 
 //mapping
 mongoose.model("driver",schema);
