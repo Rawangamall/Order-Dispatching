@@ -55,9 +55,9 @@ const areaSchema=new mongoose.Schema({
 
 
 
-governateSchema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
-citySchema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
-areaSchema.plugin(AutoIncrement,{id:'user_id',inc_field:"_id"});
+governateSchema.plugin(AutoIncrement,{id:'governate_id',inc_field:"_id"});
+citySchema.plugin(AutoIncrement,{id:'city_id',inc_field:"_id"});
+areaSchema.plugin(AutoIncrement,{id:'area_id',inc_field:"_id"});
 
 //mapping
 const Governate = mongoose.model("Governate",governateSchema);
