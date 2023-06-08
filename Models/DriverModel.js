@@ -35,11 +35,14 @@ const schema=new mongoose.Schema({
         type: Number,
         ref : 'Governate'
     }],
-    orderCount: Number,
+    orderCount: {
+      type: Number,
+      default: 0
+    },
     passwordResetToken: String,
     passwordResetExpires: Date
-},
-);
+  });
+  
 
 
 schema.methods.correctPassword = async function(candidatePassword , userPassword){

@@ -1,11 +1,15 @@
 const express=require("express");
 const router=express.Router();
 const orderController=require("./../Controllers/OrderController");
-const validateMW=require("./../Core/Validations/validateMW");
-const {OrderValidPatch}=require("./../Core/Validations/OrderValidate");
-const authenticationMW = require("./../Middlewares/authenticationMW")
+
+module.exports = (io) => {
+      // console.log(io);
+
+      router.post('/', orderController.createOrder(io));
 
 
+
+      
 router.route("/orders")
       .get(orderController.getAll);  //authenticationMW.auth ,validateMW
 
@@ -32,4 +36,9 @@ router.route("/orders/:_id")
       .patch(orderController.updateOrder)
 
 router.route("/orders/add").post(orderController.addorder)
-module.exports=router;
+
+
+
+return router;
+};
+     

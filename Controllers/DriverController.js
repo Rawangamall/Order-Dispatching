@@ -4,6 +4,7 @@ require("./../Models/DriverModel");
 const DriverSchema=mongoose.model("driver");
 
 
+
 exports.getDriverById=(request,response,next)=>{
     DriverSchema.findById(request.params.id)
                     .then((data)=>{
@@ -21,7 +22,7 @@ exports.getAll = (request, response, next) => {
       $and: [
         {
           $or: [
-            { DriverCode: { $regex: searchKey, $options: "i" } },
+            // { DriverCode: { $regex: searchKey, $options: "i" } },
             { DriverName: { $regex: searchKey, $options: "i" } },
             { availability: { $regex: searchKey, $options: "i" } },
           ],
