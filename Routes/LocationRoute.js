@@ -2,41 +2,40 @@ const express=require("express");
 const router=express.Router();
 const LocationController=require("./../Controllers/LocationController");
 const validateMW=require("./../Core/Validations/validateMW");
-// const {LocationValidPOST, LocationValidPUT, LocationValidId} =require("./../Core/Validations/LocationValidation");
+const {GovernateValidPOST, GovernateValidPUT, GovernateValidId} =require("./../Core/Validations/LocationValidation");
+const {CityValidPOST, CityValidPUT, CityValidId} =require("./../Core/Validations/LocationValidation");
+const {AreaValidPOST, AreaValidPUT, AreaValidId} =require("./../Core/Validations/LocationValidation");
 const authenticationMW = require("./../Middlewares/authenticationMW")
 
 //Governate Routes
 router.route("/governates")
        .get(LocationController.getAllGovernates )
-    //    .post(GovernateValidPOST ,validateMW, LocationController.addGovernate)
-       .post(LocationController.addGovernate)
+       .post(GovernateValidPOST, validateMW ,LocationController.addGovernate)
 
 router.route("/governates/:id")
-        .get(LocationController.getGovernateById)
-        .put(LocationController.updateGovernate)
-        .delete(LocationController.deleteGovernate)
+        .get(GovernateValidId, validateMW, LocationController.getGovernateById)
+        .put(GovernateValidPUT, validateMW, LocationController.updateGovernate)
+        .delete(GovernateValidId, validateMW, LocationController.deleteGovernate)
 
   //City Routes
 router.route("/cities")
-.get(LocationController.getAllCities)
-//    .post(GovernateValidPOST ,validateMW, LocationController.addGovernate)
-.post(LocationController.addCity)
+    .get(LocationController.getAllCities)
+    .post(CityValidPOST, validateMW ,LocationController.addCity)
 
 router.route("/cities/:id")
- .get(LocationController.getCityById)
- .put(LocationController.updateCity)
- .delete(LocationController.deleteCity)
+    .get(CityValidId, validateMW,LocationController.getCityById)
+    .put(CityValidPUT, validateMW,LocationController.updateCity)
+    .delete(CityValidId, validateMW,LocationController.deleteCity)
 
  //Area Routes
 router.route("/areas")
-.get(LocationController.getAllAreas)
-//    .post(GovernateValidPOST ,validateMW, LocationController.addGovernate)
-.post(LocationController.addArea)
+    .get(LocationController.getAllAreas)
+    .post(AreaValidPOST, validateMW ,LocationController.addArea)
 
 router.route("/areas/:id")
- .get(LocationController.getAreaById)
- .put(LocationController.updateArea)
- .delete(LocationController.deleteArea)
+    .get(AreaValidId, validateMW ,LocationController.getAreaById)
+    .put(AreaValidPUT, validateMW,LocationController.updateArea)
+    .delete(AreaValidId, validateMW ,LocationController.deleteArea)
 
 
  //Location Routes
