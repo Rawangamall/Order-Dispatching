@@ -1,61 +1,63 @@
-const socket = require('socket.io-client')('http://localhost:8080');
-const axios = require('axios');
+const socket = require("socket.io-client")("http://localhost:8080");
+const axios = require("axios");
 require("./Routes/OrderRoute");
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 require("./Models/OrderModel");
 const orderSchema = mongoose.model("order");
 
 // Connect to the database
-mongoose.set('strictQuery', true);  //warning
+mongoose.set("strictQuery", true); //warning
 
-mongoose.connect('mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.net/?retryWrites=true&w=majority')
-  .then(() => {
-    console.log("DB connected");
-    
-    socket.on('connect', () => {
-      console.log('Connected to the server');
-    });
+mongoose
+	.connect(
+		"mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.net/?retryWrites=true&w=majority"
+	)
+	.then(() => {
+		console.log("DB connected");
 
-    socket.on('newOrder', async (orderData) => {
-      try {
-        const products = orderData.Product.map((product) => {
-          return {
-            ItemCode: product.ItemCode,
-            ItemName: product.ItemName,
-            Price: product.Price,
-            Quantity: product.Quantity,
-          };
-        });
+		socket.on("connect", () => {
+			console.log("Connected to the server");
+		});
 
-        const order = new orderSchema({
-          _id: orderData._id,
-          CustomerID: orderData.CustomerID,
-          CustomerName: orderData.CustomerName,
-          CustomerEmail: orderData.CustomerEmail,
-          Address: {
-            Area: orderData.Address.Area,
-            City: orderData.Address.City,
-            Governate: orderData.Address.Governate,
-          },
-          Product: products,
-          PaymentMethod: orderData.PaymentMethod,
-          Status: orderData.Status,
-          TotalPrice: orderData.TotalPrice,
-        });
+		socket.on("newOrder", async (orderData) => {
+			try {
+				const products = orderData.Product.map((product) => {
+					return {
+						ItemCode: product.ItemCode,
+						ItemName: product.ItemName,
+						Price: product.Price,
+						Quantity: product.Quantity,
+					};
+				});
 
-        const data = await order.save();
-        console.log('Order saved:', data);
+				const order = new orderSchema({
+					_id: orderData._id,
+					CustomerID: orderData.CustomerID,
+					CustomerName: orderData.CustomerName,
+					CustomerEmail: orderData.CustomerEmail,
+					Address: {
+						Area: orderData.Address.Area,
+						City: orderData.Address.City,
+						Governate: orderData.Address.Governate,
+					},
+					Product: products,
+					PaymentMethod: orderData.PaymentMethod,
+					Status: orderData.Status,
+					TotalPrice: orderData.TotalPrice,
+				});
 
-      // Send a request to orderController.getall()
+				const data = await order.save();
+				console.log("Order saved:", data);
 
-      const response = await axios.get('/orders');
-      console.log('Orders retrieved:', response.data);
-     } catch (error) {
-      console.error('Error saving order:', error);
-    }
+				// Send a request to orderController.getall()
 
-    });
-  })
-  .catch(error => {
-    console.log("Db Problem " + error);
-  });
+				const response = await axios.get("/orders");
+				console.log("Orders retrieved:", response.data);
+			} catch (error) {
+				console.error("Error saving order:", error);
+			}
+		});
+	})
+	.catch((error) => {
+		console.log("Db Problem " + error);
+	});
