@@ -132,42 +132,42 @@ const data = await orderSchema.findOne({_id:orderId})
 
 
 
+//manual order
 
+// exports.addorder = async (request, response, next) => {
+//   try {
 
-exports.addorder = async (request, response, next) => {
-  try {
+//    const products = request.body.Product.map((product) => {
+//   return {
+//     ItemCode: product.ItemCode,
+//     ItemName: product.ItemName,
+//     Price: product.Price,
+//     Quantity: product.Quantity
+//   };
+// });
 
-   const products = request.body.Product.map((product) => {
-  return {
-    ItemCode: product.ItemCode,
-    ItemName: product.ItemName,
-    Price: product.Price,
-    Quantity: product.Quantity
-  };
-});
+// const order = new orderSchema({
+//   _id: request.body._id,
+//   CustomerID: request.body.CustomerID,
+//   CustomerName: request.body.CustomerName,
+//   CustomerEmail: request.body.CustomerEmail,
+//   Address: {
+//     Area: request.body.Address.Area,
+//     City: request.body.Address.City,
+//     Governate: request.body.Address.Governate
+//   },
+//   Product: products,
+//   PaymentMethod: request.body.PaymentMethod,
+//   Status: request.body.Status,
+//   TotalPrice: request.body.TotalPrice
+// });
 
-const order = new orderSchema({
-  _id: request.body._id,
-  CustomerID: request.body.CustomerID,
-  CustomerName: request.body.CustomerName,
-  CustomerEmail: request.body.CustomerEmail,
-  Address: {
-    Area: request.body.Address.Area,
-    City: request.body.Address.City,
-    Governate: request.body.Address.Governate
-  },
-  Product: products,
-  PaymentMethod: request.body.PaymentMethod,
-  Status: request.body.Status,
-  TotalPrice: request.body.TotalPrice
-});
-
-    const data = await order.save();
-    response.status(201).json(data);
-  } catch (error) {
-    next(error);
-  }
-};
+//     const data = await order.save();
+//     response.status(201).json(data);
+//   } catch (error) {
+//     next(error);
+//   }
+// };
 
 exports.getAssignedOrders = catchAsync(async (req, res, next) => {
 

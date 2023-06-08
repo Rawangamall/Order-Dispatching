@@ -1,7 +1,8 @@
 const socket = require('socket.io-client')('http://localhost:8080');
+const axios = require('axios');
+require("./Routes/OrderRoute");
 const mongoose = require('mongoose');
 require("./Models/OrderModel");
-
 const orderSchema = mongoose.model("order");
 
 // Connect to the database
@@ -16,9 +17,7 @@ mongoose.connect('mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.ne
     });
 
     socket.on('newOrder', async (orderData) => {
-        console.log("out try",orderData)
       try {
-        console.log("inside try", orderData);
         const products = orderData.Product.map((product) => {
           return {
             ItemCode: product.ItemCode,
@@ -46,9 +45,15 @@ mongoose.connect('mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.ne
 
         const data = await order.save();
         console.log('Order saved:', data);
-      } catch (error) {
-        console.error('Error saving order:', error);
-      }
+
+      // Send a request to orderController.getall()
+
+      const response = await axios.get('/orders');
+      console.log('Orders retrieved:', response.data);
+     } catch (error) {
+      console.error('Error saving order:', error);
+    }
+
     });
   })
   .catch(error => {

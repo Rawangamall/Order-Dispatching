@@ -7,7 +7,9 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 
   
 router.route("/locations")
-       .get(authenticationMW.auth ,LocationController.getAll )
+       .post(LocationController.addLocation)
+
+      // .get(authenticationMW.auth ,LocationController.getAll )
     //    .post(DriverValidPOST ,validateMW, DriverController.addUser)
 
 // router.route("/locations/:id")

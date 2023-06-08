@@ -7,6 +7,7 @@ const UserRoute=require("./Routes/UserRoute");
 const DriverRoute=require("./Routes/DriverRoute");
 const loginRoute =require("./Routes/loginRoute");
 const OrderRoute =require("./Routes/OrderRoute");
+const locationRoute =require("./Routes/LocationRoute")
 
 const AppError = require("./utils/appError");
 // const cors=require("cors");
@@ -41,10 +42,20 @@ app.use(express.urlencoded({extended:false}));
 app.use(bodyParser.json());
 
 //Routes 
+
 app.use(loginRoute);
 app.use(UserRoute);
 app.use(OrderRoute(io));
 app.use(DriverRoute);
+app.use(locationRoute);
+
+
+
+
+
+
+
+
 
 
 //Not Found Middleware
