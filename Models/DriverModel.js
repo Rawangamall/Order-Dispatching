@@ -12,7 +12,7 @@ const validateEmail = function(email) {
 
 const schema=new mongoose.Schema({
     _id : Number,
-    driverCode: Number ,
+    // driverCode: Number ,
     driverName:String,
     status: {type: String,
     enum: {
@@ -20,6 +20,7 @@ const schema=new mongoose.Schema({
         "active",
         "not active"
       ]},
+      default: "active"
     },
     availability: {type: String,
       enum: {
@@ -27,13 +28,14 @@ const schema=new mongoose.Schema({
         "free",
         "busy"
       ]
-    }
+    },
+    default: "free"
     },
     email:{type: String,validate:[validateEmail,"invalid email"]},
-    phoneNumber: Number ,
-    locationId : [{
+    phoneNumber: String ,
+    areaIds : [{
         type: Number,
-        ref : 'Governate'
+        ref : 'area',
     }],
     orderCount: {
       type: Number,
