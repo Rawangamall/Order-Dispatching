@@ -7,13 +7,13 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 
   
 router.route("/drivers")
-       .get(authenticationMW.auth ,DriverController.getAll )
-//        .post(DriverValidPOST ,validateMW, DriverController.addUser)
+       .get(DriverController.getAll)
+       .post(DriverValidPOST ,validateMW, DriverController.addDriver)
 
 router.route("/drivers/:id")
         .get(DriverValidId ,validateMW , DriverController.getDriverById)
-        // .put(DriverValidPUT ,validateMW, DriverController.updateUser)
-        // .delete(DriverValidId ,validateMW, DriverController.deleteUser )
+        .put(DriverValidPUT ,validateMW, DriverController.updateDriver)
+        .delete(DriverValidId ,validateMW, DriverController.deleteDriver)
 
       
 

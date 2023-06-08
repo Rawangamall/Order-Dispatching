@@ -17,7 +17,7 @@ const schema=new mongoose.Schema({
     password:{type:String , select:false} ,
     image:String ,
     Role:String ,
-    phoneNumber:Number ,
+    phoneNumber: String,
     active:{type:Boolean,default:true},
     passwordResetToken:String,
     passwordResetExpires:Date
