@@ -8,6 +8,7 @@ const RoleRoute=require("./Routes/RoleRoute");
 const DriverRoute=require("./Routes/DriverRoute");
 const loginRoute =require("./Routes/loginRoute");
 const OrderRoute =require("./Routes/OrderRoute");
+const LocationRoute =require("./Routes/LocationRoute");
 
 const AppError = require("./utils/appError");
 // const cors=require("cors");
@@ -49,6 +50,7 @@ app.use(RoleRoute);
 app.use(UserRoute);
 app.use(OrderRoute(io));
 app.use(DriverRoute);
+app.use(LocationRoute);
 
 
 //Not Found Middleware

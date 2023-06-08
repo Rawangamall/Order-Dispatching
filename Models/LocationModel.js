@@ -5,7 +5,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const governateSchema=new mongoose.Schema({
     _id : Number,
-    governate:{
+    governateName:{
       type: String,
       required: true
     },
@@ -19,7 +19,7 @@ const governateSchema=new mongoose.Schema({
 
 const citySchema=new mongoose.Schema({
   _id : Number,
-  city:{
+  cityName:{
     type: String,
     required: true
   },
@@ -38,7 +38,7 @@ const citySchema=new mongoose.Schema({
 
 const areaSchema=new mongoose.Schema({
   _id : Number,
-  area: {
+  areaName: {
     type: String,
     required: true
   },
@@ -53,19 +53,40 @@ const areaSchema=new mongoose.Schema({
   }],},
 );
 
+const LocationSchema=new mongoose.Schema({
+  _id : Number,
+  governateId: [{
+    type: Number,
+    ref: 'Governate',
+    required: true
+  }],
+  cityId: [{
+    type: Number,
+    ref: 'City',
+    required: true
+  }],
+  areaId:[{
+    type: Number,
+    ref: 'Area',
+    required: true
+  }],},
+);
 
 
 governateSchema.plugin(AutoIncrement,{id:'governate_id',inc_field:"_id"});
 citySchema.plugin(AutoIncrement,{id:'city_id',inc_field:"_id"});
 areaSchema.plugin(AutoIncrement,{id:'area_id',inc_field:"_id"});
+LocationSchema.plugin(AutoIncrement,{id:'location_id',inc_field:"_id"});
 
 //mapping
 const Governate = mongoose.model("Governate",governateSchema);
 const City = mongoose.model("City",citySchema);
 const Area =mongoose.model("Area",areaSchema);
+const Location =mongoose.model("Location",LocationSchema);
 
 module.exports = {
   Governate,
   City,
-  Area
+  Area,
+  Location
 };
