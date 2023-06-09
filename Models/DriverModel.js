@@ -33,7 +33,7 @@ const schema=new mongoose.Schema({
     },
     email:{type: String,validate:[validateEmail,"invalid email"]},
     phoneNumber: String ,
-    areaIds : [{
+    areas : [{
         type: Number,
         ref : 'area',
     }],
