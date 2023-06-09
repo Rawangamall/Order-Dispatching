@@ -34,48 +34,76 @@ exports.addRole = async (request, response, next) => {
 				.json({ error: "Role with the same name already exists" });
 		}
 
-		// Create a new role
-		const role = new RoleSchema({
-			user_id,
-			name,
-			permissions: {
-				statistics: {
-					viewAll: permissions.statistics.viewAll,
-				},
-				users: {
-					viewAll: permissions.users.viewAll,
-					add: permissions.users.add,
-					edit: permissions.users.edit,
-					delete: permissions.users.delete,
-					activateDeactivate: permissions.users.activateDeactivate,
-				},
-				orders: {
-					viewAll: permissions.orders.viewAll,
-					add: permissions.orders.add,
-					edit: permissions.orders.edit,
-					delete: permissions.orders.delete,
-				},
-				customers: {
-					viewAll: permissions.customers.viewAll,
-				},
-				locations: {
-					view: permissions.locations.view,
-					add: permissions.locations.add,
-					edit: permissions.locations.edit,
-				},
-				drivers: {
-					viewAll: permissions.drivers.viewAll,
-					add: permissions.drivers.add,
-					edit: permissions.drivers.edit,
-					delete: permissions.drivers.delete,
-				},
-				roles: {
-					viewAll: permissions.roles.viewAll,
-					add: permissions.roles.add,
-					edit: permissions.roles.edit,
-				},
-			},
-		});
+  exports.addRole = async (request, response, next) => {
+    try {
+      const { user_id, name, permissions } = request.body;
+   
+      // Check if the user_id exists
+     const existingUser = await UserSchema.findOne({ _id: user_id });
+    
+      if (!existingUser) {
+        return response.status(400).json({ error: 'User with the specified user_id does not exist' });
+      }
+  
+      // Check if the role name already exists
+      const existingRole = await RoleSchema.findOne({ name });
+      if (existingRole) {
+        return response.status(400).json({ error: 'Role with the same name already exists' });
+      }
+  
+      // Create a new role
+      const role = new RoleSchema({
+        user_id,
+        name,
+        permissions: {
+          statistics: {
+            viewAll: permissions.statistics.viewAll
+          },
+          users: {
+            viewAll: permissions.users.viewAll,
+            add: permissions.users.add,
+            edit: permissions.users.edit,
+            delete: permissions.users.delete,
+            activateDeactivate: permissions.users.activateDeactivate
+          },
+          orders: {
+            viewAll: permissions.orders.viewAll,
+            add: permissions.orders.add,
+            edit: permissions.orders.edit,
+            delete: permissions.orders.delete
+          },
+          customers: {
+            viewAll: permissions.customers.viewAll
+          },
+          locations: {
+            view: permissions.locations.view,
+            add: permissions.locations.add,
+            edit: permissions.locations.edit
+          },
+          drivers: {
+            viewAll: permissions.drivers.viewAll,
+            add: permissions.drivers.add,
+            edit: permissions.drivers.edit,
+            delete: permissions.drivers.delete
+          },
+          roles: {
+            viewAll: permissions.roles.viewAll,
+            add: permissions.roles.add,
+            edit: permissions.roles.edit
+          }
+        }
+      });
+  
+      // Save the role to the database
+      await role.save();
+  
+      response.json({ message: 'Role created successfully', role });
+    } catch (error) {
+      console.error(error);
+      response.status(500).json({ error: 'An error occurred while creating the role', details: error.message });
+    }
+  };
+  
 
 		// Save the role to the database
 		await role.save();

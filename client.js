@@ -7,42 +7,29 @@ const orderSchema = mongoose.model("order");
 require("./Routes/DispatchRoute");
 
 // Connect to the database
-mongoose.set('strictQuery', true);  //warning
+mongoose.set("strictQuery", true); //warning
 
-mongoose.connect('mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.net/?retryWrites=true&w=majority')
-  .then(() => {
-    console.log("DB connected");
-    
-    socket.on('connect', () => {
-      console.log('Connected to the server');
-    });
+mongoose
+	.connect(
+		"mongodb+srv://OrderDispatching:iti@cluster0.eesrbrh.mongodb.net/?retryWrites=true&w=majority"
+	)
+	.then(() => {
+		console.log("DB connected");
 
-    socket.on('newOrder', async (orderData) => {
-      try {
-        const products = orderData.Product.map((product) => {
-          return {
-            ItemCode: product.ItemCode,
-            ItemName: product.ItemName,
-            Price: product.Price,
-            Quantity: product.Quantity,
-          };
-        });
+		socket.on("connect", () => {
+			console.log("Connected to the server");
+		});
 
-        const order = new orderSchema({
-          _id: orderData._id,
-          CustomerID: orderData.CustomerID,
-          CustomerName: orderData.CustomerName,
-          CustomerEmail: orderData.CustomerEmail,
-          Address: {
-            Area: orderData.Address.Area,
-            City: orderData.Address.City,
-            Governate: orderData.Address.Governate,
-          },
-          Product: products,
-          PaymentMethod: orderData.PaymentMethod,
-          Status: orderData.Status,
-          TotalPrice: orderData.TotalPrice,
-        });
+		socket.on("newOrder", async (orderData) => {
+			try {
+				const products = orderData.Product.map((product) => {
+					return {
+						ItemCode: product.ItemCode,
+						ItemName: product.ItemName,
+						Price: product.Price,
+						Quantity: product.Quantity,
+					};
+				});
 
         const data = await order.save();
       //  console.log('Order saved:', data);
