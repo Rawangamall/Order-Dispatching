@@ -1,9 +1,10 @@
-const socket = require("socket.io-client")("http://localhost:8080");
-const axios = require("axios");
-require("./Routes/OrderRoute");
-const mongoose = require("mongoose");
+const socket = require('socket.io-client')('http://localhost:8080');
+const axios = require('axios');
+const mongoose = require('mongoose');
+
 require("./Models/OrderModel");
 const orderSchema = mongoose.model("order");
+require("./Routes/DispatchRoute");
 
 // Connect to the database
 mongoose.set("strictQuery", true); //warning
@@ -30,34 +31,25 @@ mongoose
 					};
 				});
 
-				const order = new orderSchema({
-					_id: orderData._id,
-					CustomerID: orderData.CustomerID,
-					CustomerName: orderData.CustomerName,
-					CustomerEmail: orderData.CustomerEmail,
-					Address: {
-						Area: orderData.Address.Area,
-						City: orderData.Address.City,
-						Governate: orderData.Address.Governate,
-					},
-					Product: products,
-					PaymentMethod: orderData.PaymentMethod,
-					Status: orderData.Status,
-					TotalPrice: orderData.TotalPrice,
-				});
+        const data = await order.save();
+      //  console.log('Order saved:', data);
 
-				const data = await order.save();
-				console.log("Order saved:", data);
+      // Send a request to orderController.getall()
+      console.log(data._id)
 
-				// Send a request to orderController.getall()
+      const response = await axios.get("http://localhost:8080/orders");
+      console.log('Orders retrieved:', response.data);
 
-				const response = await axios.get("/orders");
-				console.log("Orders retrieved:", response.data);
-			} catch (error) {
-				console.error("Error saving order:", error);
-			}
-		});
-	})
-	.catch((error) => {
-		console.log("Db Problem " + error);
-	});
+     const res = await axios.get(`http://localhost:8080/dispatch/${data._id}`);
+     console.log('AreaId:', res.data);
+  
+     } catch (error) {
+      console.error('Error saving order:', error);
+    }
+
+
+    });
+  })
+  .catch(error => {
+    console.log("Db Problem " + error);
+  });
