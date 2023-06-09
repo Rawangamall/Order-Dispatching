@@ -7,8 +7,6 @@ module.exports = (io) => {
 
       router.post('/', orderController.createOrder(io));
 
-
-
       
 router.route("/orders")
       .get(orderController.getAll);  //authenticationMW.auth ,validateMW

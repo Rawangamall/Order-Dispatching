@@ -9,6 +9,7 @@ const DriverRoute=require("./Routes/DriverRoute");
 const loginRoute =require("./Routes/loginRoute");
 const OrderRoute =require("./Routes/OrderRoute");
 const locationRoute =require("./Routes/LocationRoute")
+const DispatchRoute =require("./Routes/DispatchRoute")
 
 // const cors=require("cors");
 // const path=require("path");
@@ -50,7 +51,7 @@ app.use(UserRoute);
 app.use(OrderRoute(io));
 app.use(DriverRoute);
 app.use(locationRoute);
-
+app.use(DispatchRoute)
 
 //Not Found Middleware
 app.use((request,response,next)=>{
