@@ -23,10 +23,9 @@ exports.assignOrder = async (request, response, next) => {
       const governateName = order.Address.Governate
       const cityName = order.Address.City
       const areaName = order.Address.Area
-        console.log(governateName)
-    try {
+
+      try {
       const governate = await governateSchema.findOne({ governate: governateName });
-      console.log(governate)
 
       if (!governate) {
         return next(new AppError("Governate not found", 401));
@@ -41,20 +40,29 @@ exports.assignOrder = async (request, response, next) => {
       if (!area) {
         return next(new AppError("Area not found", 401));
       }
-
-      const driver = await DriverSchema.findOne({ areas: area._id, availability: 'free' }).limit(1);
-  
+      const areaID = area._id;
+      const driver = await driverSchema.findOne({
+        areas: areaID,
+        availability: 'free'
+      }).limit(1);
+      
+      
+              console.log(typeof(areaID), areaID)
       if (driver) {
         // Update the driver's availability to 'busy'
         if(driver.orderCount==1)
         {
           driver.orderCount=2;
           driver.availability = 'busy';
+        }else{
+          driver.orderCount +=1
         }
         await driver.save();
+    }else{
+      return next(new AppError("All driver is busy", 401));
     }
   
-      response.json({ driver: driver._id });
+      response.json({ driver: driver });
     } catch (error) {
       next(error);
     }
