@@ -8,7 +8,7 @@ body("phoneNumber").isNumeric().withMessage("The number should be integer"),
 body("status").isString().withMessage("Status should string") ,
 body("availability").isString().withMessage("Status should string") ,
 // body("password").isString().withMessage("password should string") ,
-body("orderCount").isNumeric().withMessage("Count should number") ,
+// body("orderCount").isNumeric().withMessage("Count should number") ,
 ]
 
 exports.DriverValidPUT =[
