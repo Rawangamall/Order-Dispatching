@@ -56,7 +56,7 @@ mongoose
 
 	  // Send a request to dispatchController.assignOrder()
      const res = await axios.get(`${baseURL}/dispatch/${data._id}`);
-     console.log('DriverID:', res.data);
+     console.log(res.data);
   
      } catch (error) {
       console.error('Error saving order:', error);

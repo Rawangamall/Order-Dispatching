@@ -14,7 +14,7 @@ const catchAsync = require("./../utils/CatchAsync");
 
 
 // search by location name and return with area id for driver search
-exports.assignOrder = async (request, response, next) => {
+exports.assignOrder = catchAsync (async (request, response, next) => {
     
        const id = request.params._id
 
@@ -24,7 +24,6 @@ exports.assignOrder = async (request, response, next) => {
       const cityName = order.Address.City
       const areaName = order.Address.Area
 
-      try {
       const governate = await governateSchema.findOne({ governate: governateName });
 
       if (!governate) {
@@ -40,15 +39,15 @@ exports.assignOrder = async (request, response, next) => {
       if (!area) {
         return next(new AppError("Area not found", 401));
       }
-      const areaID = area._id;
+
       const driver = await driverSchema.findOne({
-        areas: areaID,
-        availability: 'free'
-      }).limit(1);
+        areas: area._id,
+        availability: 'free' }).limit(1);
       
       
-              console.log(typeof(areaID), areaID)
+              console.log(area._id)
       if (driver) {
+
         // Update the driver's availability to 'busy'
         if(driver.orderCount==1)
         {
@@ -58,51 +57,34 @@ exports.assignOrder = async (request, response, next) => {
           driver.orderCount +=1
         }
         await driver.save();
+
+        //assign order to the specific driver
+        await orderSchema.updateOne(
+          {_id : order._id} ,
+          {$set:
+            {
+              DriverID : driver._id ,
+              Status : "assign"
+            }
+          }
+        )
+
     }else{
-      return next(new AppError("All driver is busy", 401));
-    }
-  
-      response.json({ driver: driver });
-    } catch (error) {
-      next(error);
-    }
-  };
+      //if all driver is busy we will reassign the order
+      await orderSchema.updateOne(
+        {_id : order._id} ,
+        {$set:
+          {
+            Status : "reassigned"
+          }
+        })
 
-  // exports.getDriversToBeAssignedOrderTo = async (request, response, next) => {
-  //   try {
-  //       const areaId = request.params.id;
+        }
   
-  //     // Find one driver with the specified area_id and availability
-  //     const driver = await DriverSchema.findOne({ areas: areaId, availability: 'free' }).limit(1);
-  
-  //     if (driver) {
-  //       // Update the driver's availability to 'busy'
-  //       if(driver.orderCount==1)
-  //       {
-  //         driver.orderCount=2;
-  //         driver.availability = 'busy';
-  //       }
-        
-       
-  //       await driver.save();
-  
-  //       // Assign the driver_id in the order data
-  //       const orderId = request.body.orderId;
-  //       const order = await OrderSchema.findById(orderId);
-  //       order.DriverID = driver._id;
-  //       await order.save();
-  
-  //       // Return the driver data
-  //       response.json(driver);
-  //     } else {
-  //       response.json({ message: 'No available drivers found' });
-  //     }
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
 
-
+    response.status(200).json({status:"success"});
+  
+  });
 
 
   exports.ReAssignedOrderApi = async (request, response, next) => {
