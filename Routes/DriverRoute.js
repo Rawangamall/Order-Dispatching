@@ -15,6 +15,9 @@ router.route("/drivers/:id")
         .put(DriverValidPUT ,validateMW, DriverController.updateDriver)
         .delete(DriverValidId ,validateMW, DriverController.deleteDriver)
 
+router.route("/drivers/assignedOrderTo/:id")
+        .get(DriverController.getDriversToBeAssignedOrderTo)
+
       
 
 module.exports=router;

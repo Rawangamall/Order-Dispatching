@@ -101,3 +101,38 @@ exports.assignOrder = async (request, response, next) => {
   //     next(error);
   //   }
   // };
+
+
+
+
+  exports.ReAssignedOrderApi = async (request, response, next) => {
+    try {
+      const thresholdTime = moment().subtract(10, 'minutes');
+  
+      const filteredOrders = await Order.find({
+        status: 'assigned',
+        updated_at: { $gt: thresholdTime.toDate() },
+      });
+  
+      filteredOrders.forEach(async (order) => {
+        order.status = 'reassigned';
+        order.DriverID = null;
+       
+        await order.save();
+      });
+
+      filteredOrders.forEach(async (order) => {
+        await exports.assignOrder({ params: { _id: order._id } });
+      });
+      
+
+  
+      console.log('Orders updated successfully:', filteredOrders);
+    } catch (error) {
+      console.error('Error updating orders:', error);
+    }
+  };
+  
+  // Schedule the task to run every 5 minutes (adjust the interval as needed)
+  setInterval(exports.ReAssignedOrderApi, 5 * 60 * 1000);
+

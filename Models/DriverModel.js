@@ -32,8 +32,9 @@ const schema=new mongoose.Schema({
     default: "free"
     },
     email:{type: String,validate:[validateEmail,"invalid email"]},
-    phoneNumber: String ,
-    areaIds : [{
+    password:{type:String , select:false} ,
+    phoneNumber: {type:String , unique:true},
+    areas : [{
         type: Number,
         ref : 'area',
     }],
