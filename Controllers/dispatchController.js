@@ -42,7 +42,7 @@ exports.assignOrder = async (request, response, next) => {
         return next(new AppError("Area not found", 401));
       }
 
-      const driver = await DriverSchema.findOne({ areas: area._id, availability: 'free' }).limit(1);
+      const driver = await driverSchema.findOne({ areas: area._id, availability: 'free' }).limit(1);
   
       if (driver) {
         // Update the driver's availability to 'busy'
@@ -97,7 +97,7 @@ exports.assignOrder = async (request, response, next) => {
 
 
 
-  exports.ReAssignedOrderApi = async (request, response, next) => {
+  exports.ReAssignedOrder = async (request, response, next) => {
     try {
       const thresholdTime = moment().subtract(10, 'minutes');
   
@@ -126,5 +126,5 @@ exports.assignOrder = async (request, response, next) => {
   };
   
   // Schedule the task to run every 5 minutes (adjust the interval as needed)
-  setInterval(exports.ReAssignedOrderApi, 5 * 60 * 1000);
+  setInterval(exports.ReAssignedOrder, 5 * 60 * 1000);
 
