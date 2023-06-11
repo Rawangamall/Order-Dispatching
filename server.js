@@ -11,18 +11,18 @@ const OrderRoute =require("./Routes/OrderRoute");
 const locationRoute =require("./Routes/LocationRoute")
 const DispatchRoute =require("./Routes/DispatchRoute")
 
-// const cors=require("cors");
-// const path=require("path");
+const socketIO = require('socket.io');
+const { init } = require('./utils/socket');
 
 
 
 //server
 const app = express();
 const server = require("http").createServer(app);
- require("./utils/socket").init(server);
+const io = socketIO(server);
+init(io);
 
 let port=process.env.PORT||8080;
-
 
 //db connection
 mongoose.set('strictQuery', true);  //warning

@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema({
   Price: { type: Number, required: true },
   }],
   PaymentMethod: { type: String, enum: ['cash', 'online'], required: true },
- DriverID: { type: Number,ref: "Driver", required: true },
+ DriverID: { type: Number,ref: "Driver"},
  updated_at: { type: Date, default: Date.now },
 });
 

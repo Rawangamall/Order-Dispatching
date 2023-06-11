@@ -11,13 +11,24 @@ exports.recieveOrder = catchAsync (async (req, res) => {
     	const orderData = req.body;
 
 		const io = getIO();
+		
 		io.emit("newOrder", orderData);
 
-		res.status(201).json({
-			status: "success"
-		});
 
+		res.status(200).json({
+			status: "success"
+
+		});
+		
 });
+
+
+
+
+
+
+
+
 
 exports.getAll = catchAsync(async (req, res, next) => {
 	//search

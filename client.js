@@ -7,7 +7,6 @@ const orderSchema = mongoose.model("order");
 
 const baseURL = process.env.BASE_URL || 'http://localhost:8080';
 
-
 // Connect to the database
 mongoose.set("strictQuery", true); //warning
 

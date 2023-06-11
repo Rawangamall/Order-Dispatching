@@ -1,13 +1,7 @@
-const socketIO = require("socket.io");
-
 let io;
 
-function init(server) {
-  io = socketIO(server);
-
-  io.on("connection", (socket) => {
-    console.log("New client connected");
-  });
+function init(_io) {
+  io = _io;
 }
 
 function getIO() {
