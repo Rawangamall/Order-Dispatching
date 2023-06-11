@@ -49,6 +49,21 @@ exports.addLocation = async (request, response, next) => {
   }
 };
 
+exports.getallLocation = catchAsync (async (request, response, next) => {
+
+
+  data = await governateSchema.find({})
+  response.status(201).json(data);
+
+})
+
+exports.UpdateLocation = catchAsync (async (request, response, next) => {
+
+})
+
+exports.DeleteLocation = catchAsync (async (request, response, next) => {
+
+})
 
 // search by location name and return with area id for driver search
   // exports.searchLocation = async (request, response, next) => {

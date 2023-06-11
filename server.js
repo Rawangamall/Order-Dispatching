@@ -18,8 +18,9 @@ const DispatchRoute =require("./Routes/DispatchRoute")
 
 //server
 const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
+const server = require("http").createServer(app);
+ require("./utils/socket").init(server);
+
 let port=process.env.PORT||8080;
 
 
@@ -48,10 +49,10 @@ app.use(bodyParser.json());
 app.use(loginRoute);
 app.use(RoleRoute);
 app.use(UserRoute);
-app.use(OrderRoute(io));
+app.use(OrderRoute);
 app.use(DriverRoute);
 app.use(locationRoute);
-app.use(DispatchRoute)
+app.use(DispatchRoute);
 
 //Not Found Middleware
 app.use((request,response,next)=>{

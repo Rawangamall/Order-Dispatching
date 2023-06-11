@@ -64,6 +64,28 @@ res.status(200).json({ message:"success send email"});
 
 });
 
+
+exports.isValidToken = async (req,res,next)=>{
+    const token = req.headers.authorization;
+
+    try {
+        
+        const decoded = JWT.verify(token, process.env.JWT_SECRET);
+    
+        console.log(decoded)
+        const expirationDate = new Date(decoded.exp * 1000); 
+        const currentDate = new Date();
+    
+        if (currentDate > expirationDate) {
+          return res.status(401).json({ message: 'Token expired' });
+        }
+    
+        return res.json({ message: 'Token is valid' });
+      } catch (error) {
+        return res.status(401).json({ message: 'Invalid token' });
+      }
+}
+
 exports.resetpassword = catchAsync(async (req,res,next)=>{
 
 const hashToken = crypto.createHash('sha256').update(req.body.token).digest('hex');

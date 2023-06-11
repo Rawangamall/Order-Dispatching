@@ -11,4 +11,9 @@ router.route("/forgetpassword")
 router.route("/resetpassword")
       .patch(loginController.resetpassword);
 
+router.route("/validToken")
+      .get(loginController.isValidToken);
+
+
+      
 module.exports=router;

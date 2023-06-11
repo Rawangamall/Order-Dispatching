@@ -4,28 +4,20 @@ const orderSchema = mongoose.model("order");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
+const { getIO } = require("./../utils/socket")
 
-exports.createOrder = (io) => async (req, res) => {
-	// console.log("inside controller",io)
-	try {
-		const orderData = req.body;
+exports.recieveOrder = catchAsync (async (req, res) => {
 
-		// Emit the order data to the order dispatching system
+    	const orderData = req.body;
+
+		const io = getIO();
 		io.emit("newOrder", orderData);
 
 		res.status(201).json({
-			status: "success",
-			data: {
-				order: orderData,
-			},
+			status: "success"
 		});
-	} catch (error) {
-		res.status(500).json({
-			status: "error",
-			message: "An error occurred while processing the order",
-		});
-	}
-};
+
+});
 
 exports.getAll = catchAsync(async (req, res, next) => {
 	//search
@@ -46,7 +38,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
 		$and: [
 			{
 				$or: [
-					{ _id: { $eq: objectId } },
+					{ _id: { $regex: objectId, $options: "i" } },
 					{ CustomerName: { $regex: searchKey, $options: "i" } },
 					{ CustomerEmail: { $regex: searchKey, $options: "i" } },
 					{
