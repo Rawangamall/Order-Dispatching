@@ -61,10 +61,10 @@ app.use((request,response,next)=>{
 //Global error handeling Middleware
 app.use((error, request, response, next) => {
     if (error.statusCode && error.statusCode !== 500) {
-      // Preserve the specific status code from the AppError instance
+      // the specific status code from the AppError 
       response.status(error.statusCode).json({ message: error.message });
     } else {
-      // Fallback to the default 500 status code handling
+      //the default 500 status code handling
       response.status(500).json({ message: error + "" });
     }
   });

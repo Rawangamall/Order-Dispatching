@@ -51,32 +51,32 @@ exports.addLocation = async (request, response, next) => {
 
 
 // search by location name and return with area id for driver search
-  exports.searchLocation = async (request, response, next) => {
+  // exports.searchLocation = async (request, response, next) => {
     
 
-    const { governateName, cityName, areaName } = request.body;
+  //   const { governateName, cityName, areaName } = request.body;
   
-    try {
-      const governate = await governateSchema.findOne({ governate: governateName }).exec();
-      if (!governate) {
-        return next(new AppError("Governate not found", 401));
-      }
+  //   try {
+  //     const governate = await governateSchema.findOne({ governate: governateName }).exec();
+  //     if (!governate) {
+  //       return next(new AppError("Governate not found", 401));
+  //     }
   
-      const city = governate.cities.find(c => c.name === cityName);
-      if (!city) {
-        return next(new AppError("City not found", 401));
-      }
+  //     const city = governate.cities.find(c => c.name === cityName);
+  //     if (!city) {
+  //       return next(new AppError("City not found", 401));
+  //     }
   
-      const area = city.areas.find(a => a.name === areaName);
-      if (!area) {
-        return next(new AppError("Area not found", 401));
-      }
+  //     const area = city.areas.find(a => a.name === areaName);
+  //     if (!area) {
+  //       return next(new AppError("Area not found", 401));
+  //     }
   
-      response.json({ areaId: area._id });
-    } catch (error) {
-      next(error);
-    }
-  };
+  //     response.json({ areaId: area._id });
+  //   } catch (error) {
+  //     next(error);
+  //   }
+  // };
 // const areaName = 'Nasr City';
 // const cityName = 'Cairo';
 // const governateName = 'Cairo';
