@@ -2,10 +2,20 @@ const express=require("express");
 const router=express.Router();
 const orderController=require("./../Controllers/OrderController");
 
-module.exports = (io) => {
-      // console.log(io);
+const API_KEY = process.env.API_KEY;
 
-      router.post('/', orderController.createOrder(io));
+function apiKeyAuth(req, res, next) {
+  const apiKey = req.headers['x-api-key'];
+
+  if (apiKey === API_KEY) {
+    next();
+  } else {
+    res.status(401).send({ message: 'Invalid API key' });
+  }
+}
+
+router.route('/orders/recieve')
+      .post(orderController.recieveOrder);   //apiKeyAuth   
 
       
 router.route("/orders")
@@ -33,8 +43,6 @@ router.route("/orders/:_id")
       .get(orderController.getoneOrder)
       .patch(orderController.updateOrder)
 
-// router.route("/orders/add").post(orderController.addorder)
+ //router.route("/orders/add").post(orderController.addOrder)
 
-return router;
-};
-     
+ module.exports=router;

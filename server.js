@@ -11,17 +11,18 @@ const OrderRoute =require("./Routes/OrderRoute");
 const locationRoute =require("./Routes/LocationRoute")
 const DispatchRoute =require("./Routes/DispatchRoute")
 
-// const cors=require("cors");
-// const path=require("path");
+const socketIO = require('socket.io');
+const { init } = require('./utils/socket');
 
 
 
 //server
 const app = express();
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-let port=process.env.PORT||8080;
+const server = require("http").createServer(app);
+const io = socketIO(server);
+init(io);
 
+let port=process.env.PORT||8080;
 
 //db connection
 mongoose.set('strictQuery', true);  //warning
@@ -48,10 +49,10 @@ app.use(bodyParser.json());
 app.use(loginRoute);
 app.use(RoleRoute);
 app.use(UserRoute);
-app.use(OrderRoute(io));
+app.use(OrderRoute);
 app.use(DriverRoute);
 app.use(locationRoute);
-app.use(DispatchRoute)
+app.use(DispatchRoute);
 
 //Not Found Middleware
 app.use((request,response,next)=>{
