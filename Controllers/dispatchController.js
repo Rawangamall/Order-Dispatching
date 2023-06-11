@@ -64,7 +64,8 @@ exports.assignOrder = catchAsync (async (request, response, next) => {
           {$set:
             {
               DriverID : driver._id ,
-              Status : "assign"
+              Status : "assign",
+              updated_at : Date.now()
             }
           }
         )
@@ -87,7 +88,7 @@ exports.assignOrder = catchAsync (async (request, response, next) => {
   });
 
 
-  exports.ReAssignedOrderApi = async (request, response, next) => {
+  exports.ReAssignedOrder = async (request, response, next) => {
     try {
       const thresholdTime = moment().subtract(10, 'minutes');
   
@@ -116,5 +117,5 @@ exports.assignOrder = catchAsync (async (request, response, next) => {
   };
   
   // Schedule the task to run every 5 minutes (adjust the interval as needed)
-  setInterval(exports.ReAssignedOrderApi, 5 * 60 * 1000);
+  setInterval(exports.ReAssignedOrder, 5 * 60 * 1000);
 

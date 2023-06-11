@@ -34,4 +34,3 @@ governateSchema.plugin(AutoIncrement,{id:'gov_id',inc_field:"_id"});
 const Governate = mongoose.model('Governate', governateSchema);
 
 module.exports = Governate;
-
