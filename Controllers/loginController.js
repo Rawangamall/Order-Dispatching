@@ -4,7 +4,9 @@ const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
 require("./../Models/UserModel")
+require("./../Models/RoleModel")
 const UserSchema=mongoose.model("user");
+const RoleSchema=mongoose.model("role");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -27,7 +29,13 @@ if(!user || !(await user.correctPassword(password, user.password))){
     return next(new AppError(`Incorrect email or password`, 401));
 }
 
-const token = JWT.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
+console.log(user);
+const role_id = user.role_id;
+console.log(role_id);
+const role = await RoleSchema.findById(role_id).exec();
+const RoleName = role ? role.name : null;
+console.log(RoleName);
+const token = JWT.sign({id:user._id , roleName:RoleName},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
 res.status(200).json({
     status:"success" , 
