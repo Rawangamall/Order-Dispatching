@@ -12,7 +12,7 @@ const OrderRoute = require("./Routes/OrderRoute");
 const locationRoute = require("./Routes/LocationRoute");
 const DispatchRoute = require("./Routes/DispatchRoute");
 const refresh = require("./github_refresh/refresh")
-
+const client = require("./client")
 const socketIO = require("socket.io");
 const { init } = require("./utils/socket");
 
@@ -21,6 +21,7 @@ const app = express();
 const server = require("http").createServer(app);
 const io = socketIO(server);
 init(io);
+client(io)
 
 let port = process.env.PORT || 8080;
 

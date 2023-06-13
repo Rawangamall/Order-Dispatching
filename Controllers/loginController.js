@@ -80,7 +80,7 @@ exports.isValidToken = async (req,res,next)=>{
           return res.status(401).json({ message: 'Token expired' });
         }
     
-        return res.json({ message: 'Token is valid' });
+        return res.status(200).json({ message: 'Token is valid' });
       } catch (error) {
         return res.status(401).json({ message: 'Invalid token' });
       }
