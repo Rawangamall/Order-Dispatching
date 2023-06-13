@@ -8,11 +8,31 @@ const {AreaValidPOST, AreaValidPUT, AreaValidId} =require("./../Core/Validations
 const authenticationMW = require("./../Middlewares/authenticationMW")
 
   
-router.route("/locations")
-       .post(LocationController.addLocation)
-       .get(LocationController.getallLocation)
-       .patch(LocationController.UpdateLocation)
-       .delete(LocationController.DeleteLocation)
+router.route("/locations")   
+      .post(LocationController.addLocation)
+
+router.route("/locations/governate")
+       .get(LocationController.getallgovernate)
+
+router.route("/locations/governate/:_id")
+       .get(LocationController.getOneGovernate)
+       .patch(LocationController.editgovernate)
+       .delete(LocationController.deleteGovernate)
     
+router.route("/locations/cities")
+       .get(LocationController.getallcities)
+
+router.route("/locations/city/:_id")
+        .patch(LocationController.editcity)
+        .delete(LocationController.deleteCity)   
+        .get(LocationController.getOneCity)
+
+router.route("/locations/areas")
+       .get(LocationController.getallareas)
+
+router.route("/locations/area/:_id")
+       .patch(LocationController.editarea)
+       .delete(LocationController.deletearea)   
+       .get(LocationController.getOneArea)
 
 module.exports=router;
