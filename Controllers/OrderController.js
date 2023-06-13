@@ -5,6 +5,7 @@ const orderSchema = mongoose.model("order");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 const { getIO } = require("./../utils/socket")
+// const client = require("./../client")
 
 exports.recieveOrder = catchAsync (async (req, res) => {
 
@@ -12,11 +13,12 @@ exports.recieveOrder = catchAsync (async (req, res) => {
 
 		const io = getIO();
 		
+		// Emit the "newOrder" event with the order data
+		console.log("Emitting newOrder event");
 		io.emit("newOrder", orderData);
 
-
 		res.status(200).json({
-			status: "success"
+			status: orderData
 
 		});
 		

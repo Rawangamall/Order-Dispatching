@@ -6,7 +6,6 @@ require("./../Models/DriverModel");
 const orderSchema = mongoose.model("order");
 const governateSchema = mongoose.model("Governate");
 const driverSchema = mongoose.model("driver");
-const moment = require("moment");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -107,4 +106,4 @@ exports.ReAssignedOrder = async (request, response, next) => {
 };
 
 // Schedule the task to run every 5 minutes (adjust the interval as needed)
-setInterval(exports.ReAssignedOrder, 5 * 60 * 1000);
+// setInterval(exports.ReAssignedOrder, 5 * 60 * 1000);
