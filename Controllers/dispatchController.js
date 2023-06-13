@@ -66,7 +66,7 @@ exports.assignOrder = catchAsync (async (request, response, next) => {
             {
               DriverID : driver._id ,
               Status : "assign",
-              updated_at : Date.now()
+              updated_at : Date.now() + 10 * 60 * 1000, // Add 10 minutes (in milliseconds)
             }
           }
         )
@@ -91,11 +91,11 @@ exports.assignOrder = catchAsync (async (request, response, next) => {
 
   exports.ReAssignedOrder = async (request, response, next) => {
     try {
-      const thresholdTime = moment().subtract(10, 'minutes');
+      // Find all orders that are assigned and have not been updated in the last 5 minutes
   
       const filteredOrders = await Order.find({
         status: 'assigned',
-        updated_at: { $gt: thresholdTime.toDate() },
+        updated_at: { $gt: Date.now() },
       });
   
       filteredOrders.forEach(async (order) => {
