@@ -14,7 +14,7 @@ function apiKeyAuth(req, res, next) {
   }
 }
 
-router.route('/order/recieve')
+router.route('orders/recieve')
       .post(orderController.recieveOrder);   //apiKeyAuth   
 
       
