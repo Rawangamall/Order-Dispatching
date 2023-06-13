@@ -11,6 +11,7 @@ const loginRoute = require("./Routes/loginRoute");
 const OrderRoute = require("./Routes/OrderRoute");
 const locationRoute = require("./Routes/LocationRoute");
 const DispatchRoute = require("./Routes/DispatchRoute");
+const refresh = require("./refresh")
 
 const socketIO = require("socket.io");
 const { init } = require("./utils/socket");
@@ -51,7 +52,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 //Routes
-
+app.use("/refresh", refresh);
 app.use(loginRoute);
 app.use(RoleRoute);
 app.use(UserRoute);

@@ -16,7 +16,7 @@ exports.recieveOrder = catchAsync (async (req, res) => {
 
 
 		res.status(200).json({
-			status: "success"
+			status: orderData
 
 		});
 		
