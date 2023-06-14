@@ -67,13 +67,13 @@ exports.saveOrder = catchAsync(async (req, res) => {
 
 exports.getAll = catchAsync(async (req, res, next) => {
 	//search
-	const searchKey = req.body.searchKey || "";
+	const searchKey = req.headers.searchKey || "";
 
 	//filteration
-	const status = req.body.status || "";
-	const city = req.body.city || "";
-	const governate = req.body.governate || "";
-	const orderNum = req.body.orderNum || null;
+	const status = req.headers.status || "";
+	const city = req.headers.city || "";
+	const governate = req.headers.governate || "";
+	const orderNum = req.headers.orderNum || null;
 
 	let objectId = "";
 	if (mongoose.Types.ObjectId.isValid(searchKey)) {
