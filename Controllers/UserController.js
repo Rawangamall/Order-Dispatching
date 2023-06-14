@@ -15,6 +15,7 @@ exports.getAll = (request, response, next) => {
   const role = request.body.role || "";
   const active = request.body.active;
 
+
   const query = {
     $and: [
       {

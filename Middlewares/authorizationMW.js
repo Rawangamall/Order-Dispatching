@@ -6,7 +6,6 @@ const RoleModel = mongoose.model('role');
 
 // Middleware function for authorization
 exports.authorize = (model, permission) => async (req, res, next) => {
-  // console.log(req.headers.authorization);
   const token = req.headers.authorization;
 
   // Check if the token exists
@@ -26,8 +25,7 @@ exports.authorize = (model, permission) => async (req, res, next) => {
     // Attach the id and roleName to the request object for further use
     req.userId = id;
     req.roleName = roleName;
-    // console.log(req.userId);
-    // console.log(req.roleName);
+ 
     // Continue to the next middleware or route handler
   
   } catch (error) {
