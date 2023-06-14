@@ -54,7 +54,7 @@ try{ await sendEmail({
 res.status(200).json({ message:"success send email"});
 
 }catch(err){
- user.passwordResetToken = undefined
+ user.code = undefined
  user.passwordResetExpires = undefined
  await user.save({validateBeforeSave : false });
 
@@ -90,7 +90,7 @@ exports.resetpassword = catchAsync(async (req,res,next)=>{
 
 const hashToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
 
-const user = await UserSchema.findOne({passwordResetToken: hashToken ,
+const user = await UserSchema.findOne({code: hashToken ,
      passwordResetExpires : {$gt : Date.now()}
     });
 
@@ -100,18 +100,17 @@ const user = await UserSchema.findOne({passwordResetToken: hashToken ,
 
 if(req.body.password === req.body.confirmPassword){
 user.password = bcrypt.hashSync(req.body.password ,salt) 
-user.passwordResetToken = undefined    //to be removed from db
+user.code = undefined    //to be removed from db
 user.passwordResetExpires = undefined
 await user.save();
 }else{
     return next(new AppError("Password not matched!"),404);
 }
 
-const token = JWT.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
+//const token = JWT.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
 res.status(200).json({
-    status:"success" , 
-    token
+    status:"success"
 });
 
 });

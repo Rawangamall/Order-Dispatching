@@ -4,14 +4,11 @@ const orderSchema = mongoose.model("order");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
-const { getIO } = require("./../utils/socket")
-// const client = require("./../client")
+const { io } = require("./../utils/socket")
 
 exports.recieveOrder = catchAsync (async (req, res) => {
 
     	const orderData = req.body;
-
-		const io = getIO();
 		
 		// Emit the "newOrder" event with the order data
 		console.log("Emitting newOrder event");
@@ -24,12 +21,48 @@ exports.recieveOrder = catchAsync (async (req, res) => {
 		
 });
 
-
-
-
-
-
-
+exports.saveOrder = catchAsync(async (req, res) => {
+	const orderData = req.body;
+	console.log(orderData);
+  
+	const products = orderData.Product.map((product) => {
+	  return {
+		ItemCode: product.ItemCode,
+		ItemName: product.ItemName,
+		Price: product.Price,
+		Quantity: product.Quantity,
+	  };
+	});
+  
+	const order = new orderSchema({
+	  _id: orderData._id,
+	  CustomerID: orderData.CustomerID,
+	  CustomerName: orderData.CustomerName,
+	  CustomerEmail: orderData.CustomerEmail,
+	  Address: {
+		Area: orderData.Address.Area,
+		City: orderData.Address.City,
+		Governate: orderData.Address.Governate,
+	  },
+	  Product: products,
+	  PaymentMethod: orderData.PaymentMethod,
+	  Status: orderData.Status,
+	  TotalPrice: orderData.TotalPrice,
+	});
+  
+	try {
+	  await order.save();
+	  res.status(200).json({ message: "Order saved" });
+	} catch (error) {
+	  if (error.code === 11000) {
+		res.status(400).json({ error: "Duplicate key error" });
+	  } else {
+		res.status(500).json({ error: "Error saving in database" });
+	  }
+	}
+  });
+  
+  
 
 
 exports.getAll = catchAsync(async (req, res, next) => {

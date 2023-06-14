@@ -14,14 +14,8 @@ const DispatchRoute = require("./Routes/DispatchRoute");
 const refresh = require("./github_refresh/refresh")
 const client = require("./client")
 const socketIO = require("socket.io");
-const { init } = require("./utils/socket");
-
+const { io , server , app  } = require("./utils/socket");
 //server
-const app = express();
-const server = require("http").createServer(app);
-const io = socketIO(server);
-init(io);
-client(io)
 
 let port = process.env.PORT || 8080;
 
@@ -58,6 +52,7 @@ app.use(loginRoute);
 app.use(RoleRoute);
 app.use(UserRoute);
 app.use(OrderRoute);
+
 app.use(DriverRoute);
 app.use(locationRoute);
 app.use(DispatchRoute);

@@ -42,7 +42,7 @@ const schema=new mongoose.Schema({
       type: Number,
       default: 0
     },
-    passwordResetToken: String,
+    code: String,
     passwordResetExpires: Date
   });
   
@@ -54,7 +54,7 @@ schema.methods.correctPassword = async function(candidatePassword , userPassword
   
   schema.methods.createPasswordRandomToken = async function(){
   const resetToken = crypto.randomBytes(32).toString('hex');
-  this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex'); 
+  this.code = crypto.createHash('sha256').update(resetToken).digest('hex'); 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000     //10 min  
   return resetToken;
   };
