@@ -112,11 +112,18 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	const data = await orderSchema.find(query).limit(limit);
   
 	if (data.length === 0) {
-	  return next(new AppError("There's no data", 401));
+
+		res.status(200).json({message : "There's no data"}); 
+		
+	}else{
+
+	 const totalOrders = data.length; //  total number of orders
+	 res.status(200).json({ data, totalOrders }); 	
+
 	}
-  
-	res.status(200).json({ data });
+
   });
+  
   
   
 exports.updateOrder = catchAsync(async (req, res, next) => {
