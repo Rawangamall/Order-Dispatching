@@ -67,7 +67,7 @@ exports.saveOrder = catchAsync(async (req, res) => {
 
 exports.getAll = catchAsync(async (req, res, next) => {
 	//search
-	const searchKey = req.headers.searchKey || "";
+	const searchKey = req.headers.searchkey || "";
 
 	//filteration
 	const status = req.headers.status || "";
