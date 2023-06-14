@@ -110,17 +110,15 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	}
   
 	const data = await orderSchema.find(query).limit(limit);
-  
-	if (data.length === 0) {
+ 	const totalOrders = await orderSchema.countDocuments(); // Retrieve total number of orders from the entire database
+ 
+	// if (data.length === 0) {
 
-		res.status(200).json({message : "There's no data"}); 
+	// 	res.status(200).json({message : "There's no data"}); 
 		
-	}else{
-
-	 const totalOrders = data.length; //  total number of orders
+	// }
+	
 	 res.status(200).json({ data, totalOrders }); 	
-
-	}
 
   });
   
@@ -200,57 +198,58 @@ exports.getoneOrder = catchAsync(async (req, res, next) => {
 //     next(error);
 //   }
 // };
-
 exports.getAssignedOrders = catchAsync(async (req, res, next) => {
-  const searchKey = req.body.searchKey?.toLowerCase() || "";
-  const city = req.body.city || "";
-  const governate = req.body.governate || "";
-
-  let objectId = "";
-  if (mongoose.Types.ObjectId.isValid(searchKey)) {
-    objectId = mongoose.Types.ObjectId(searchKey);
-  }
-
-  const query = {
-    $and: [
-      {
-        $or: [
-          { _id: { $eq: objectId } },
-          { CustomerName: { $regex: searchKey, $options: "i" } },
-          { CustomerEmail: { $regex: searchKey, $options: "i" } },
-          {
-            "Address.Governate": {
-              $regex: searchKey,
-              $options: "i",
-            },
-          },
-          { "Address.City": { $regex: searchKey, $options: "i" } },
-          { "Address.Area": { $regex: searchKey, $options: "i" } },
-          { PaymentMethod: { $regex: searchKey, $options: "i" } },
-        ],
-      },
-      { Status: "assign" },
-    ],
-  };
-
-  if (governate !== "") {
-    query.$and.push({
-      "Address.Governate": { $regex: governate, $options: "i" },
-    });
-  }
-
-  if (city !== "") {
-    query.$and.push({ "Address.City": { $regex: city, $options: "i" } });
-  }
-
-  const data = await orderSchema.find(query);
-
-  if (data.length === 0) {
-    return next(new AppError("There's no data", 401));
-  }
-
-  res.status(200).json({ data });
-});
+	const searchKey = req.headers.searchkey || "";
+	const city = req.headers.city || "";
+	const governate = req.headers.governate || "";
+  
+	let objectId = "";
+	if (mongoose.Types.ObjectId.isValid(searchKey)) {
+	  objectId = mongoose.Types.ObjectId(searchKey);
+	}
+  
+	const query = {
+	  $and: [
+		{
+		  $or: [
+			{ _id: { $eq: objectId } },
+			{ CustomerName: { $regex: searchKey, $options: "i" } },
+			{ CustomerEmail: { $regex: searchKey, $options: "i" } },
+			{
+			  "Address.Governate": {
+				$regex: searchKey,
+				$options: "i",
+			  },
+			},
+			{ "Address.City": { $regex: searchKey, $options: "i" } },
+			{ "Address.Area": { $regex: searchKey, $options: "i" } },
+			{ PaymentMethod: { $regex: searchKey, $options: "i" } },
+		  ],
+		},
+		{ Status: "assigned" }, // Changed status to "assigned"
+	  ],
+	};
+  
+	if (governate !== "") {
+	  query.$and.push({
+		"Address.Governate": { $regex: governate, $options: "i" },
+	  });
+	}
+  
+	if (city !== "") {
+	  query.$and.push({ "Address.City": { $regex: city, $options: "i" } });
+	}
+  
+	const totalOrders = await orderSchema.countDocuments(); 
+	const data = await orderSchema.find(query);
+  
+	if (data.length === 0) {
+	  return res.status(200).json({ message: "There's no data" });
+	}
+  
+	res.status(200).json({ data, totalOrders });
+  });
+  
 
 exports.getReassignedOrders = catchAsync(async (req, res, next) => {
   const searchKey = req.body.searchKey?.toLowerCase() || "";
