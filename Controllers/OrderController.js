@@ -109,7 +109,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	  limit = parseInt(orderNum);
 	}
   
-	const data = await orderSchema.find(query).limit(limit);
+	const data = await orderSchema.find(query).sort({ createdAt: -1 }).limit(limit);
  	const totalOrders = await orderSchema.countDocuments(); // Retrieve total number of orders from the entire database
  
 	if (data.length === 0) {

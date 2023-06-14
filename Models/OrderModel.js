@@ -26,7 +26,9 @@ const orderSchema = new mongoose.Schema({
   }],
   PaymentMethod: { type: String, enum: ['cash', 'online'], required: true },
  DriverID: { type: Number,ref: "Driver"},
- updated_at: { type: Date, default: Date.now },
+ //updated_at: { type: Date, default: Date.now },
+ 
+},{ timestamps: true
 });
 
 
