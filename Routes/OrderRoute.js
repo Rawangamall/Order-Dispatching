@@ -18,7 +18,10 @@ router.route("/orders/recieve")
       .post(orderController.recieveOrder);   //apiKeyAuth   
 
 router.route("/orders/save")
-      .post(orderController.saveOrder);   //apiKeyAuth   
+      .post(orderController.saveOrder);   
+
+router.route("/orders/status")
+      .get(orderController.getAllStatus);   
 
       
 router.route("/orders")
