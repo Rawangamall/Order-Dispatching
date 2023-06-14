@@ -60,70 +60,65 @@ exports.saveOrder = catchAsync(async (req, res) => {
 });
 
 exports.getAll = catchAsync(async (req, res, next) => {
-  //search
-  const searchKey = req.headers.searchKey || "";
-
-  //filteration
-  const status = req.headers.status || "";
-  const city = req.headers.city || "";
-  const governate = req.headers.governate || "";
-  const orderNum = req.headers.ordernum || null;
-  console.log(req.headers);
-  let objectId = "";
-  if (mongoose.Types.ObjectId.isValid(searchKey)) {
-    objectId = mongoose.Types.ObjectId(searchKey);
-  }
-
-  const query = {
-    $and: [
-      {
-        $or: [
-          { _id: { $regex: objectId, $options: "i" } },
-          { CustomerName: { $regex: searchKey, $options: "i" } },
-          { CustomerEmail: { $regex: searchKey, $options: "i" } },
-          {
-            "Address.Governate": {
-              $regex: searchKey,
-              $options: "i",
-            },
-          },
-          { "Address.City": { $regex: searchKey, $options: "i" } },
-          { "Address.Area": { $regex: searchKey, $options: "i" } },
-          { PaymentMethod: { $regex: searchKey, $options: "i" } },
-          { Status: { $regex: searchKey, $options: "i" } },
-        ],
-      },
-    ],
-  };
-
-  if (status !== "") {
-    query.$and.push({ Status: { $regex: status, $options: "i" } });
-  }
-
-  if (governate !== "") {
-    query.$and.push({
-      "Address.Governate": { $regex: governate, $options: "i" },
-    });
-  }
-
-  if (city !== "") {
-    query.$and.push({ "Address.City": { $regex: city, $options: "i" } });
-  }
-
-  let limit = null;
-  if (orderNum !== null) {
-    limit = parseInt(orderNum);
-  }
-
-  const data = await orderSchema.find(query).limit(limit);
-
-  if (data.length === 0) {
-    return next(new AppError("There's no data", 401));
-  }
-
-  res.status(200).json({ data });
-});
-
+	// Search
+	const searchKey = req.headers.searchkey || "";
+  
+	// Filteration
+	const status = req.headers.status || "";
+	const city = req.headers.city || "";
+	const governate = req.headers.governate || "";
+	const orderNum = req.headers.ordernum || null;
+  
+	let query = {};
+  
+	if (searchKey) {
+	  const objectId = mongoose.Types.ObjectId.isValid(searchKey)
+		? mongoose.Types.ObjectId(searchKey)
+		: null;
+  
+	  const regexSearchKey = new RegExp(searchKey, "i");
+  
+	  query = {
+		$or: [
+		  { _id: objectId },
+		  { CustomerName: regexSearchKey },
+		  { CustomerEmail: regexSearchKey },
+		  { "Address.Governate": regexSearchKey },
+		  { "Address.City": regexSearchKey },
+		  { "Address.Area": regexSearchKey },
+		  { PaymentMethod: regexSearchKey },
+		  { Status: regexSearchKey },
+		],
+	  };
+	}
+  
+	if (status) {
+	  query["Status"] = new RegExp(status, "i");
+	}
+  
+	if (governate) {
+	  query["Address.Governate"] = new RegExp(governate, "i");
+	}
+  
+	if (city) {
+	  query["Address.City"] = new RegExp(city, "i");
+	}
+  
+	let limit = null;
+	if (orderNum !== null) {
+	  limit = parseInt(orderNum);
+	}
+  
+	const data = await orderSchema.find(query).limit(limit);
+  
+	if (data.length === 0) {
+	  return next(new AppError("There's no data", 401));
+	}
+  
+	res.status(200).json({ data });
+  });
+  
+  
 exports.updateOrder = catchAsync(async (req, res, next) => {
   if (!req.body.Status) {
     next(new AppError("Please enter the new Status to change!", 404));
