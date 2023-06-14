@@ -202,13 +202,18 @@ exports.getAssignedOrders = catchAsync(async (req, res, next) => {
 	const searchKey = req.headers.searchkey || "";
 	const city = req.headers.city || "";
 	const governate = req.headers.governate || "";
-  
-	const query = {
-	  Status: "assign",
+  let query = { Status: "assign"}
+  if (searchKey) {
+	const objectId = mongoose.Types.ObjectId.isValid(searchKey)
+	  ? mongoose.Types.ObjectId(searchKey)
+	  : null;
+
+	 query = {
+		...query,
 	  $and: [
 		{
 		  $or: [
-			{ _id: mongoose.Types.ObjectId.isValid(searchKey) ? mongoose.Types.ObjectId(searchKey) : null },
+			{ _id: objectId },
 			{ CustomerName: { $regex: searchKey, $options: "i" } },
 			{ CustomerEmail: { $regex: searchKey, $options: "i" } },
 			{ "Address.Governate": { $regex: searchKey, $options: "i" } },
@@ -219,7 +224,7 @@ exports.getAssignedOrders = catchAsync(async (req, res, next) => {
 		},
 	  ],
 	};
-  
+}
 	if (governate !== "") {
 	  query.$and.push({ "Address.Governate": { $regex: governate, $options: "i" } });
 	}
