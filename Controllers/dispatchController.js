@@ -82,15 +82,16 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
 exports.ReAssignedOrder = async (request, response, next) => {
   try {
+    console.log('Updating orders...');
 
-    const filteredOrders = await Order.find({
+    const filteredOrders = await orderSchema.find({
       status: 'assigned',
       updated_at: { $gt: Date.now() },
     });
 
     filteredOrders.forEach(async (order) => {
       order.status = 'reassigned';
-      order.DriverID = null;
+      order.DriverID = undefined;
 
       await order.save();
     });
@@ -106,4 +107,4 @@ exports.ReAssignedOrder = async (request, response, next) => {
 };
 
 // Schedule the task to run every 5 minutes (adjust the interval as needed)
-// setInterval(exports.ReAssignedOrder, 5 * 60 * 1000);
+setInterval(exports.ReAssignedOrder, 1 * 60 * 100);
