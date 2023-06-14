@@ -72,9 +72,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	let query = {};
   
 	if (searchKey) {
-	  const objectId = mongoose.Types.ObjectId.isValid(searchKey)
-		? mongoose.Types.ObjectId(searchKey)
-		: null;
+	  const objectId = mongoose.Types.ObjectId.isValid(searchKey) ? mongoose.Types.ObjectId(searchKey) : null;
   
 	  const regexSearchKey = new RegExp(searchKey, "i");
   
@@ -112,11 +110,6 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	const data = await orderSchema.find(query).sort({ createdAt: -1 }).limit(limit);
  	const totalOrders = await orderSchema.countDocuments(); // Retrieve total number of orders from the entire database
  
-	if (data.length === 0) {
-
-		res.status(200).json({message : "There's no data"}); 
-		
-	}
 	
 	 res.status(200).json({ data, totalOrders }); 	
 
