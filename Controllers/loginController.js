@@ -96,14 +96,18 @@ exports.isValidToken = async (req,res,next)=>{
 
 exports.resetpassword = catchAsync(async (req,res,next)=>{
 
-const hashToken = crypto.createHash('sha256').update(req.body.token).digest('hex');
+    if((req.body.code == "") && (req.body.password) == "" && (req.body.confirmPassword) == "") {
+        return next(new AppError("Enter valid input"),400);
+    }
+
+const hashToken = crypto.createHash('sha256').update(req.body.code).digest('hex');
 
 const user = await UserSchema.findOne({code: hashToken ,
      passwordResetExpires : {$gt : Date.now()}
     });
 
     if(!user){
-    return next(new AppError("Token is invalid or expired"),400);
+    return next(new AppError("Code is invalid or expired"),400);
     }
 
 if(req.body.password === req.body.confirmPassword){
