@@ -61,7 +61,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
         $set: {
           DriverID: driver._id,
           Status: "assign",
-          updated_at: Date.now() + 10 * 60 * 1000
+          updated_status: Date.now() + 10 * 60 * 1000
         },
       }
     );
@@ -86,7 +86,7 @@ exports.ReAssignedOrder = async (request, response, next) => {
 
     const filteredOrders = await orderSchema.find({
       status: 'assigned',
-      updated_at: { $gt: Date.now() },
+      updated_status: { $gt: Date.now() },
     });
 
     filteredOrders.forEach(async (order) => {

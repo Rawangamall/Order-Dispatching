@@ -26,10 +26,8 @@ const orderSchema = new mongoose.Schema({
   }],
   PaymentMethod: { type: String, enum: ['cash', 'online'], required: true },
  DriverID: { type: Number,ref: "Driver"},
- //updated_at: { type: Date, default: Date.now },
- 
-},{ timestamps: true
-});
+ updated_status:{type: Date, default: () => Date.now() + 1 * 60000 }
+},{ timestamps: true});
 
 
 // orderSchema.plugin(AutoIncrement,{id:'Order_Code',inc_field:" _id"});
