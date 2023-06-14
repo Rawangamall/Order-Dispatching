@@ -53,7 +53,7 @@ exports.addUser = async (request, response, next) => {
     const hash = await bcrypt.hash(request.body.password, salt);
 
     // Check if the role already exists
-    const existingRole = await RoleSchema.findOne({ name: request.body.Role });
+    const existingRole = await RoleSchema.findById(request.body.role_id);
     if (!existingRole) {
       return response.status(400).json({ error: 'Role does not exist' });
     }
@@ -65,7 +65,7 @@ exports.addUser = async (request, response, next) => {
       email: request.body.email,
       password: hash,
       phoneNumber: request.body.phoneNumber,
-      Role: request.body.Role,
+      role_id: request.body.role_id,
       active: request.body.active
     });
 

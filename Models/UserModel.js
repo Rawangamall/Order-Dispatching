@@ -3,6 +3,7 @@ const AutoIncrement = require('mongoose-sequence')(mongoose);
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
+
 //create schema object
 const validateEmail = function(email) {
     const regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
@@ -16,7 +17,7 @@ const schema=new mongoose.Schema({
     email:{type: String,required:true,validate:[validateEmail,"invalid email"],unique:true},
     password:{type:String , select:false} ,
     image:String ,
-    Role:String ,
+    role_id:{type:Number,ref:"role",required:true} ,
     phoneNumber: String,
     active:{type:Boolean,default:true},
     code:String,

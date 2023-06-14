@@ -29,6 +29,7 @@ const orderSchema = new mongoose.Schema({
  updated_at: { type: Date, default: Date.now },
 });
 
+
 orderSchema.plugin(AutoIncrement,{id:'Order_Code',inc_field:" _id"});
 
  mongoose.model('order', orderSchema);
