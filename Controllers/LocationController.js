@@ -4,64 +4,78 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 
 const governateSchema=mongoose.model("Governate");
-
 exports.addLocation = async (request, response, next) => {
+
   try {
-    const { governate, cities } = request.body;
+    const { governate, city, area } = request.body;
 
     const existingGovernate = await governateSchema.findOne({ governate: governate });
 
     if (existingGovernate) {
-      for (const city of cities) {
-        const existingCity = existingGovernate.cities.find(c => c.name === city.name);
+      const existingCity = existingGovernate.cities.find(c => c.name === city);
 
-        if (existingCity) {
-          // Add areas to the existing city
-          for (const area of city.areas) {
-            if (!existingCity.areas.some(a => a.name === area.name)) {
-              existingCity.areas.push(area);
-            }
-          }
+      if (existingCity) {
+        const existingArea = existingCity.areas.find(a => a.name === area);
+
+        if (existingArea) {
+          response.status(200).json(existingGovernate);
         } else {
-          // Add the new city with its areas
-          existingGovernate.cities.push(city);
+          existingCity.areas.push({ name: area });
+          await existingGovernate.save();
+          response.status(200).json(existingGovernate);
         }
+      } else {
+        existingGovernate.cities.push({
+          name: city,
+          areas: [{ name: area }]
+        });
+        await existingGovernate.save();
+        response.status(200).json(existingGovernate);
       }
-
-      await existingGovernate.save();
-      response.status(200).json(existingGovernate);
     } else {
+      const location = new governateSchema({
+        governate: governate,
+        cities: [{
+          name: city,
+          areas: [{ name: area }]
+        }]
+      });
 
-     const formattedCities = cities.map(city => ({
-      name: city.name,
-      areas: city.areas
-    }));
-
-    const location = new governateSchema({
-      governate: governate,
-      cities: formattedCities
-    });
       const data = await location.save();
-      response.status(201).json(data);
+      const formattedData = {
+        governate: data.governate,
+        cities: data.cities.map(city => {
+          return {
+            name: city.name,
+            areas: city.areas.map(area => {
+              return {
+                name: area.name
+              }
+            })
+          }
+        })
+      };
+      response.status(201).json(formattedData);
     }
   } catch (error) {
     next(error);
   }
-};
+}
+
 
 exports.getallgovernate = catchAsync(async (request, response, next) => {
-  const { searchKey, showNumber } = request.body;
+  const { searchkey, shownumber } = request.headers;
 
   let query = {};
 
-  if (searchKey) {
-    const regex = new RegExp(searchKey, "i");
+  if (searchkey) {
+    const regex = new RegExp(searchkey, "i");
     query.governate = regex;
   }
 
   let data;
-  if (showNumber) {
-    data = await governateSchema.find(query).limit(showNumber);
+  if (shownumber) {
+    data = await governateSchema.find(query).limit(shownumber);
   } else {
     data = await governateSchema.find(query);
   }
@@ -128,7 +142,7 @@ exports.deleteGovernate = catchAsync(async (request, response, next) => {
 });
 
 exports.getallcities = catchAsync(async (request, response, next) => {
-  const { searchKey, showNumber } = request.body;
+  const { searchkey, shownumber } = request.headers;
 
   const data = await governateSchema.find({});
   if (!data || !data.length) {
@@ -137,13 +151,13 @@ exports.getallcities = catchAsync(async (request, response, next) => {
 
   let cities = data.flatMap(governate => governate.cities.map(city => city.name));
 
-  if (searchKey) {
-    const regex = new RegExp(searchKey, 'i');
+  if (searchkey) {
+    const regex = new RegExp(searchkey, 'i');
     cities = cities.filter(city => regex.test(city));
   }
 
-  if (showNumber) {
-    cities = cities.slice(0, showNumber);
+  if (shownumber) {
+    cities = cities.slice(0, shownumber);
   }
 
   response.status(200).json(cities);
@@ -201,7 +215,7 @@ exports.deleteCity = catchAsync(async (request, response, next) => {
 });
 
 exports.getallareas = catchAsync(async (request, response, next) => {
-  const { searchKey, showNumber } = request.body;
+  const { searchkey, shownumber } = request.headers;
 
   const data = await governateSchema.find({});
   if (!data || !data.length) {
@@ -214,13 +228,13 @@ exports.getallareas = catchAsync(async (request, response, next) => {
     )
   );
 
-  if (searchKey) {
-    const regex = new RegExp(searchKey, 'i');
+  if (searchkey) {
+    const regex = new RegExp(searchkey, 'i');
     areas = areas.filter(area => regex.test(area));
   }
 
-  if (showNumber) {
-    areas = areas.slice(0, showNumber);
+  if (shownumber) {
+    areas = areas.slice(0, shownumber);
   }
 
   response.status(200).json(areas);
