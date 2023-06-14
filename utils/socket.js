@@ -1,18 +1,13 @@
-let io;
+const socketIO = require("socket.io");
+const express = require("express");
 
-function init(_io) {
-  io = _io;
-
-}
-
-function getIO() {
-  if (!io) {
-    throw new Error("Socket.io not initialized");
-  }
-  return io;
-}
+//server
+const app = express();
+const server = require("http").createServer(app);
+const io = socketIO(server);
 
 module.exports = {
-  init,
-  getIO,
+  io,
+  server,
+  app
 };

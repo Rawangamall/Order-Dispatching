@@ -20,6 +20,9 @@ function apiKeyAuth(req, res, next) {
 router.route("/orders/recieve")
       .post(orderController.recieveOrder);   //apiKeyAuth   
 
+router.route("/orders/save")
+      .post(orderController.saveOrder);   //apiKeyAuth   
+
       
 router.route("/orders")
       .get(authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,orderController.getAll);  //authenticationMW.auth ,validateMW
