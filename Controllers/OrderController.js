@@ -5,9 +5,13 @@ const orderSchema = mongoose.model("order");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 const { io } = require("./../utils/socket");
+const baseURL = process.env.BASE_URL || 'http://localhost:8080';
+const axios = require('axios');
 
 exports.recieveOrder = catchAsync(async (req, res) => {
   const orderData = req.body;
+  await axios.post(`${baseURL}/orders/save`, orderData);
+
 console.log(req.body)
   // Emit the "newOrder" event with the order data
   console.log("Emitting newOrder event");
