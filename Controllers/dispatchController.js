@@ -119,17 +119,21 @@ const scheduleReAssignedOrder = () => {
         updated_status: { $lt: new Date(Date.now()).toISOString() },
       });
 
-      await order.save();
-
+      
       filteredOrders.forEach(async (order) => {
-        order.status = 'reassigned';
-        order.DriverID = undefined;
-
-        driver = await driverSchema.findById(order.DriverID);
+        
+        console.log("hiii",order);
+        const  driver = await driverSchema.findById(order.DriverID);
         driver.orderCount -= 1;
         if (driver.orderCount == 0) {
           driver.availability = 'free';
         }
+
+        order.status = 'reassigned';
+        order.DriverID = undefined;
+
+        await order.save();
+
         
         await driver.save();
        
@@ -139,7 +143,7 @@ const scheduleReAssignedOrder = () => {
         await exports.assignOrder({ params: { _id: order._id } });
       });
 
-      console.log('Orders updated successfully:', filteredOrders);
+      // console.log('Orders updated successfully:', filteredOrders);
     } catch (error) {
       console.error('Error updating orders:', error);
     }
