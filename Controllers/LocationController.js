@@ -79,9 +79,9 @@ exports.getallgovernate = catchAsync(async (request, response, next) => {
   } else {
     data = await governateSchema.find(query);
   }
-
+  const totalOrders = await governateSchema.countDocuments();
   const governates = data.map((item) => item.governate);
-  response.status(200).json(governates);
+  response.status(200).json({governates , totalOrders});
 });
 
 
@@ -150,7 +150,7 @@ exports.getallcities = catchAsync(async (request, response, next) => {
   }
 
   let cities = data.flatMap(governate => governate.cities.map(city => city.name));
-
+      const citiesNum = cities.length
   if (searchkey) {
     const regex = new RegExp(searchkey, 'i');
     cities = cities.filter(city => regex.test(city));
@@ -160,7 +160,7 @@ exports.getallcities = catchAsync(async (request, response, next) => {
     cities = cities.slice(0, shownumber);
   }
 
-  response.status(200).json(cities);
+  response.status(200).json({cities,citiesNum});
 });
 
 
@@ -227,7 +227,7 @@ exports.getallareas = catchAsync(async (request, response, next) => {
       city.areas.map(area => area.name)
     )
   );
-
+ const areasNum = areas.length
   if (searchkey) {
     const regex = new RegExp(searchkey, 'i');
     areas = areas.filter(area => regex.test(area));
@@ -237,7 +237,7 @@ exports.getallareas = catchAsync(async (request, response, next) => {
     areas = areas.slice(0, shownumber);
   }
 
-  response.status(200).json(areas);
+  response.status(200).json({areas,areasNum});
 });
 
 
@@ -293,59 +293,3 @@ if(name !== "" && name){
 });
 
 
-exports.UpdateLocation = catchAsync (async (request, response, next) => {
-
-})
-
-exports.DeleteLocation = catchAsync (async (request, response, next) => {
-
-})
-
-// search by location name and return with area id for driver search
-  // exports.searchLocation = async (request, response, next) => {
-    
-
-  //   const { governateName, cityName, areaName } = request.body;
-  
-  //   try {
-  //     const governate = await governateSchema.findOne({ governate: governateName }).exec();
-  //     if (!governate) {
-  //       return next(new AppError("Governate not found", 401));
-  //     }
-  
-  //     const city = governate.cities.find(c => c.name === cityName);
-  //     if (!city) {
-  //       return next(new AppError("City not found", 401));
-  //     }
-  
-  //     const area = city.areas.find(a => a.name === areaName);
-  //     if (!area) {
-  //       return next(new AppError("Area not found", 401));
-  //     }
-  
-  //     response.json({ areaId: area._id });
-  //   } catch (error) {
-  //     next(error);
-  //   }
-  // };
-// const areaName = 'Nasr City';
-// const cityName = 'Cairo';
-// const governateName = 'Cairo';
-
-// Area.findOne({ name: areaName })
-//   .populate({
-//     path: 'city',
-//     match: { name: cityName },
-//     populate: {
-//       path: 'governate',
-//       match: { governate: governateName },
-//       select: '_id'
-//     }
-//   })
-//   .exec((err, area) => {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       console.log(area._id);
-//     }
-//   });

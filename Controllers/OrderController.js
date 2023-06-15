@@ -7,9 +7,11 @@ const catchAsync = require("./../utils/CatchAsync");
 const { io } = require("./../utils/socket");
 
 exports.recieveOrder = catchAsync(async (req, res) => {
-  const orderData = req.body;
 
-  // Emit the "newOrder" event with the order data
+  const orderData = req.body;
+console.log(orderData , "request body ")
+
+  
   console.log("Emitting newOrder event");
   io.emit("newOrder", orderData);
 
@@ -20,7 +22,6 @@ exports.recieveOrder = catchAsync(async (req, res) => {
 
 exports.saveOrder = catchAsync(async (req, res) => {
   const orderData = req.body;
-  console.log(orderData);
 
   const products = orderData.Product.map((product) => {
     return {
