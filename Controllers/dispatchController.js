@@ -108,50 +108,50 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
 
 
-const scheduleReAssignedOrder = () => {
+// const scheduleReAssignedOrder = () => {
 
-  const checkAndUpdateOrders = async () => {
-    try {
-      console.log('Updating orders...');
+//   const checkAndUpdateOrders = async () => {
+//     try {
+//       console.log('Updating orders...');
 
-      const filteredOrders = await orderSchema.find({
-        status: 'assign',
-        updated_status: { $lt: new Date(Date.now()).toISOString() },
-      });
+//       const filteredOrders = await orderSchema.find({
+//         status: 'assign',
+//         updated_status: { $lt: new Date(Date.now()).toISOString() },
+//       });
 
-      await order.save();
+//       // await order.save();
 
-      filteredOrders.forEach(async (order) => {
-        order.status = 'reassigned';
-        order.DriverID = undefined;
+//       filteredOrders.forEach(async (order) => {
+//         order.status = 'reassigned';
 
-        driver = await driverSchema.findById(order.DriverID);
-        driver.orderCount -= 1;
-        if (driver.orderCount == 0) {
-          driver.availability = 'free';
-        }
-        
-        await driver.save();
+//         driver = await driverSchema.findById(order.DriverID);
+//         driver.orderCount -= 1;
+//         if (driver.orderCount == 0) {
+//           driver.availability = 'free';
+//         }
+//         order.DriverID = undefined;
+
+//         await driver.save();
        
-      });
+//       });
   
-      filteredOrders.forEach(async (order) => {
-        console.log(order._id)
-        await exports.assignOrder({ params: { _id: order._id } });
-      });
+//       filteredOrders.forEach(async (order) => {
+//         console.log(order._id)
+//         await exports.assignOrder({ params: { _id: order._id } });
+//       });
 
-      console.log('Orders updated successfully:', filteredOrders);
-    } catch (error) {
-      console.error('Error updating orders:', error);
-    }
-  };
-
-
-  checkAndUpdateOrders();
+//       console.log('Orders updated successfully:', filteredOrders);
+//     } catch (error) {
+//       console.error('Error updating orders:', error);
+//     }
+//   };
 
 
-  setInterval(checkAndUpdateOrders, 10 * 60 * 1000);
-};
+//   checkAndUpdateOrders();
 
 
-scheduleReAssignedOrder();
+//   setInterval(checkAndUpdateOrders, 10 * 60 * 1000);
+// };
+
+
+// scheduleReAssignedOrder();
