@@ -27,9 +27,12 @@ exports.getAll = (request, response, next) => {
     ],
   };
 
-  if (typeof active === "boolean") {
-    query.$and.push({ active: active });
-  }
+  if (active == "true") query.$and.push({ active: true });
+  else if (active == "false") query.$and.push({ active: false });
+
+  // if (typeof active === "boolean") {
+  //   query.$and.push({ active: active });
+  // }
 
   if (role) {
     query.$and.push({ role_id: role });
