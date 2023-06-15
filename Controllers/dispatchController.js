@@ -127,6 +127,7 @@ const scheduleReAssignedOrder = () => {
       });
   
       filteredOrders.forEach(async (order) => {
+        console.log(order._id)
         await exports.assignOrder({ params: { _id: order._id } });
       });
 
@@ -140,7 +141,7 @@ const scheduleReAssignedOrder = () => {
   checkAndUpdateOrders();
 
 
-  setInterval(checkAndUpdateOrders, 5 * 60 * 1000);
+  setInterval(checkAndUpdateOrders, 10 * 60 * 1000);
 };
 
 

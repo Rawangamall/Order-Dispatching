@@ -38,7 +38,7 @@ mongoose
 		console.log("Db Problem " + error);
 	});
 
-app.use(
+	app.use(
 	cors({
 		origin: "*",
 	})
