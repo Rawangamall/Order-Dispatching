@@ -11,12 +11,12 @@ const authorizationMW = require("./../Middlewares/authorizationMW");
   
 router.route("/users")
        .get(authenticationMW.auth , authorizationMW.authorize("users","viewAll") , validateMW,userController.getAll )
-       .post(UserValidPOST ,validateMW, userController.addUser)
+       .post(authenticationMW.auth , authorizationMW.authorize("users","add")  ,UserValidPOST ,validateMW, userController.addUser)
 
 router.route("/users/:id")
-        .get(UserValidId ,validateMW , userController.getUserById)
-        .put(UserValidPUT ,validateMW,userController.updateUser)
-        .delete(UserValidId ,validateMW,userController.deleteUser )
+        .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
+        .put(UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,userController.updateUser)
+        .delete(UserValidId , authorizationMW.authorize("users","delete"),validateMW,userController.deleteUser )
 
       
 

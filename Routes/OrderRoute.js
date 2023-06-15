@@ -1,6 +1,9 @@
 const express=require("express");
 const router=express.Router();
 const orderController=require("./../Controllers/OrderController");
+const authenticationMW = require("./../Middlewares/authenticationMW");
+const validateMW=require("./../Core/Validations/validateMW");
+const authorizationMW = require("./../Middlewares/authorizationMW");
 
 const API_KEY = process.env.API_KEY;
 
@@ -25,7 +28,7 @@ router.route("/orders/status")
 
       
 router.route("/orders")
-      .get(orderController.getAll);  //authenticationMW.auth ,validateMW
+      .get(authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,orderController.getAll);  //authenticationMW.auth ,validateMW
 
 router.route("/orders/Assigned")
       .get(orderController.getAssignedOrders);  //authenticationMW.auth ,validateMW

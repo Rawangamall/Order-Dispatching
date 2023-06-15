@@ -11,9 +11,10 @@ const salt = bcrypt.genSaltSync(saltRounds)
 
 
 exports.getAll = (request, response, next) => {
-  const searchKey = request.body.searchKey?.toLowerCase() || "";
-  const role = request.body.role || "";
-  const active = request.body.active;
+  const searchKey = request.headers.searchKey?.toLowerCase() || "";
+  const role = request.headers.role || "";
+  const active = request.headers.active;
+  const userNum = request.headers.usernum || null;
 
   const query = {
     $and: [
@@ -32,17 +33,55 @@ exports.getAll = (request, response, next) => {
   }
 
   if (role) {
-    query.$and.push({ Role: role });
+    query.$and.push({ role_id: role });
   }
 
-  UserSchema.find(query)
+  const limit = parseInt(userNum) || 7;
+
+  const userProjection = {
+    _id: 1,
+    firstName: 1,
+    lastName: 1,
+    email: 1,
+    password: 1,
+    roleName: { $ifNull: ["$role.name", "Unknown"] },
+    phoneNumber: 1,
+    active: 1,
+  };
+
+  UserSchema.aggregate([
+    { $match: query },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: "roles", // Assuming the collection name for roles is "roles"
+        localField: "role_id",
+        foreignField: "_id",
+        as: "role",
+      },
+    },
+    { $unwind: { path: "$role", preserveNullAndEmptyArrays: true } },
+    {
+      $project: userProjection,
+    },
+  ])
     .then((data) => {
-      response.status(200).json(data);
+      UserSchema.countDocuments({})
+        .then((count) => {
+          response.status(200).json({
+            count,
+            data,
+          });
+        })
+        .catch((error) => {
+          next(error);
+        });
     })
     .catch((error) => {
       next(error);
     });
 };
+
 
 
 

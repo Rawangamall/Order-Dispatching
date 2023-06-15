@@ -61,7 +61,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
         $set: {
           DriverID: driver._id,
           Status: "assign",
-          updated_at: Date.now() + 10 * 60 * 1000
+          updated_status: Date.now() + 10 * 60 * 1000
         },
       }
     );
@@ -77,34 +77,71 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     );
   }
 
-  response.status(200).json({ status: "success" });
+  // response.status(200).json({ message: "success" });
 });
 
-exports.ReAssignedOrder = async (request, response, next) => {
-  try {
-    console.log('Updating orders...');
 
-    const filteredOrders = await orderSchema.find({
-      status: 'assigned',
-      updated_at: { $gt: Date.now() },
-    });
+// exports.ReAssignedOrder = async (request, response, next) => {
+//   try {
+//     console.log('Updating orders...');
 
-    filteredOrders.forEach(async (order) => {
-      order.status = 'reassigned';
-      order.DriverID = undefined;
+//     const filteredOrders = await orderSchema.find({
+//       status: 'assign',
+//       updated_status: { $lt: new Date(Date.now()).toISOString() },
+//     });
 
-      await order.save();
-    });
+//     // ...
+// console.log(response)
+//     // Send a response back to the client
+//     response.status(200).json({ message: 'Orders updated successfully' });
+//     console.log('Orders updated successfully:', filteredOrders);
+//   } catch (error) {
+//     console.error('Error updating orders:', error);
+//     // Send an error response back to the client
+//     response.status(500).json({ error: 'An error occurred' });
+//   }
+// };
 
-    filteredOrders.forEach(async (order) => {
-      await exports.assignOrder({ params: { _id: order._id } });
-    });
 
-    console.log('Orders updated successfully:', filteredOrders);
-  } catch (error) {
-    console.error('Error updating orders:', error);
-  }
+// // Schedule the task to run every 5 minutes (adjust the interval as needed)
+// setInterval(() => exports.ReAssignedOrder(request, response, next), 1 * 60 * 200);
+
+
+
+const scheduleReAssignedOrder = () => {
+
+  const checkAndUpdateOrders = async () => {
+    try {
+      console.log('Updating orders...');
+
+      const filteredOrders = await orderSchema.find({
+        status: 'assign',
+        updated_status: { $lt: new Date(Date.now()).toISOString() },
+      });
+
+      filteredOrders.forEach(async (order) => {
+        order.status = 'reassigned';
+        order.DriverID = undefined;
+  
+        await order.save();
+      });
+  
+      filteredOrders.forEach(async (order) => {
+        await exports.assignOrder({ params: { _id: order._id } });
+      });
+
+      console.log('Orders updated successfully:', filteredOrders);
+    } catch (error) {
+      console.error('Error updating orders:', error);
+    }
+  };
+
+
+  checkAndUpdateOrders();
+
+
+  setInterval(checkAndUpdateOrders, 5 * 60 * 100);
 };
 
-// Schedule the task to run every 5 minutes (adjust the interval as needed)
-setInterval(exports.ReAssignedOrder, 1 * 60 * 100);
+
+scheduleReAssignedOrder();
