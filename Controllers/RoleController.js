@@ -9,8 +9,13 @@ const RoleSchema = mongoose.model("role");
 
 exports.getRoles = async (request, response, next) => {
 	try {
-		const roles = await RoleSchema.find();
-		response.json({ roles });
+		const roleNum = request.headers.rolenum || null;
+		
+		const limit = parseInt(roleNum) || 7;
+
+		const roles = await RoleSchema.find().limit(limit);
+		const rolesCount = await RoleSchema.countDocuments();
+		response.json({ roles , rolesCount });
 	} catch (error) {
 		console.log(error);
 		response
