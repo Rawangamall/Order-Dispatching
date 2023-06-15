@@ -13,6 +13,8 @@ const locationRoute = require("./Routes/LocationRoute");
 const DispatchRoute = require("./Routes/DispatchRoute");
 const CustomersRoute = require("./Routes/CustomerRoute");
 const ProductsRoute = require("./Routes/ProductsRoute");
+const statisticsRoute = require("./Routes/statisticsRoute");
+
 const refresh = require("./github_refresh/refresh");
 const client = require("./client");
 const socketIO = require("socket.io");
@@ -54,7 +56,7 @@ app.use(loginRoute);
 app.use(RoleRoute);
 app.use(UserRoute);
 app.use(OrderRoute);
-
+app.use(statisticsRoute);
 app.use(DriverRoute);
 app.use(locationRoute);
 app.use(DispatchRoute);
