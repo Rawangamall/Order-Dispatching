@@ -142,3 +142,6 @@ const scheduleReAssignedOrder = () => {
 
   setInterval(checkAndUpdateOrders, 5 * 60 * 1000);
 };
+
+
+scheduleReAssignedOrder();

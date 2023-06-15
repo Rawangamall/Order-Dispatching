@@ -28,7 +28,7 @@ router.route("/orders/status")
 
       
 router.route("/orders")
-      .get(authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,orderController.getAll);  //authenticationMW.auth ,validateMW
+      .get(orderController.getAll);  //authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,
 
 router.route("/orders/Assigned")
       .get(orderController.getAssignedOrders);  //authenticationMW.auth ,validateMW

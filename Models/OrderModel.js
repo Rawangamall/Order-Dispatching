@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId}, //order code
   CustomerID: { type: mongoose.Schema.Types.ObjectId},
   CustomerName: { type: String, required: true },
-  CustomerEmail: { type: String,validate:[validateEmail,"invalid email"],unique:true , required: true },
+  CustomerEmail: { type: String,validate:[validateEmail,"invalid email"], required: true },
   Address:{ 
   Governate: { type: String, required: true },
   City: { type: String, required: true },
@@ -19,7 +19,7 @@ const orderSchema = new mongoose.Schema({
   TotalPrice: { type: Number, required: true },
   Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
   Product:[{
-    ItemCode: { type: mongoose.Schema.Types.ObjectId, required: true },
+  ItemCode: { type: mongoose.Schema.Types.ObjectId, required: true },
   ItemName: { type: String, required: true },
   Quantity: { type: Number, required: true },
   Price: { type: Number, required: true },
