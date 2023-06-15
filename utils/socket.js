@@ -9,5 +9,5 @@ const io = socketIO(server);
 module.exports = {
   io,
   server,
-  app
+  app,
 };
