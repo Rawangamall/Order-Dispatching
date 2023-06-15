@@ -10,7 +10,7 @@ const orderSchema = new mongoose.Schema({
   _id: { type: mongoose.Schema.Types.ObjectId}, //order code
   CustomerID: { type: mongoose.Schema.Types.ObjectId},
   CustomerName: { type: String, required: true },
-  CustomerEmail: { type: String,validate:[validateEmail,"invalid email"],unique:true , required: true },
+  CustomerEmail: { type: String,validate:[validateEmail,"invalid email"], required: true },
   Address:{ 
   Governate: { type: String, required: true },
   City: { type: String, required: true },

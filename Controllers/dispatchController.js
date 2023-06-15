@@ -140,7 +140,7 @@ const scheduleReAssignedOrder = () => {
   checkAndUpdateOrders();
 
 
-  setInterval(checkAndUpdateOrders, 5 * 60 * 100);
+  setInterval(checkAndUpdateOrders, 5 * 60 * 1000);
 };
 
 
