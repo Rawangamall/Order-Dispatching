@@ -9,7 +9,7 @@ const { io } = require("./../utils/socket");
 exports.recieveOrder = catchAsync(async (req, res) => {
 
   const orderData = req.body;
-console.log(orderData , "request body ")
+console.log(req.body , "request body ")
 
   
   console.log("Emitting newOrder event");
