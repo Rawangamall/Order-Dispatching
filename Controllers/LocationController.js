@@ -79,9 +79,9 @@ exports.getallgovernate = catchAsync(async (request, response, next) => {
   } else {
     data = await governateSchema.find(query);
   }
-  const totalOrders = await governateSchema.countDocuments();
-  const governates = data.map((item) => item.governate);
-  response.status(200).json({governates , totalOrders});
+  const totalCount = await governateSchema.countDocuments();
+  const location = data.map((item) => item.governate);
+  response.status(200).json({location , totalCount});
 });
 
 
@@ -149,18 +149,18 @@ exports.getallcities = catchAsync(async (request, response, next) => {
     return response.status(404).json({ message: 'No cities found' });
   }
 
-  let cities = data.flatMap(governate => governate.cities.map(city => city.name));
-      const citiesNum = cities.length
+  let location = data.flatMap(governate => governate.cities.map(city => city.name));
+      const totalCount = location.length
   if (searchkey) {
     const regex = new RegExp(searchkey, 'i');
-    cities = cities.filter(city => regex.test(city));
+    location = location.filter(city => regex.test(city));
   }
 
   if (shownumber) {
-    cities = cities.slice(0, shownumber);
+    location = location.slice(0, shownumber);
   }
 
-  response.status(200).json({cities,citiesNum});
+  response.status(200).json({location,totalCount});
 });
 
 
@@ -222,22 +222,22 @@ exports.getallareas = catchAsync(async (request, response, next) => {
     return response.status(404).json({ message: 'No areas found' });
   }
 
-  let areas = data.flatMap(governate =>
+  let location = data.flatMap(governate =>
     governate.cities.flatMap(city =>
       city.areas.map(area => area.name)
     )
   );
- const areasNum = areas.length
+ const totalCount = location.length
   if (searchkey) {
     const regex = new RegExp(searchkey, 'i');
-    areas = areas.filter(area => regex.test(area));
+    location = location.filter(area => regex.test(area));
   }
 
   if (shownumber) {
-    areas = areas.slice(0, shownumber);
+    location = location.slice(0, shownumber);
   }
 
-  response.status(200).json({areas,areasNum});
+  response.status(200).json({location,totalCount});
 });
 
 

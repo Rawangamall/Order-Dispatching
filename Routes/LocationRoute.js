@@ -11,7 +11,7 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 router.route("/locations")   
       .post(LocationController.addLocation)
 
-router.route("/locations/governate")
+router.route("/locations/governates")
        .get(LocationController.getallgovernate)
 
 router.route("/locations/governate/:_id")

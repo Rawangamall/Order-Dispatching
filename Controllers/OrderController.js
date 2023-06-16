@@ -25,8 +25,8 @@ exports.saveOrder = catchAsync(async (req, res) => {
 
   const products = orderData.Product.map((product) => {
     return {
-      ItemCode: product.ItemCode,
-      ItemName: product.ItemName,
+      product_id: product.product_id,
+      name_en: product.name_en,
       Price: product.Price,
       Quantity: product.Quantity,
     };
@@ -163,8 +163,8 @@ exports.getoneOrder = catchAsync(async (req, res, next) => {
 
 //    const products = request.body.Product.map((product) => {
 //   return {
-//     ItemCode: product.ItemCode,
-//     ItemName: product.ItemName,
+//     product_id: product.product_id,
+//     name_en: product.name_en,
 //     Price: product.Price,
 //     Quantity: product.Quantity
 //   };

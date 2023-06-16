@@ -19,8 +19,8 @@ const orderSchema = new mongoose.Schema({
   TotalPrice: { type: Number, required: true },
   Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
   Product:[{
-  ItemCode: { type: mongoose.Schema.Types.ObjectId, required: true },
-  ItemName: { type: String, required: true },
+  product_id: { type: mongoose.Schema.Types.ObjectId, required: true },
+  name_en: { type: String, required: true },
   Quantity: { type: Number, required: true },
   Price: { type: Number, required: true },
   }],
