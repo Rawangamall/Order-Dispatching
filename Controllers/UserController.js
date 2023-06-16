@@ -35,7 +35,8 @@ exports.getAll = (request, response, next) => {
   // }
 
   if (role) {
-    query.$and.push({ role_id: role });
+    const role_id = RoleSchema.find({ name: role }, { _id: 1 });
+    query.$and.push({ role_id: role_id });
   }
 
   const limit = parseInt(userNum) || 7;
