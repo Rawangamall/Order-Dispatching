@@ -9,7 +9,7 @@ const bcrypt = require("bcrypt");
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 
-exports.getAll = (request, response, next) => {
+exports.getAll = async (request, response, next) => {
   const searchKey = request.headers.searchkey?.toLowerCase() || "";
   const role = request.headers.role || "";
   const active = request.headers.active;
@@ -35,8 +35,9 @@ exports.getAll = (request, response, next) => {
   // }
 
   if (role) {
-    const role_id = RoleSchema.find({ name: role }, { _id: 1 });
-    query.$and.push({ role_id: role_id });
+    const role_id = await RoleSchema.findOne({ name: role });
+
+    query.$and.push({ role_id: role_id._id });
   }
 
   const limit = parseInt(userNum) || 7;
