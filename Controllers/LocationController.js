@@ -79,10 +79,17 @@ exports.getallgovernate = catchAsync(async (request, response, next) => {
   } else {
     data = await governateSchema.find(query);
   }
+
   const totalCount = await governateSchema.countDocuments();
-  const location = data.map((item) => item.governate);
-  response.status(200).json({location , totalCount});
+
+  const location = data.map((item) => {
+    const { _id, governate } = item;
+    return { id: _id, name: governate };
+  });
+
+  response.status(200).json({ location, totalCount });
 });
+
 
 
 
@@ -140,7 +147,6 @@ exports.deleteGovernate = catchAsync(async (request, response, next) => {
 
   response.status(200).json({ message: "Success" });
 });
-
 exports.getallcities = catchAsync(async (request, response, next) => {
   const { searchkey, shownumber } = request.headers;
 
@@ -149,19 +155,31 @@ exports.getallcities = catchAsync(async (request, response, next) => {
     return response.status(404).json({ message: 'No cities found' });
   }
 
-  let location = data.flatMap(governate => governate.cities.map(city => city.name));
-      const totalCount = location.length
+  let cities = [];
+
+  data.forEach(governate => {
+    governate.cities.forEach(city => {
+      const { _id, name } = city;
+      cities.push({ id: _id, name });
+    });
+  });
+
+  let filteredCities = cities;
+
   if (searchkey) {
     const regex = new RegExp(searchkey, 'i');
-    location = location.filter(city => regex.test(city));
+    filteredCities = cities.filter(city => regex.test(city.name));
   }
+
+  const totalCount = filteredCities.length;
 
   if (shownumber) {
-    location = location.slice(0, shownumber);
+    filteredCities = filteredCities.slice(0, shownumber);
   }
 
-  response.status(200).json({location,totalCount});
+  response.status(200).json({ location: filteredCities, totalCount });
 });
+
 
 
 
@@ -213,7 +231,6 @@ exports.deleteCity = catchAsync(async (request, response, next) => {
   await data.save();
   response.status(200).json({ message: "Success" });
 });
-
 exports.getallareas = catchAsync(async (request, response, next) => {
   const { searchkey, shownumber } = request.headers;
 
@@ -222,22 +239,31 @@ exports.getallareas = catchAsync(async (request, response, next) => {
     return response.status(404).json({ message: 'No areas found' });
   }
 
-  let location = data.flatMap(governate =>
-    governate.cities.flatMap(city =>
-      city.areas.map(area => area.name)
-    )
-  );
- const totalCount = location.length
+  let areas = [];
+
+  data.forEach(governate => {
+    governate.cities.forEach(city => {
+      city.areas.forEach(area => {
+        const { _id, name } = area;
+        areas.push({ id: _id, name });
+      });
+    });
+  });
+
+  let filteredAreas = areas;
+
   if (searchkey) {
     const regex = new RegExp(searchkey, 'i');
-    location = location.filter(area => regex.test(area));
+    filteredAreas = areas.filter(area => regex.test(area.name));
   }
+
+  const totalCount = filteredAreas.length;
 
   if (shownumber) {
-    location = location.slice(0, shownumber);
+    filteredAreas = filteredAreas.slice(0, shownumber);
   }
 
-  response.status(200).json({location,totalCount});
+  response.status(200).json({ location: filteredAreas, totalCount });
 });
 
 
