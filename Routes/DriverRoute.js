@@ -14,7 +14,7 @@ router.route("/drivers/:id")
         .get(DriverValidId ,validateMW , DriverController.getDriverById)
         .put(DriverValidPUT ,validateMW, DriverController.updateDriver)
         .delete(DriverValidId ,validateMW, DriverController.deleteDriver)
-
+         .patch(DriverController.BanDriver)
 router.route("/drivers/assignedOrderTo/:id")
         .get(DriverController.getDriversToBeAssignedOrderTo)
 

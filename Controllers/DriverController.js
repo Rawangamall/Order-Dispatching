@@ -1,4 +1,5 @@
 const mongoose=require("mongoose");
+const CatchAsync = require("../utils/CatchAsync");
 require("./../Models/DriverModel");
 require("./../Models/OrderModel");
 
@@ -19,30 +20,57 @@ exports.getDriverById=(request,response,next)=>{
                     })
 }
 
+// exports.getAll = (request, response, next) => {
+//   const searchkey = request.headers.searchkey?.toLowerCase() || "";
+//   const query = {
+//     $and: [
+//       {
+//         $or: [
+//           { DriverName: { $regex: searchkey, $options: "i" } },
+//           { availability: { $regex: searchkey, $options: "i" } },
+//         ],
+//       },
+//     ],
+//   };
 
-exports.getAll = (request, response, next) => {
-    const searchKey = request.body.searchKey?.toLowerCase() || "";
-    const query = {
-      $and: [
-        {
-          $or: [
-            // { DriverCode: { $regex: searchKey, $options: "i" } },
-            { DriverName: { $regex: searchKey, $options: "i" } },
-            { availability: { $regex: searchKey, $options: "i" } },
-          ],
-        }
-    
-      ],
-    };
-  
-    DriverSchema.find(query)
-      .then((data) => {
-        response.status(200).json(data);
-      })
-      .catch((error) => {
-        next(error);
-      });
+//
+//     .then((data) => {
+//       response.status(200).json({ data});
+//     })
+//     .catch((error) => {
+//       next(error);
+//     });
+// };
+
+exports.getAll = CatchAsync(async(request, response, next) => {
+	const searchKey = request.headers.searchkey || "";
+  const orderNum = request.headers.ordernum || null;
+
+	let query = {};
+
+  if (searchKey) {
+   query = {
+    $and: [
+      {
+        $or: [
+          { driverName: { $regex: searchKey, $options: "i" } },
+          { availability: { $regex: searchKey, $options: "i" } },
+        ],
+      },
+    ],
   };
+  }
+
+  let limit = null;
+	if (orderNum !== null) {
+	  limit = parseInt(orderNum);
+	}
+  const data = await  DriverSchema.find(query).limit(limit);
+  const totalCount =  await DriverSchema.countDocuments();
+
+      response.status(200).json({ data, totalCount });
+
+});
   
   exports.addDriver =  async (req, res) => {
     try {
@@ -110,9 +138,25 @@ exports.getAll = (request, response, next) => {
       res.status(500).json({ message: 'Internal Server Error' });
     }
   };  
-
-
   
+
+  exports.BanDriver = CatchAsync(async (request, response, next) => {
+    const driver = await DriverSchema.findOne({ _id: request.params.id });
+    let result = "";
+    if (driver.status === "active") {
+      driver.status = "not active";
+      result = "active";
+    } else {
+      driver.status = "active";
+      result = "not active";
+    }
+  
+    await driver.save();
+  
+    response.status(200).json(result);
+  });
+  
+
 exports.deleteDriver=(request,response,next)=>{
   DriverSchema.deleteOne({
       _id:request.params.id
