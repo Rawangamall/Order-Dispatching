@@ -16,7 +16,6 @@ const orderSchema = new mongoose.Schema({
   City: { type: String, required: true },
   Area: { type: String, required: true },
   },
-  
   TotalPrice: { type: Number, required: true },
   Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
   Product:[{
