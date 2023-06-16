@@ -49,14 +49,15 @@ exports.saveOrder = catchAsync(async (req, res) => {
   });
 
   try {
+	
     await order.save();
     res.status(200).json({ message: "Order saved" });
+
   } catch (error) {
-    // if (error.code === 11000) {
-    //   res.status(400).json({ error: "Duplicate key error" }, error.message);
-    // } else {
-    //   res.status(500).json({ error: "Error saving in database" });
-    // }
+
+	console.log(error)
+ res.status(500).json({ error: "Error saving in database" });
+   
   }
 });
 
