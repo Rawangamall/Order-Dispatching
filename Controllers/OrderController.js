@@ -9,7 +9,7 @@ const { io } = require("./../utils/socket");
 exports.recieveOrder = catchAsync(async (req, res) => {
 
   const orderData = req.body;
-console.log(req.body , "request body ")
+//console.log(req.body , "request body ")
 
   
   console.log("Emitting newOrder event");
@@ -48,17 +48,10 @@ exports.saveOrder = catchAsync(async (req, res) => {
     TotalPrice: orderData.TotalPrice,
   });
 
-  try {
-	
-    await order.save();
-    res.status(200).json({ message: "Order saved" });
+  
+  await order.save();
+  res.status(200).json({ message: "Order saved" });
 
-  } catch (error) {
-
-	console.log(error)
- res.status(500).json({ error: "Error saving in database" });
-   
-  }
 });
 
 exports.getAll = catchAsync(async (req, res, next) => {
