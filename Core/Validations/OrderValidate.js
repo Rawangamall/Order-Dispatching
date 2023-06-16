@@ -14,8 +14,8 @@ exports.OrderValidPatch =[
     body('Status').isIn(['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered']).withMessage('Status should be one of the following: confirm, picked, cancelled, assign, reassigned, delivered'),
     body('product_id').notEmpty().notEmpty().withMessage('product_id should not be empty'),
     body('name_en').notEmpty().isString().withMessage('name_en should be a string'),
-    body('Quantity').notEmpty().isNumeric().withMessage('Quantity should be a number'),
-    body('Price').notEmpty().isNumeric().withMessage('Price should be a number'),
+    body('quantity').notEmpty().isNumeric().withMessage('quantity should be a number'),
+    body('price').notEmpty().isNumeric().withMessage('price should be a number'),
     body('PaymentMethod').notEmpty().isIn(['cash', 'online']).withMessage('PaymentMethod should be either cash or online'),
     body('DriverID').notEmpty().isNumeric().withMessage('DriverID should be a number') 
 ];

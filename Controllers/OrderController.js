@@ -27,8 +27,8 @@ exports.saveOrder = catchAsync(async (req, res) => {
     return {
       product_id: product.product_id,
       name_en: product.name_en,
-      Price: product.Price,
-      Quantity: product.Quantity,
+      price: product.price,
+      quantity: product.quantity,
     };
   });
 
@@ -165,8 +165,8 @@ exports.getoneOrder = catchAsync(async (req, res, next) => {
 //   return {
 //     product_id: product.product_id,
 //     name_en: product.name_en,
-//     Price: product.Price,
-//     Quantity: product.Quantity
+//     price: product.price,
+//     quantity: product.quantity
 //   };
 // });
 
