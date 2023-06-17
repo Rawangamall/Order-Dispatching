@@ -13,7 +13,7 @@ exports.UserValidPOST = [
 
 exports.UserValidPUT = [
   param("id").isNumeric().withMessage("id should be integer"),
-  body("fisrtName").isString().withMessage("fisrt name should string"),
+  body("firstName").isString().withMessage("fisrt name should string"),
   body("lastName").isString().withMessage("last name should string"),
   body("email").isEmail().withMessage("should be valid email form"),
   body("image").optional().isString().withMessage("image should string"),
