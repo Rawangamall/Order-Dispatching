@@ -77,7 +77,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     );
   }
 
-  // response.status(200).json({ message: "success" });
+  response.status(200).json({ message: "success" });
 });
 
 
@@ -108,50 +108,50 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
 
 
-// const scheduleReAssignedOrder = () => {
+const scheduleReAssignedOrder = () => {
+  const updateAssignedOrders = async () => {
+    try {
+      console.log('Updating orders...');
 
-//   const checkAndUpdateOrders = async () => {
-//     try {
-//       console.log('Updating orders...');
+      const filter = {
+        status: 'assign',
+        updated_status: { $lt: new Date().toISOString() },
+      };
 
-//       const filteredOrders = await orderSchema.find({
-//         status: 'assign',
-//         updated_status: { $lt: new Date(Date.now()).toISOString() },
-//       });
+      const filteredAssignedOrders = await orderSchema.find(filter);
+      const reassignedOrderIds = [];
 
-//       // await order.save();
+      for (const order of filteredAssignedOrders) {
+        order.status = 'reassigned';
+        reassignedOrderIds.push(order._id);
 
-//       filteredOrders.forEach(async (order) => {
-//         order.status = 'reassigned';
+        await order.save();
+      }
 
-//         driver = await driverSchema.findById(order.DriverID);
-//         driver.orderCount -= 1;
-//         if (driver.orderCount == 0) {
-//           driver.availability = 'free';
-//         }
-//         order.DriverID = undefined;
+      await orderSchema.updateMany(
+        { _id: { $in: reassignedOrderIds } },
+        { status: 'reassigned' }
+      );
 
-//         await driver.save();
-       
-//       });
-  
-//       filteredOrders.forEach(async (order) => {
-//         console.log(order._id)
-//         await exports.assignOrder({ params: { _id: order._id } });
-//       });
+      // call assign function
 
-//       console.log('Orders updated successfully:', filteredOrders);
-//     } catch (error) {
-//       console.error('Error updating orders:', error);
-//     }
-//   };
+      const reassignedOrders = await orderSchema.find({
+        status: 'reassigned',
+      });
 
+      reassignedOrders.forEach(async (order) => {
+        console.log(order._id);
+        await exports.assignOrder({ params: { _id: order._id } });
+      });
 
-//   checkAndUpdateOrders();
+      console.log('Orders updated successfully:', reassignedOrderIds);
+    } catch (error) {
+      console.error('Error updating orders:', error);
+    }
+  };
 
+  updateAssignedOrders();
+  setInterval(updateAssignedOrders, 10 * 60 * 1000);
+};
 
-//   setInterval(checkAndUpdateOrders, 10 * 60 * 1000);
-// };
-
-
-// scheduleReAssignedOrder();
+scheduleReAssignedOrder();
