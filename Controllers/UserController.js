@@ -130,9 +130,10 @@ exports.updateUser = (request, response, next) => {
   if (strpass && strpass.length > 8) {
     hash = bcrypt.hashSync(request.body.password, salt);
   }
+
   UserSchema.updateOne(
     {
-      _id: request.params._id,
+      _id: request.params.id,
     },
     {
       $set: {
