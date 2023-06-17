@@ -15,6 +15,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   const id = request.params._id;
 
   const order = await orderSchema.findById(id);
+  // console.log("orderrrrrrrrr",order.Address.Governate);
 
   const governateName = order.Address.Governate;
   const cityName = order.Address.City;
@@ -22,7 +23,9 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
   const governate = await governateSchema.findOne({ governate: governateName });
 
-  if (!governate) {
+  if (governate == "" || governate == null) {
+
+    console.log("Governate not foun",governate);
     return next(new AppError("Governate not found", 401));
   }
 
@@ -77,7 +80,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     );
   }
 
-  response.status(200).json({ message: "success" });
+  // response.status(200).json({ message: "success" });
 });
 
 
@@ -139,8 +142,9 @@ const scheduleReAssignedOrder = () => {
         status: 'reassigned',
       });
 
+
       reassignedOrders.forEach(async (order) => {
-        console.log(order._id);
+        console.log("reassigned orderss: ",order._id);
         await exports.assignOrder({ params: { _id: order._id } });
       });
 
