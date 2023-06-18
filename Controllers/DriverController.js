@@ -106,8 +106,8 @@ exports.addDriver = async (req, res) => {
 
 exports.updateDriver = async (req, res) => {
   try {
+    const { id } = req.params;
     const {
-      id,
       driverName,
       status,
       availability,
