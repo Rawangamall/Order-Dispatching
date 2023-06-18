@@ -14,6 +14,7 @@ const DispatchRoute = require("./Routes/DispatchRoute");
 const CustomersRoute = require("./Routes/CustomerRoute");
 const ProductsRoute = require("./Routes/ProductsRoute");
 const statisticsRoute = require("./Routes/statisticsRoute");
+const driverOrderRoute = require("./Routes/driverOrderRoute");
 
 const refresh = require("./github_refresh/refresh");
 const client = require("./client");
@@ -62,6 +63,7 @@ app.use(locationRoute);
 app.use(DispatchRoute);
 app.use(CustomersRoute);
 app.use(ProductsRoute);
+app.use(driverOrderRoute);
 
 //Not Found Middleware
 app.use((request, response, next) => {
