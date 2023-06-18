@@ -15,6 +15,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   const id = request.params._id;
 
   const order = await orderSchema.findById(id);
+  // console.log("orderrrrrrrrr",order.Address.Governate);
 
   const governateName = order.Address.Governate;
   const cityName = order.Address.City;
@@ -22,7 +23,9 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
   const governate = await governateSchema.findOne({ governate: governateName });
 
-  if (!governate) {
+  if (governate == "" || governate == null) {
+
+    console.log("Governate not foun",governate);
     return next(new AppError("Governate not found", 401));
   }
 
@@ -108,50 +111,51 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
 
 
-// const scheduleReAssignedOrder = () => {
+const scheduleReAssignedOrder = () => {
+  const updateAssignedOrders = async () => {
+    try {
+      console.log('Updating orders...');
 
-//   const checkAndUpdateOrders = async () => {
-//     try {
-//       console.log('Updating orders...');
+      const filter = {
+        status: 'assign',
+        updated_status: { $lt: new Date().toISOString() },
+      };
 
-//       const filteredOrders = await orderSchema.find({
-//         status: 'assign',
-//         updated_status: { $lt: new Date(Date.now()).toISOString() },
-//       });
+      const filteredAssignedOrders = await orderSchema.find(filter);
+      const reassignedOrderIds = [];
 
-//       // await order.save();
+      for (const order of filteredAssignedOrders) {
+        order.status = 'reassigned';
+        reassignedOrderIds.push(order._id);
 
-//       filteredOrders.forEach(async (order) => {
-//         order.status = 'reassigned';
+        await order.save();
+      }
 
-//         driver = await driverSchema.findById(order.DriverID);
-//         driver.orderCount -= 1;
-//         if (driver.orderCount == 0) {
-//           driver.availability = 'free';
-//         }
-//         order.DriverID = undefined;
+      await orderSchema.updateMany(
+        { _id: { $in: reassignedOrderIds } },
+        { status: 'reassigned' }
+      );
 
-//         await driver.save();
-       
-//       });
-  
-//       filteredOrders.forEach(async (order) => {
-//         console.log(order._id)
-//         await exports.assignOrder({ params: { _id: order._id } });
-//       });
+      // call assign function
 
-//       console.log('Orders updated successfully:', filteredOrders);
-//     } catch (error) {
-//       console.error('Error updating orders:', error);
-//     }
-//   };
+      const reassignedOrders = await orderSchema.find({
+        status: 'reassigned',
+      });
 
 
-//   checkAndUpdateOrders();
+      reassignedOrders.forEach(async (order) => {
+        console.log("reassigned orderss: ",order._id);
+        await exports.assignOrder({ params: { _id: order._id } });
+      });
 
+      console.log('Orders updated successfully:', reassignedOrderIds);
+    } catch (error) {
+      console.error('Error updating orders:', error);
+    }
+  };
 
-//   setInterval(checkAndUpdateOrders, 10 * 60 * 1000);
-// };
+  updateAssignedOrders();
+  setInterval(updateAssignedOrders, 10 * 60 * 1000);
+};
 
-
-// scheduleReAssignedOrder();
+scheduleReAssignedOrder();
