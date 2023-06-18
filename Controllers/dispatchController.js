@@ -6,7 +6,7 @@ const Pusher = require('pusher');
 
 const orderSchema = mongoose.model("order");
 const governateSchema = mongoose.model("Governate");
-const driverSchema = mongoose.model("driver");
+const driverSchema = mongoose.model("driver");``
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -49,14 +49,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
   console.log(area._id);
    if (driver) {
-  //   // Update the driver's availability to 'busy'
-  //   if (driver.orderCount == 1) {
-  //     driver.orderCount = 2;
-  //     driver.availability = "busy";
-  //   } else {
-  //     driver.orderCount += 1;
-  //   }
-   // await driver.save();
 
     //assign order to the specific driver
     await orderSchema.updateOne(
@@ -69,6 +61,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
         },
       }
     );
+    
   } else {
     //if all driver is busy we will reassign the order
     await orderSchema.updateOne(
@@ -160,7 +153,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 // };
 
 // scheduleReAssignedOrder();
-
 
 
 // router.post('/posts/:id', (req, res, next) => {

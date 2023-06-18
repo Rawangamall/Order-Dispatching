@@ -63,10 +63,7 @@ exports.getRoles = async (request, response, next) => {
             activateDeactivate: permissions.users.activateDeactivate
           },
           orders: {
-            viewAll: permissions.orders.viewAll,
-            add: permissions.orders.add,
-            edit: permissions.orders.edit,
-            delete: permissions.orders.delete
+            viewAll: permissions.orders.viewAll
           },
           customers: {
             viewAll: permissions.customers.viewAll
@@ -74,7 +71,8 @@ exports.getRoles = async (request, response, next) => {
           locations: {
             view: permissions.locations.view,
             add: permissions.locations.add,
-            edit: permissions.locations.edit
+            edit: permissions.locations.edit,
+			delete: permissions.locations.delete
           },
           drivers: {
             viewAll: permissions.drivers.viewAll,
@@ -133,8 +131,6 @@ exports.updateRole = async (request, response, next) => {
 
 		if (permissions && permissions.orders) {
 			role.permissions.orders.viewAll = permissions.orders.viewAll;
-			role.permissions.orders.add = permissions.orders.add;
-			role.permissions.orders.edit = permissions.orders.edit;
 		}
 
 		if (permissions && permissions.customers) {
@@ -145,6 +141,7 @@ exports.updateRole = async (request, response, next) => {
 			role.permissions.locations.view = permissions.locations.view;
 			role.permissions.locations.add = permissions.locations.add;
 			role.permissions.locations.edit = permissions.locations.edit;
+			role.permissions.locations.delete = permissions.locations.delete;
 		}
 
 		if (permissions && permissions.drivers) {
