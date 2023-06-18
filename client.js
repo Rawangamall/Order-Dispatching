@@ -1,4 +1,4 @@
-const baseURL = process.env.BASE_URL || 'http://jimmy.nader-mo.tech';
+const baseURL = process.env.BASE_URL || 'http://localhost:8080';
 const socket = require('socket.io-client')(`${baseURL}`);
 const axios = require('axios');
 
