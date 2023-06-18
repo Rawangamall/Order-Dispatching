@@ -48,14 +48,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
   console.log(area._id);
    if (driver) {
-  //   // Update the driver's availability to 'busy'
-  //   if (driver.orderCount == 1) {
-  //     driver.orderCount = 2;
-  //     driver.availability = "busy";
-  //   } else {
-  //     driver.orderCount += 1;
-  //   }
-   // await driver.save();
 
     //assign order to the specific driver
     await orderSchema.updateOne(
@@ -68,6 +60,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
         },
       }
     );
+    
   } else {
     //if all driver is busy we will reassign the order
     await orderSchema.updateOne(

@@ -134,3 +134,23 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
 
     response.status(200).json({message: "Order cancelled"});
 });
+
+exports.cancelAssign = catchAsync(async (request, response, next) => {
+    const orderID = request.params._id;
+
+    const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
+
+    if (order) {
+
+        order.Status = "reassigned";
+        order.DriverID = undefined;
+        await order.save();
+
+    }else{
+        return next(new AppError("That order is no longar available"),400)
+    }
+
+    response.status(200).json({message: "Order reassigned"});
+
+
+})
