@@ -15,5 +15,14 @@ router.route("/driver/Pickedorders")
       
 router.route("/driver/Cancelledorders")
       .get(DriverOrderController.cancelledOrder);
-      
+     
+router.route("/driver/pick/:_id")
+      .patch(DriverOrderController.pickAction);
+
+router.route("/driver/deliver/:_id")
+      .patch(DriverOrderController.cancelledOrder);
+
+router.route("/driver/cancel/:_id")
+      .patch(DriverOrderController.cancelledOrder);
+ 
 module.exports=router;

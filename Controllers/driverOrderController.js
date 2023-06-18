@@ -54,3 +54,31 @@ exports.cancelledOrder = catchAsync(async (request, response, next) => {
 
 });
 
+exports.pickAction = catchAsync(async (request, response, next) => {
+
+    const driverID = request.headers.driver_id;
+    const orderID = request.params._id;
+
+    const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
+
+    if (order) {
+        order.Status = "picked";
+        await order.save();
+
+        const driver = await driverSchema.findOne({DriverID: driverID});
+
+        if (driver) {
+            driver.orderCount += 1;
+
+            if (driver.orderCount == 2) {
+                driver.availability = "busy";
+            }
+
+            await driver.save();
+        }
+    }else{
+        return next(new AppError("That order is no longar available"),400)
+    }
+
+    response.status(200).json({message: "Order picked"});
+});
