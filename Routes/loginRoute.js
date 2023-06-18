@@ -5,6 +5,9 @@ const loginController=require("../Controllers/loginController");
 router.route("/login")
       .post(loginController.login);
 
+router.route("/driver/login")
+      .post(loginController.driverlogin);
+
 router.route("/forgetpassword")
        .post(loginController.forgetpassword);
 

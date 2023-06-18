@@ -13,9 +13,9 @@ router.route("/driver/Assignorders")
 router.route("/driver/Pickedorders")
       .get(DriverOrderController.pickedOrder);       //picked order to be delivered or cancelled
       
-// router.route("/driver/Cancelledorders")
-//       .get(DriverOrderController.cancelledOrder);     //addition one
-     
+router.route("/driver/cancelassign/:_id")
+      .patch(DriverOrderController.cancelAssign);        //cancelling assign order
+ 
 router.route("/driver/pick/:_id")
       .patch(DriverOrderController.pickAction);       //picking order
 
@@ -23,6 +23,6 @@ router.route("/driver/deliver/:_id")
       .patch(DriverOrderController.deliverAction);         //delivering order
 
 router.route("/driver/cancel/:_id")
-      .patch(DriverOrderController.cancelAction);        //cancelling one
+      .patch(DriverOrderController.cancelAction);        //cancelling one after picked
  
 module.exports=router;

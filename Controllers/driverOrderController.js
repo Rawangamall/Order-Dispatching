@@ -1,11 +1,9 @@
 const axios = require('axios');
 const mongoose = require("mongoose");
 require("./../Models/OrderModel");
-require("./../Models/LocationModel");
 require("./../Models/DriverModel");
 
 const orderSchema = mongoose.model("order");
-const governateSchema = mongoose.model("Governate");
 const driverSchema = mongoose.model("driver");
 
 const AppError = require("./../utils/appError");
@@ -14,7 +12,7 @@ const catchAsync = require("./../utils/CatchAsync");
 exports.allOrder = catchAsync(async (request, response, next) => {
     const driverID = request.headers.driver_id
 
-    const orders = await orderSchema.find({ DriverID: driverID, Status: { $in: ["delivered", "cancelled"] } })
+    const orders = await orderSchema.find({ DriverID: driverID, Status: { $in: ["delivered", "cancelled"] } }).sort({ createdAt: -1 })
     const totalOrders = await orderSchema.countDocuments();
 
     response.status(200).json({ orders, totalOrders });
@@ -24,7 +22,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id
 
-    const orders = await orderSchema.find({DriverID:driverID , Status:"assign"})
+    const orders = await orderSchema.find({DriverID:driverID , Status:"assign"}).sort({ createdAt: -1 })
 	const totalOrders = await orderSchema.countDocuments();
 
     response.status(200).json({orders , totalOrders});
@@ -35,7 +33,7 @@ exports.pickedOrder = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id
 
-    const orders = await orderSchema.find({DriverID:driverID , Status:"picked"})
+    const orders = await orderSchema.find({DriverID:driverID , Status:"picked"}).sort({ createdAt: -1 })
 	const totalOrders = await orderSchema.countDocuments();
 
     response.status(200).json({orders , totalOrders});
@@ -134,3 +132,23 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
 
     response.status(200).json({message: "Order cancelled"});
 });
+
+exports.cancelAssign = catchAsync(async (request, response, next) => {
+    const orderID = request.params._id;
+
+    const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
+
+    if (order) {
+
+        order.Status = "reassigned";
+        order.DriverID = undefined;
+        await order.save();
+
+    }else{
+        return next(new AppError("That order is no longar available"),400)
+    }
+
+    response.status(200).json({message: "Order reassigned"});
+
+
+})
