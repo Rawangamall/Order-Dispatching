@@ -5,9 +5,9 @@ exports.DriverValidPOST =[
 body("driverName").isString().withMessage("Driver name should string") ,
 body("email").isEmail().withMessage("should be valid email form") ,
 body("phoneNumber").isNumeric().withMessage("The number should be integer"),
-body("status").isString().withMessage("Status should string") ,
-body("availability").isString().withMessage("Status should string") ,
-// body("password").isString().withMessage("password should string") ,
+//body("status").isString().withMessage("Status should string") ,
+//body("availability").isString().withMessage("Status should string") ,
+body("password").isString().withMessage("password should string") ,
 // body("orderCount").isNumeric().withMessage("Count should number") ,
 ]
 

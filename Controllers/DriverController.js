@@ -2,10 +2,13 @@ const mongoose = require("mongoose");
 const CatchAsync = require("../utils/CatchAsync");
 require("./../Models/DriverModel");
 require("./../Models/OrderModel");
-
 const OrderSchema = mongoose.model("order");
-
 const DriverSchema = mongoose.model("driver");
+
+const bcrypt = require("bcrypt");
+const saltRounds = 10;
+const salt = bcrypt.genSaltSync(saltRounds);
+
 
 exports.getDriverById = (request, response, next) => {
   DriverSchema.findById(request.params.id)
@@ -70,6 +73,7 @@ exports.getAll = CatchAsync(async (request, response, next) => {
 
 exports.addDriver = async (req, res) => {
   try {
+    const hash = await bcrypt.hash(req.body.password, salt);
     // Extract the request body
     const {
       driverName,
@@ -90,6 +94,7 @@ exports.addDriver = async (req, res) => {
       phoneNumber,
       areas,
       orderCount,
+      password : hash
     });
 
     // Save the driver to the database

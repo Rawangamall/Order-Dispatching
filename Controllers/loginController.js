@@ -5,8 +5,11 @@ const crypto = require('crypto');
 
 require("./../Models/UserModel")
 require("./../Models/RoleModel")
+require("./../Models/DriverModel");
+
 const UserSchema=mongoose.model("user");
 const RoleSchema=mongoose.model("role");
+const DriverSchema = mongoose.model("driver");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -119,10 +122,31 @@ await user.save();
     return next(new AppError("Password not matched!"),404);
 }
 
-//const token = JWT.sign({id:user._id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
-
 res.status(200).json({
     status:"success"
 });
 
+});
+
+
+exports.driverlogin = catchAsync(async (req,res,next)=>{
+    const {email , password }  = req.body;
+
+    if(!email || !password){
+    return next(new AppError(` Missing paramters for login`, 404));
+    }
+
+const driver = await DriverSchema.findOne({email:email}).select("+password");
+console.log(driver)
+if(!driver || !(await driver.correctPassword(password, driver.password))){
+    return next(new AppError(`Incorrect email or password`, 401));
+}
+
+
+const token = JWT.sign({id:driver._id },process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
+
+res.status(200).json({
+    status:"success" , 
+    token
+});
 });
