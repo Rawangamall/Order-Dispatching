@@ -27,37 +27,28 @@ exports.getRoles = async (request, response, next) => {
 	}
 };
 
-exports.addRole = async (request, response, next) => {
-	try {
-		const { user_id, name, permissions } = request.body;
 
-		// Check if the role name already exists
-		const existingRole = await RoleSchema.findOne({ name });
-		if (existingRole) {
-			return response
-				.status(400)
-				.json({ error: "Role with the same name already exists" });
-		}
 
+
+ 
   exports.addRole = async (request, response, next) => {
-    try {
-      const { user_id, name, permissions } = request.body;
-   
-      // Check if the user_id exists
-     const existingUser = await UserSchema.findOne({ _id: user_id });
-    
-      if (!existingUser) {
-        return response.status(400).json({ error: 'User with the specified user_id does not exist' });
-      }
+	try {
+	  const { user_id, name, permissions } = request.body;
   
-      // Check if the role name already exists
-      const existingRole = await RoleSchema.findOne({ name });
-      if (existingRole) {
-        return response.status(400).json({ error: 'Role with the same name already exists' });
-      }
+	  // Check if the user_id exists
+	  const existingUser = await UserSchema.findOne({ _id: user_id });
+	  if (!existingUser) {
+		return response.status(400).json({ error: 'User with the specified user_id does not exist' });
+	  }
   
-      // Create a new role
-      const role = new RoleSchema({
+	  // Check if the role name already exists
+	  const existingRole = await RoleSchema.findOne({ name });
+	  if (existingRole) {
+		return response.status(400).json({ error: 'Role with the same name already exists' });
+	  }
+  
+	 // Create a new role
+	 const role = new RoleSchema({
         user_id,
         name,
         permissions: {
@@ -99,31 +90,16 @@ exports.addRole = async (request, response, next) => {
         }
       });
   
-      // Save the role to the database
-      await role.save();
+	  // Save the role to the database
+	  await role.save();
   
-      response.json({ message: 'Role created successfully', role });
-    } catch (error) {
-      console.error(error);
-      response.status(500).json({ error: 'An error occurred while creating the role', details: error.message });
-    }
-  };
-  
-
-		// Save the role to the database
-		await role.save();
-
-		response.json({ message: "Role created successfully", role });
+	  response.status(201).json({ message: 'Role created successfully', role });
 	} catch (error) {
-		console.error(error);
-		response
-			.status(500)
-			.json({
-				error: "An error occurred while creating the role",
-				details: error.message,
-			});
+	  console.error(error);
+	  response.status(500).json({ error: 'An error occurred while creating the role', details: error.message });
 	}
-};
+  };
+
 
 exports.updateRole = async (request, response, next) => {
 	try {
