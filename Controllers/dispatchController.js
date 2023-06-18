@@ -48,15 +48,15 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     .limit(1);
 
   console.log(area._id);
-  if (driver) {
-    // Update the driver's availability to 'busy'
-    if (driver.orderCount == 1) {
-      driver.orderCount = 2;
-      driver.availability = "busy";
-    } else {
-      driver.orderCount += 1;
-    }
-    await driver.save();
+   if (driver) {
+  //   // Update the driver's availability to 'busy'
+  //   if (driver.orderCount == 1) {
+  //     driver.orderCount = 2;
+  //     driver.availability = "busy";
+  //   } else {
+  //     driver.orderCount += 1;
+  //   }
+   // await driver.save();
 
     //assign order to the specific driver
     await orderSchema.updateOne(
@@ -160,46 +160,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 // };
 
 // scheduleReAssignedOrder();
-
-
-
-
-const scheduleReAssignedOrder = () => {
-  const updateAssignedOrders = async () => {
-    try {
-      console.log('Updating orders...');
-
-      const filter = {
-        status: 'assign',
-        updated_status: { $lt: new Date().toISOString() },
-      };
-
-      const filteredAssignedOrders = await orderSchema.find(filter);
-      const reassignedOrderIds = [];
-
-      for (const order of filteredAssignedOrders) {
-        order.status = 'reassigned';
-        order.DriverID = undefined;
-        reassignedOrderIds.push(order._id);
-
-        await order.save();
-
-        // Call assign function for each order
-        console.log('Reassigning order:', order._id);
-        await exports.assignOrder({ params: { _id: order._id } });
-      }
-
-      console.log('Orders updated successfully:', reassignedOrderIds);
-    } catch (error) {
-      console.error('Error updating orders:', error);
-    }
-  };
-
-  updateAssignedOrders();
-  setInterval(updateAssignedOrders, 10 * 60 * 1000);
-};
-
-scheduleReAssignedOrder();
 
 
 
