@@ -4,21 +4,54 @@ const orderSchema = mongoose.model("order");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
-const { io } = require("./../utils/socket");
+// const { io } = require("./../utils/socket");
 
-exports.recieveOrder = catchAsync(async (req, res) => {
+// exports.recieveOrder = catchAsync(async (req, res) => {
 
-  const orderData = req.body;
-//console.log(req.body , "request body ")
+//   const orderData = req.body;
+// //console.log(req.body , "request body ")
 
   
-  console.log("Emitting newOrder event");
-  io.emit("newOrder", orderData);
+//   console.log("Emitting newOrder event");
+//   io.emit("newOrder", orderData);
 
-  res.status(200).json({
-    status: orderData,
+//   res.status(200).json({
+//     status: orderData,
+//   });
+// });
+
+const Pusher = require('pusher');
+
+const pusher = new Pusher({
+	appId: "1621334",
+	key: "bec24d45349a2eb1b439",
+	secret: "377d841d412c45d14065",
+	cluster: "eu",
+	useTLS: true
   });
+  
+exports.recieveOrder = catchAsync(async (req, res) => {
+  const orderData = req.body;
+
+  console.log("Emitting newOrder event");
+
+  try {
+    // Trigger the newOrder event on the "orders" channel
+    await pusher.trigger('orders', 'newOrder', orderData);
+
+    res.status(200).json({
+      status: orderData,
+    });
+
+  } catch (error) {
+    console.error("Error triggering Pusher event:", error);
+    res.status(500).json({
+      status: 'error',
+      message: 'Failed to trigger Pusher event',
+    });
+  }
 });
+
 
 exports.saveOrder = catchAsync(async (req, res) => {
   const orderData = req.body;
