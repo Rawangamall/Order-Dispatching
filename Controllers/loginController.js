@@ -38,7 +38,7 @@ console.log(role_id);
 const role = await RoleSchema.findById(role_id).exec();
 const RoleName = role ? role.name : null;
 console.log(RoleName);
-const token = JWT.sign({id:user._id , roleName:RoleName},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
+const token = JWT.sign({id:user._id , roleName:RoleName , roleId: user.role_id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
 res.status(200).json({
     status:"success" , 
