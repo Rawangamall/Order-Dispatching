@@ -3,15 +3,31 @@ require("./../Models/OrderModel");
 require("./../Models/DriverModel");
 
 const OrderSchema = mongoose.model("order");
-const DrvierSchema = mongoose.model("driver");
+const DriverSchema = mongoose.model("driver");
 
 exports.finalReport = (request, response, next) => {
 	OrderSchema.aggregate([
-		{ $match: { DriverID: { $ne: null }, Status: "delivered" } },
+		{ $match: { Status: "delivered" } },
 		{
 			$group: {
 				_id: "$DriverID",
 				count: { $sum: 1 },
+			},
+		},
+		{
+			$lookup: {
+				from: "drivers",
+				localField: "DriverID",
+				foreignField: "_id",
+				as: "driver",
+			},
+		},
+		{
+			$project: {
+				_id: 0,
+				driverID: "$_id",
+				driverName: { $arrayElemAt: ["$driver.driverName", 0] },
+				count: 1,
 			},
 		},
 	])
