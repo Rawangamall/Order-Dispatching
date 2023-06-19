@@ -72,33 +72,37 @@ console.log(totalCunstomers[0].totalCustomers);
 
 
 exports.getCustomerById = (request, response, next) => {
-	const id = request.params.id;
-
+	const id = mongoose.Types.ObjectId(request.params.id); 
+  
 	console.log(id);
 	OrderSchema.aggregate([
-		{
-			$group: {
-				_id: "$CustomerID",
-				CustomerName: { $first: "$CustomerName" },
-				CustomerEmail: { $first: "$CustomerEmail" },
-				Address: { $first: "$Address" },
-			},
-		},
-		{ $match: { _id: `60c1a236a2e8e75f5cfc47fb`} },
-		{
-			$project: {
-				_id: 0,
-				CustomerID: "$_id",
-				CustomerName: 1,
-				CustomerEmail: 1,
-				Address: 1,
-			},
-		},
+	  {
+		$match: { CustomerID: id } // Match documents with the specified CustomerID
+	  },
+	  {
+		$group: {
+		  _id: "$CustomerID",
+		  CustomerName: { $first: "$CustomerName" },
+		  CustomerEmail: { $first: "$CustomerEmail" },
+		  Address: { $first: "$Address" },
+		  Orders: { $push: "$$ROOT" } // Collect all orders for the customer
+		}
+	  },
+	  {
+		$project: {
+		  _id: 0,
+		  CustomerID: "$_id",
+		  CustomerName: 1,
+		  CustomerEmail: 1,
+		  Address: 1,
+		  Orders: 1
+		}
+	  }
 	])
-		.then((data) => {
-			response.status(200).json(data);
-		})
-		.catch((error) => {
-			next(error);
-		});
-}
+	  .then((data) => {
+		response.status(200).json(data);
+	  })
+	  .catch((error) => {
+		next(error);
+	  });
+  }
