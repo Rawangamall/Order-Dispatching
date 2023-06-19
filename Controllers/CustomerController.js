@@ -70,7 +70,6 @@ console.log(totalCunstomers[0].totalCustomers);
 };
 
 
-
 exports.getCustomerById = (request, response, next) => {
 	const id = mongoose.Types.ObjectId(request.params.id); 
   
@@ -106,3 +105,4 @@ exports.getCustomerById = (request, response, next) => {
 		next(error);
 	  });
   }
+  
