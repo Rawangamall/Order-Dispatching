@@ -74,9 +74,20 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
     const orderID = request.params._id;
 
     const order = await orderSchema.findOne({_id: orderID, Status: "picked"});
+    const before = order.updatedAt
 
     if (order) {
+
         order.Status = "delivered";
+        await order.save();
+
+        const after = order.updatedAt
+        const diff = after - before;
+
+        const differenceInSeconds = Math.floor(diff / 1000);
+        const minutes = Math.floor((differenceInSeconds % 3600) / 60);
+        
+        order.updated_status = minutes
         await order.save();
 
         const driver = await driverSchema.findOne({_id: driverID});
