@@ -2,7 +2,9 @@ const mongoose = require("mongoose");
 require("./../Models/LocationModel");
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
+require("./../Models/DriverModel");
 
+const DriverSchema = mongoose.model("driver");
 const governateSchema = mongoose.model("Governate");
 exports.addLocation = async (request, response, next) => {
   try {
@@ -139,16 +141,36 @@ exports.editgovernate = catchAsync(async (request, response, next) => {
 
 exports.deleteGovernate = catchAsync(async (request, response, next) => {
   const { _id } = request.params;
-  const data = await governateSchema.findById(_id);
 
-  if (!data) {
+  const governateData = await governateSchema.findById(_id);
+  if (!governateData) {
     return next(new AppError(`Governate not found!`, 404));
+  }
+
+  const deletedAreas = [];
+  for (const city of governateData.cities) {
+    deletedAreas.push(...city.areas);
   }
 
   await governateSchema.findByIdAndDelete(_id);
 
+  const drivers = await DriverSchema.find({ areas: { $in: deletedAreas } });
+  if (drivers.length !== 0) {
+    for (const driver of drivers) {
+      for (const deletedArea of deletedAreas) {
+        const driverAreaIndex = driver.areas.findIndex((area) => area === parseInt(deletedArea._id));
+        if (driverAreaIndex !== -1) {
+          driver.areas.splice(driverAreaIndex, 1);
+          await driver.save();
+        }
+      }
+    }
+  }
+
   response.status(200).json({ message: "Success" });
 });
+
+
 exports.getallcities = catchAsync(async (request, response, next) => {
   const { searchkey, shownumber } = request.headers;
 
@@ -220,20 +242,36 @@ exports.editcity = catchAsync(async (request, response, next) => {
 
 exports.deleteCity = catchAsync(async (request, response, next) => {
   const { _id } = request.params;
-  const data = await governateSchema.findOne({ "cities._id": _id });
 
+  const data = await governateSchema.findOne({ "cities._id": _id });
   if (!data) {
     return next(new AppError(`City not found!`, 404));
   }
 
-  const cityIndex = data.cities.findIndex(
-    (city) => city._id.toString() === _id
-  );
+  const cityIndex = data.cities.findIndex((city) => city._id.toString() === _id);
+  const deletedAreas = data.cities[cityIndex].areas;
+  console.log(deletedAreas)
   data.cities.splice(cityIndex, 1);
-
   await data.save();
+
+  const drivers = await DriverSchema.find({ areas: { $in: deletedAreas} });
+  if (drivers.length !== 0) {
+    console.log(drivers)
+    for (const driver of drivers) {
+      for (const deletedArea of deletedAreas) {
+        const driverAreaIndex = driver.areas.findIndex((area) => area === parseInt(deletedArea._id));
+        if (driverAreaIndex !== -1) {
+          driver.areas.splice(driverAreaIndex, 1);
+          await driver.save();
+        }
+      }
+    }
+  }
+
   response.status(200).json({ message: "Success" });
 });
+
+
 exports.getallareas = catchAsync(async (request, response, next) => {
   const { searchkey, shownumber } = request.headers;
 
@@ -293,17 +331,32 @@ exports.deletearea = catchAsync(async (request, response, next) => {
   if (!data) {
     return next(new AppError(`Area not found!`, 404));
   }
+  
   const cityIndex = data.cities.findIndex((city) =>
     city.areas.some((area) => area._id.toString() === _id)
   );
+  
   const areaIndex = data.cities[cityIndex].areas.findIndex(
     (area) => area._id.toString() === _id
   );
 
   data.cities[cityIndex].areas.splice(areaIndex, 1);
+  
+  const drivers = await DriverSchema.find({areas:_id }); 
+  if (drivers || drivers.length !== 0) {
+    
+  for (const driver of drivers) {
+    const driverAreaIndex = driver.areas.findIndex((area) => area === parseInt(_id));
+    if (driverAreaIndex !== -1) {
+      driver.areas.splice(driverAreaIndex, 1);
+      await driver.save();
+    }
+  }
+}
   await data.save();
   response.status(200).json({ message: "success" });
 });
+
 
 exports.editarea = catchAsync(async (request, response, next) => {
   const { _id } = request.params;
