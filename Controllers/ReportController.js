@@ -6,7 +6,15 @@ const OrderSchema = mongoose.model("order");
 const DrvierSchema = mongoose.model("driver");
 
 exports.finalReport = (request, response, next) => {
-	OrderSchema.find({})
+	OrderSchema.aggregate([
+		{ $match: { DriverID: { $ne: null }, Status: "delivered" } },
+		{
+			$group: {
+				_id: "$DriverID",
+				count: { $sum: 1 },
+			},
+		},
+	])
 		.then((data) => {
 			response.status(200).json(data);
 		})
