@@ -1,7 +1,6 @@
 const {body,param}=require("express-validator");
 
 exports.DriverValidPOST =[
-// body("driverCode").isNumeric().withMessage("Driver code should be number") ,
 body("driverName").isString().withMessage("Driver name should string") ,
 body("email").isEmail().withMessage("should be valid email form") ,
 body("phoneNumber").isNumeric().withMessage("The number should be integer"),
