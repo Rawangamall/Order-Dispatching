@@ -44,15 +44,12 @@ exports.pickAction = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id;
     const orderID = request.params._id;
-    console.log(driverID," driverID in pick action")
 
     const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
+    const driver = await driverSchema.findOne({_id: driverID});
 
-    if (order) {
+    if (order && (driver._id == order.DriverID)) {
 
-        const driver = await driverSchema.findOne({_id: driverID});
-
-        if (driver) {
              order.Status = "picked";
                await order.save();
 
@@ -63,12 +60,12 @@ exports.pickAction = catchAsync(async (request, response, next) => {
             }
 
             await driver.save();
-        }
+       response.status(200).json({message: "Order picked"});
+
     }else{
         return next(new AppError(`That order is no longar available`, 404));
     }
 
-    response.status(200).json({message: "Order picked"});
 });
 
 exports.deliverAction = catchAsync(async (request, response, next) => {
