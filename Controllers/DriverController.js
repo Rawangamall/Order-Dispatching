@@ -11,6 +11,7 @@ const salt = bcrypt.genSaltSync(saltRounds);
 
 
 exports.getDriverById = (request, response, next) => {
+  
   DriverSchema.findById(request.params.id)
     .then((data) => {
       response.status(200).json(data);
