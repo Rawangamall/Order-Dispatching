@@ -52,9 +52,13 @@ exports.pickAction = catchAsync(async (request, response, next) => {
         await order.save();
 
         const driver = await driverSchema.findOne({DriverID: driverID});
+        console.log(driverID," driverID in pick action")
 
+         console.log(driver,"in pick action")
         if (driver) {
+            console.log( driver.orderCount )
             driver.orderCount += 1;
+            console.log( driver.orderCount , "after inc")
 
             if (driver.orderCount == 2) {
                 driver.availability = "busy";
@@ -63,7 +67,7 @@ exports.pickAction = catchAsync(async (request, response, next) => {
             await driver.save();
         }
     }else{
-        return next(new AppError("That order is no longar available"),400)
+        return next(new AppError(`That order is no longar available`, 404));
     }
 
     response.status(200).json({message: "Order picked"});
@@ -92,7 +96,7 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
             await driver.save();
         }
     }else{
-        return next(new AppError("That order is no longar exist"),400)
+        return next(new AppError(`That order is no longar available`, 404));
     }
 
     // For E-commerce
@@ -124,7 +128,7 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
             await driver.save();
         }
     }else{
-        return next(new AppError("That order is no longar exist"),400)
+        return next(new AppError(`That order is no longar available`, 404));
     }
 
     // For E-commerce
@@ -145,7 +149,8 @@ exports.cancelAssign = catchAsync(async (request, response, next) => {
         await order.save();
 
     }else{
-        return next(new AppError("That order is no longar available"),400)
+        return next(new AppError(`That order is no longar available`, 404));
+
     }
 
     response.status(200).json({message: "Order reassigned"});
