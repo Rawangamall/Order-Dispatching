@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 require("./../Models/OrderModel");
 const orderSchema = mongoose.model("order");
-
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 // const { io } = require("./../utils/socket");
