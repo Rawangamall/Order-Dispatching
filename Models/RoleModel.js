@@ -48,18 +48,6 @@ const schema = new mongoose.Schema({
         viewAll: {
           type: Boolean,
           default: false
-        },
-        add: {
-          type: Boolean,
-          default: false
-        },
-        edit: {
-          type: Boolean,
-          default: false
-        },
-        delete: {
-          type: Boolean,
-          default: false
         }
       },
       customers: {
@@ -78,6 +66,10 @@ const schema = new mongoose.Schema({
           default: false
         },
         edit: {
+          type: Boolean,
+          default: false
+        },
+        delete: {
           type: Boolean,
           default: false
         }
@@ -115,6 +107,7 @@ const schema = new mongoose.Schema({
         }
       }
     }
+    
   });
   schema.plugin(AutoIncrement,{id:'role_id',inc_field:"_id"});
 

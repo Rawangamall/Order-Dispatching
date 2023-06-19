@@ -6,7 +6,7 @@ const Pusher = require('pusher');
 
 const orderSchema = mongoose.model("order");
 const governateSchema = mongoose.model("Governate");
-const driverSchema = mongoose.model("driver");
+const driverSchema = mongoose.model("driver");``
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -153,7 +153,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 // };
 
 // scheduleReAssignedOrder();
-
 
 
 // router.post('/posts/:id', (req, res, next) => {
