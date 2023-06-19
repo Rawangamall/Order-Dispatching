@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pusher Test</title>
+  <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+
+const baseURL = 'http://localhost:8080';
+
+    Pusher.logToConsole = true;
+
+let pusher = new Pusher('bec24d45349a2eb1b439', {
+  cluster: 'eu'
+});
+
+    let channel = pusher.subscribe('driver-8');
+    channel.bind('new-order', function(orderData) {
+      console.log("in clientt in pusher");
+      console.log(orderData);
+
+      // Send a request to orderController.saveOrder()
+      alert(JSON.stringify(orderData));
+
+   
+    });
+  </script>
+</head>
+<body>
+  <h1>Pusher Test</h1>
+  <p>
+    Try publishing an event to channel <code>my-channel</code>
+    with event name <code>my-event</code>.
+  </p>
+</body>
+</html>

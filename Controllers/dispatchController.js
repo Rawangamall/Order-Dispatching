@@ -2,7 +2,15 @@ const mongoose = require("mongoose");
 require("./../Models/OrderModel");
 require("./../Models/LocationModel");
 require("./../Models/DriverModel");
-const Pusher = require('pusher');
+
+let Pusher = require('pusher');
+let pusher = new Pusher({
+      appId: process.env.PUSHER_APP_ID,
+      key: process.env.PUSHER_APP_KEY,
+      secret: process.env.PUSHER_APP_SECRET,
+      cluster: process.env.PUSHER_APP_CLUSTER,
+      useTLS: true
+        });
 
 const orderSchema = mongoose.model("order");
 const governateSchema = mongoose.model("Governate");
@@ -61,6 +69,9 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
         },
       }
     );
+
+   // Trigger the notification event for the specific driver
+   pusher.trigger(`driver-${driver._id}`, 'new-order', order);
     
   } else {
     //if all driver is busy we will reassign the order
