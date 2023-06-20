@@ -7,12 +7,10 @@ const DriverSchema = mongoose.model("driver");
 
 exports.finalReport = (request, response, next) => {
 	OrderSchema.aggregate([
-		{ $match: { Status: "delivered" } },
 		{
-			$group: {
-				_id: "$DriverID",
-				count: { $sum: 1 },
-			},
+			$match: {
+				Status: "delivered"
+			}
 		},
 		{
 			$lookup: {
@@ -23,13 +21,21 @@ exports.finalReport = (request, response, next) => {
 			},
 		},
 		{
-			$project: {
-				_id: 0,
-				driverID: "$_id",
-				driverName: { $arrayElemAt: ["$driver.driverName", 0] },
-				count: 1,
+			$unwind: "$driver",
+		},
+		{
+			$group: {
+				_id: "$DriverID",
+				driverName: { $first: "$driver.driverName" },
+				driverEmail: { $first: "$driver.email" },
+				orders: {
+					$push: {
+
+					},
+				},
 			},
 		},
+
 	])
 		.then((data) => {
 			response.status(200).json(data);
