@@ -5,36 +5,60 @@ require("./../Models/DriverModel");
 const OrderSchema = mongoose.model("order");
 const DriverSchema = mongoose.model("driver");
 
-exports.finalReport = (request, response, next) => {
-	OrderSchema.aggregate([
-		{ $match: { Status: "delivered" } },
-		{
-			$group: {
-				_id: "$DriverID",
-				count: { $sum: 1 },
-			},
+const AppError = require("./../utils/appError");
+const catchAsync = require("./../utils/CatchAsync");
+
+exports.finalReport = catchAsync(async (request, response, next) => {
+	const { searchkey } = request.headers;
+
+	const matchStage = { Status: "delivered" };
+	if (searchkey) {
+	  matchStage["driver.driverName"] = { $regex: searchkey, $options: "i" };
+	}
+	const data = await OrderSchema.aggregate([
+	  { $match:matchStage },
+	  {
+		$group: {
+		  _id: "$DriverID",
+		  count: { $sum: 1 },
+		  totalTime: { $sum: { $toLong: "$updated_status" } },
 		},
-		{
-			$lookup: {
-				from: "drivers",
-				localField: "DriverID",
-				foreignField: "_id",
-				as: "driver",
-			},
+	  },
+	  {
+		$lookup: {
+		  from: "drivers",
+		  localField: "_id",
+		  foreignField: "_id",
+		  as: "driver",
 		},
-		{
-			$project: {
-				_id: 0,
-				driverID: "$_id",
-				driverName: { $arrayElemAt: ["$driver.driverName", 0] },
-				count: 1,
+	  },
+	  {
+		$unwind: "$driver",
+	  },
+	  {
+		$project: {
+		  _id: 0,
+		  driverID: "$_id",
+		  driverName: "$driver.driverName",
+		  count: 1,
+		  averageTime: {
+			$dateToString: {
+			  date: {
+				$toDate: {
+				  $multiply: [
+					{ $divide: ["$totalTime", "$count"] },
+					1000 * 60 ,
+				  ],
+				},
+			  },
+			  format: "%H:%M:%S",
 			},
+		  },
 		},
-	])
-		.then((data) => {
-			response.status(200).json(data);
-		})
-		.catch((error) => {
-			next(error);
-		});
-};
+	  },
+	]);
+  
+	
+	response.status(200).json(data);
+  });
+  
