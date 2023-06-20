@@ -6,6 +6,7 @@ const UserSchema = mongoose.model("user");
 const RoleSchema = mongoose.model("role");
 
 const bcrypt = require("bcrypt");
+const CatchAsync = require("../utils/CatchAsync");
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 
@@ -170,3 +171,17 @@ exports.deleteUser = (request, response, next) => {
       next(error);
     });
 };
+
+exports.navUser = CatchAsync(async (request, response, next) => {
+  const userID = request.params.id;
+
+  if(userID){
+
+ const data = await findById(userID);
+ response.status(200).json(data.firstName , data.image);
+ 
+  }else{
+    return next(new AppError(`That User is not found`, 404));
+  }
+
+})

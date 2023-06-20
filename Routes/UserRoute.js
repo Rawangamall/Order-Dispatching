@@ -19,7 +19,9 @@ router.route("/users/:id")
         .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
         .patch(addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
         .delete(removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
-
-      
+         
+ 
+router.route("/nav/users/:id")     
+      .get(UserValidId,validateMW , userController.navUser)
 
 module.exports=router;
