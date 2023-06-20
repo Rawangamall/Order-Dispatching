@@ -9,14 +9,9 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 
 exports.finalReport = catchAsync(async (request, response, next) => {
-	const { searchkey } = request.headers;
 
-	const matchStage = { Status: "delivered" };
-	if (searchkey) {
-	  matchStage["driver.driverName"] = { $regex: searchkey, $options: "i" };
-	}
 	const data = await OrderSchema.aggregate([
-	  { $match:matchStage },
+	  { $match:{ Status: "delivered" } },
 	  {
 		$group: {
 		  _id: "$DriverID",
