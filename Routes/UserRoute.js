@@ -3,6 +3,8 @@ const router=express.Router();
 const userController=require("./../Controllers/UserController");
 const validateMW=require("./../Core/Validations/validateMW");
 const {UserValidPOST,UserValidPUT,UserValidId}=require("./../Core/Validations/UserValidation");
+const {addIMG , removeUserIMG}=require("./../Core/Validations/imageValidation");
+
 const authenticationMW = require("./../Middlewares/authenticationMW");
 const authorizationMW = require("./../Middlewares/authorizationMW");
 
@@ -11,12 +13,12 @@ const authorizationMW = require("./../Middlewares/authorizationMW");
   
 router.route("/users")
        .get(authenticationMW.auth , authorizationMW.authorize("users","viewAll") , validateMW,userController.getAll )
-       .post(authenticationMW.auth , authorizationMW.authorize("users","add")  ,UserValidPOST ,validateMW, userController.addUser)
+       .post(UserValidPOST , userController.addUser) //authenticationMW.auth , authorizationMW.authorize("users","add")  , validateMW
 
 router.route("/users/:id")
         .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
-        .put(UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,userController.updateUser)
-        .delete(UserValidId , authorizationMW.authorize("users","delete"),validateMW,userController.deleteUser )
+        .patch(addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
+        .delete(removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
 
       
 

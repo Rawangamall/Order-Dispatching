@@ -87,6 +87,7 @@ exports.getAll = async (request, response, next) => {
 };
 
 exports.addUser = async (request, response, next) => {
+
   try {
     const hash = await bcrypt.hash(request.body.password, salt);
 
@@ -125,6 +126,8 @@ exports.getUserById = (request, response, next) => {
 };
 
 exports.updateUser = (request, response, next) => {
+  console.log(request.image);
+
   const strpass = request.body.password;
   let hash;
   if (strpass && strpass.length > 8) {
@@ -143,7 +146,7 @@ exports.updateUser = (request, response, next) => {
         phoneNumber: request.body.phoneNumber,
         Role: request.body.Role,
         password: hash,
-        image: request.body.image,
+        image: request.image,
         active: request.body.active,
       },
     }
