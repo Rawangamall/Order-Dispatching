@@ -8,20 +8,21 @@ const {
   DriverValidId,
 } = require("./../Core/Validations/DriverVlidation");
 const authenticationMW = require("./../Middlewares/authenticationMW");
+const authorizationMW = require("./../Middlewares/authorizationMW");
 
 router
   .route("/drivers")
-  .get(DriverController.getAll)
-  .post(DriverValidPOST, validateMW, DriverController.addDriver);
+  .get(authenticationMW.auth,authorizationMW.authorize("drivers","viewAll") ,  validateMW, DriverController.getAll)
+  .post(authenticationMW.auth, DriverValidPOST,authorizationMW.authorize("drivers","add"),  validateMW, DriverController.addDriver);
 
 router
   .route("/drivers/:id")
-  .get(DriverValidId, validateMW, DriverController.getDriverById)
-  .put(DriverValidPUT, validateMW, DriverController.updateDriver)
-  .delete(DriverValidId, validateMW, DriverController.deleteDriver)
-  .patch(DriverController.BanDriver);
+  .get(authenticationMW.auth, DriverValidId,authorizationMW.authorize("drivers","viewAll") , validateMW, DriverController.getDriverById)
+  .put(authenticationMW.auth, DriverValidPUT, authorizationMW.authorize("drivers","edit") ,validateMW, DriverController.updateDriver)
+  .delete(authenticationMW.auth,DriverValidId,authorizationMW.authorize("drivers","delete") , validateMW, DriverController.deleteDriver)
+  .patch(DriverController.BanDriver);//add authorize in schema to this route
 router
-  .route("/drivers/assignedOrderTo/:id")
+  .route("/drivers/assignedOrderTo/:id") //add authorize in schema to this route
   .get(DriverController.getDriversToBeAssignedOrderTo);
 
 module.exports = router;

@@ -130,6 +130,7 @@ res.status(200).json({
 
 
 exports.driverlogin = catchAsync(async (req,res,next)=>{
+   
     const {email , password }  = req.body;
 
     if(!email || !password){
@@ -143,7 +144,7 @@ if(!driver || !(await driver.correctPassword(password, driver.password))){
 }
 
 
-const token = JWT.sign({id:driver._id },process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
+const token = JWT.sign({id:driver._id ,roleName:"driver"},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
 res.status(200).json({
     status:"success" , 

@@ -14,9 +14,9 @@ router.route("/users")
        .post(authenticationMW.auth , authorizationMW.authorize("users","add")  ,UserValidPOST ,validateMW, userController.addUser)
 
 router.route("/users/:id")
-        .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
-        .put(UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,userController.updateUser)
-        .delete(UserValidId , authorizationMW.authorize("users","delete"),validateMW,userController.deleteUser )
+        .get(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
+        .put(authenticationMW.auth,UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,userController.updateUser)
+        .delete(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","delete"),validateMW,userController.deleteUser )
 
       
 

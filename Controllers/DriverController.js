@@ -164,16 +164,51 @@ exports.BanDriver = CatchAsync(async (request, response, next) => {
 });
 
 exports.deleteDriver = (request, response, next) => {
-  DriverSchema.deleteOne({
-    _id: request.params.id,
+  const driverId = request.params.id;
+
+  // Check if there are any orders with status "assigned" or "picked" associated with the driver
+  OrderSchema.find({
+    DriverID: driverId,
+    Status: { $in: ['assign', 'picked'] }
   })
-    .then((data) => {
-      response.status(200).json(data);
+    .then((orders) => {
+      if (orders.length > 0) {
+        // Update the status of associated orders to "reassigned"
+        const updatePromises = orders.map(order => {
+          order.Status = 'reassigned';
+          return order.save();
+        });
+
+        Promise.all(updatePromises)
+          .then(() => {
+            // All orders updated successfully, proceed with deleting the driver
+            DriverSchema.deleteOne({ _id: driverId })
+              .then((data) => {
+                response.status(200).json(data);
+              })
+              .catch((error) => {
+                next(error);
+              });
+          })
+          .catch((error) => {
+            next(error);
+          });
+      } else {
+        // No orders with "assigned" or "picked" status found, proceed with deleting the driver
+        DriverSchema.deleteOne({ _id: driverId })
+          .then((data) => {
+            response.status(200).json(data);
+          })
+          .catch((error) => {
+            next(error);
+          });
+      }
     })
     .catch((error) => {
       next(error);
     });
 };
+
 
 exports.getDriversToBeAssignedOrderTo = async (request, response, next) => {
   try {
