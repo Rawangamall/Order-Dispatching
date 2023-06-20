@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const DriverController = require("./../Controllers/DriverController");
 const validateMW = require("./../Core/Validations/validateMW");
+const {addIMG , removeDriverIMG}=require("./../Core/Validations/imageValidation");
 const {
   DriverValidPOST,
   DriverValidPUT,
@@ -9,16 +10,14 @@ const {
 } = require("./../Core/Validations/DriverVlidation");
 const authenticationMW = require("./../Middlewares/authenticationMW");
 
-router
-  .route("/drivers")
+router.route("/drivers")
   .get(DriverController.getAll)
   .post(DriverValidPOST, validateMW, DriverController.addDriver);
 
-router
-  .route("/drivers/:id")
+router.route("/drivers/:id")
   .get(DriverValidId, validateMW, DriverController.getDriverById)
-  .put(DriverValidPUT, validateMW, DriverController.updateDriver)
-  .delete(DriverValidId, validateMW, DriverController.deleteDriver)
+  .patch(DriverValidPUT, validateMW,addIMG, DriverController.updateDriver)
+  .delete(DriverValidId, validateMW,removeDriverIMG, DriverController.deleteDriver)
   .patch(DriverController.BanDriver);
 router
   .route("/drivers/assignedOrderTo/:id")

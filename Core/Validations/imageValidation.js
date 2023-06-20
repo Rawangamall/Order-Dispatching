@@ -9,6 +9,7 @@ require("./../../Models/DriverModel");
 
 const UserSchema=mongoose.model("user");
 const DriverSchema = mongoose.model("driver");
+const AppError = require("./../../utils/appError");
 
 exports.addIMG=multer({
     fileFilter: function (req, file, cb) {
@@ -24,16 +25,16 @@ exports.addIMG=multer({
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
             if(fullUrl.includes("users")){
                 cb(null,path.join(__dirname,"..","images","User"));
-                console.log(path.join(__dirname,"..","images","User"))
-            }else{
+            }else if(fullUrl.includes("drivers")){
                 cb(null,path.join(__dirname,"..","images","Driver"));
+            }else{
+                return next(new AppError(`Foriegn User`, 401));
             }
 
         } , 
         filename:(request, file, cb)=>{
             var fullUrl = request.protocol + '://' + request.get('host') + request.originalUrl;
             console.log(fullUrl,"link url")
-            if(fullUrl.includes("users")){
           
                 userId = request.params.id;
                 console.log(userId)
@@ -41,7 +42,6 @@ exports.addIMG=multer({
                 request.image = imageName
                 cb(null, imageName);
 
-                }
             
          }
     })
@@ -49,7 +49,7 @@ exports.addIMG=multer({
 
 exports.removeUserIMG=function(req,res,next){
     UserSchema.findOne({_id:req.params.id}).then((data)=>{
-        if(data != null){
+        if(data != null && data.image != "default.jpg"){
         imageName = data._id+ "." + "jpg";
         console.log(imageName)
         fs.unlink(path.join(__dirname,"..","images","User",imageName), function (err) {
@@ -59,5 +59,23 @@ exports.removeUserIMG=function(req,res,next){
                 next();
         })
     }
+    next();
+    })
+}
+
+exports.removeDriverIMG=function(req,res,next){
+    DriverSchema.findOne({_id:req.params.id}).then((data)=>{
+        if(data != null && data.image != "default.jpg"){
+        imageName = data._id+ "." + "jpg";
+        console.log(imageName,"in img valid")
+        fs.unlink(path.join(__dirname,"..","images","Driver",imageName), function (err) {
+            if (err)
+                next(new Error("Driver not found"));
+            else
+                next();
+        })
+    }
+    next();
+
     })
 }
