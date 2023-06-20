@@ -177,9 +177,11 @@ exports.navUser = CatchAsync(async (request, response, next) => {
 
   if(userID){
 
- const data = await findById(userID);
- response.status(200).json(data.firstName , data.image);
- 
+ const data = await UserSchema.findById(userID);
+ const image = data.image;
+ const name = data.firstName
+ response.status(200).json({image,name});
+
   }else{
     return next(new AppError(`That User is not found`, 404));
   }
