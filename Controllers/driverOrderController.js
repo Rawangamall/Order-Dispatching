@@ -44,6 +44,8 @@ exports.pickAction = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id;
     const orderID = request.params._id;
+    
+console.log(request.headers.driver_id);
 
     const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
     const driver = await driverSchema.findOne({_id: driverID});

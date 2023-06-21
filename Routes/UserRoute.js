@@ -3,6 +3,8 @@ const router=express.Router();
 const userController=require("./../Controllers/UserController");
 const validateMW=require("./../Core/Validations/validateMW");
 const {UserValidPOST,UserValidPUT,UserValidId}=require("./../Core/Validations/UserValidation");
+const {addIMG , removeUserIMG}=require("./../Core/Validations/imageValidation");
+
 const authenticationMW = require("./../Middlewares/authenticationMW");
 const authorizationMW = require("./../Middlewares/authorizationMW");
 
@@ -11,13 +13,16 @@ const authorizationMW = require("./../Middlewares/authorizationMW");
   
 router.route("/users")
        .get(authenticationMW.auth , authorizationMW.authorize("users","viewAll") , validateMW,userController.getAll )
-       .post(authenticationMW.auth , authorizationMW.authorize("users","add")  ,UserValidPOST ,validateMW, userController.addUser)
+       .post(UserValidPOST , userController.addUser) //authenticationMW.auth , authorizationMW.authorize("users","add")  , validateMW
 
 router.route("/users/:id")
-        .get(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
-        .put(authenticationMW.auth,UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,userController.updateUser)
-        .delete(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","delete"),validateMW,userController.deleteUser )
-
       
+        .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
+        .patch(authenticationMW.auth,UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
+        .delete(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","delete"),validateMW,removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
+         
+ 
+router.route("/nav/users/:id")     
+      .get(UserValidId,validateMW , userController.navUser)
 
 module.exports=router;

@@ -2,11 +2,12 @@ const express=require("express");
 const router=express.Router();
 const DriverOrderController=require("./../Controllers/driverOrderController");
 const validateMW=require("./../Core/Validations/validateMW");
-const authenticationMW = require("./../Middlewares/authenticationMW")
+const authenticationMW = require("./../Middlewares/DriverauthenticationMW")
 const authorizationMW = require("./../Middlewares/authorizationMW");
 
+
 router.route("/driver/history")
-      .get( authorizationMW.authorize("driver","history"),validateMW, DriverOrderController.allOrder);      //delivered and cancelled
+      .get(authenticationMW.auth,authorizationMW.authorize("driver","history"),validateMW,DriverOrderController.allOrder);      //delivered and cancelled
 
 router.route("/driver/Assignorders")
       .get(authorizationMW.authorize("driver","Assignorders"),validateMW, DriverOrderController.assignOrder);        //assign order to be picked

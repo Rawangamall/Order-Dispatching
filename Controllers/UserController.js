@@ -6,6 +6,7 @@ const UserSchema = mongoose.model("user");
 const RoleSchema = mongoose.model("role");
 
 const bcrypt = require("bcrypt");
+const CatchAsync = require("../utils/CatchAsync");
 const saltRounds = 10;
 const salt = bcrypt.genSaltSync(saltRounds);
 
@@ -87,6 +88,7 @@ exports.getAll = async (request, response, next) => {
 };
 
 exports.addUser = async (request, response, next) => {
+
   try {
     const hash = await bcrypt.hash(request.body.password, salt);
 
@@ -125,6 +127,8 @@ exports.getUserById = (request, response, next) => {
 };
 
 exports.updateUser = (request, response, next) => {
+  console.log(request.image);
+
   const strpass = request.body.password;
   let hash;
   if (strpass && strpass.length > 8) {
@@ -143,7 +147,7 @@ exports.updateUser = (request, response, next) => {
         phoneNumber: request.body.phoneNumber,
         Role: request.body.Role,
         password: hash,
-        image: request.body.image,
+        image: request.image,
         active: request.body.active,
       },
     }
@@ -167,3 +171,19 @@ exports.deleteUser = (request, response, next) => {
       next(error);
     });
 };
+
+exports.navUser = CatchAsync(async (request, response, next) => {
+  const userID = request.params.id;
+
+  if(userID){
+
+ const data = await UserSchema.findById(userID);
+ const image = data.image;
+ const name = data.firstName
+ response.status(200).json({image,name});
+
+  }else{
+    return next(new AppError(`That User is not found`, 404));
+  }
+
+})

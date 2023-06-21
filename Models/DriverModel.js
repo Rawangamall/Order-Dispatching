@@ -12,7 +12,6 @@ const validateEmail = function (email) {
 
 const schema = new mongoose.Schema({
   _id: Number,
-  // driverCode: Number ,
   driverName: String,
   status: {
     type: String,
@@ -41,6 +40,8 @@ const schema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  image:{ type : String , default:"default.jpg"},
+
 });
 
 schema.methods.correctPassword = async function (

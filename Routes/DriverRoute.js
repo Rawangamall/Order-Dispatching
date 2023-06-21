@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const DriverController = require("./../Controllers/DriverController");
 const validateMW = require("./../Core/Validations/validateMW");
+const {addIMG , removeDriverIMG}=require("./../Core/Validations/imageValidation");
 const {
   DriverValidPOST,
   DriverValidPUT,
@@ -18,9 +19,10 @@ router
 router
   .route("/drivers/:id")
   .get(authenticationMW.auth, DriverValidId,authorizationMW.authorize("drivers","viewAll") , validateMW, DriverController.getDriverById)
-  .put(authenticationMW.auth, DriverValidPUT, authorizationMW.authorize("drivers","edit") ,validateMW, DriverController.updateDriver)
-  .delete(authenticationMW.auth,DriverValidId,authorizationMW.authorize("drivers","delete") , validateMW, DriverController.deleteDriver)
+  .patch(authenticationMW.auth, DriverValidPUT, authorizationMW.authorize("drivers","edit") ,validateMW,addIMG, DriverController.updateDriver)
+  .delete(authenticationMW.auth,DriverValidId,authorizationMW.authorize("drivers","delete") , validateMW, removeDriverIMG, DriverController.deleteDriver)
   .patch(DriverController.BanDriver);//add authorize in schema to this route
+
 router
   .route("/drivers/assignedOrderTo/:id") //add authorize in schema to this route
   .get(DriverController.getDriversToBeAssignedOrderTo);

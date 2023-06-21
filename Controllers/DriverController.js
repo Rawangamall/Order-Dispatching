@@ -122,6 +122,7 @@ exports.updateDriver = async (req, res) => {
       areas,
       orderCount,
     } = req.body;
+  
 
     // Find the driver by ID
     const driver = await DriverSchema.findById(id);
@@ -134,7 +135,8 @@ exports.updateDriver = async (req, res) => {
     driver.phoneNumber = phoneNumber;
     driver.areas = areas;
     driver.orderCount = orderCount;
-
+    driver.image = req.image;
+    
     // Save the updated driver to the database
     await driver.save();
 
