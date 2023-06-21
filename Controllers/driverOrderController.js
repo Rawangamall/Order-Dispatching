@@ -13,7 +13,7 @@ exports.allOrder = catchAsync(async (request, response, next) => {
     const driverID = request.headers.driver_id
 
     const orders = await orderSchema.find({ DriverID: driverID, Status: { $in: ["delivered", "cancelled"] } }).sort({ createdAt: -1 })
-    const totalOrders = await orderSchema.countDocuments();
+	const totalOrders = orders.length;
 
     response.status(200).json({ orders, totalOrders });
 });
@@ -23,7 +23,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     const driverID = request.headers.driver_id
 
     const orders = await orderSchema.find({DriverID:driverID , Status:"assign"}).sort({ createdAt: -1 })
-	const totalOrders = await orderSchema.countDocuments();
+	const totalOrders = orders.length;
 
     response.status(200).json({orders , totalOrders});
 
@@ -34,7 +34,7 @@ exports.pickedOrder = catchAsync(async (request, response, next) => {
     const driverID = request.headers.driver_id
 
     const orders = await orderSchema.find({DriverID:driverID , Status:"picked"}).sort({ createdAt: -1 })
-	const totalOrders = await orderSchema.countDocuments();
+	const totalOrders = orders.length;
 
     response.status(200).json({orders , totalOrders});
 
@@ -44,41 +44,44 @@ exports.pickAction = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id;
     const orderID = request.params._id;
-    
-console.log(request.headers.driver_id);
+
+    console.log(request.headers.driver_id);
 
     const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
     const driver = await driverSchema.findOne({_id: driverID});
 
-    if (order && (driver._id == order.DriverID)) {
+    if (order && driver && (driver._id == order.DriverID)) {
 
-             order.Status = "picked";
-               await order.save();
-
-            driver.orderCount += 1;
-
-            if (driver.orderCount == 2) {
+        if (driver.orderCount < 2) 
+         {   
+              order.Status = "picked";
+              await order.save();
+              driver.orderCount += 1;
+         }
+         if (driver.orderCount >= 2) {
                 driver.availability = "busy";
-            }
+         }
 
-            await driver.save();
-       response.status(200).json({message: "Order picked"});
+         await driver.save();
+         response.status(200).json({message: "Order picked"});
 
     }else{
-        return next(new AppError(`That order is no longar available`, 404));
+        return next(new AppError(`That order is no longer available`, 404));
     }
 
 });
+
 
 exports.deliverAction = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id;
     const orderID = request.params._id;
 
+    const driver = await driverSchema.findOne({_id: driverID});
     const order = await orderSchema.findOne({_id: orderID, Status: "picked"});
-    const before = order.updatedAt
 
-    if (order) {
+    if (order && driver && (driver._id == order.DriverID)){
+         const before = order.updatedAt
 
         order.Status = "delivered";
         await order.save();
@@ -92,23 +95,22 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
         order.updated_status = minutes
         await order.save();
 
-        const driver = await driverSchema.findOne({_id: driverID});
 
-        if (driver) {
+   
             driver.orderCount -= 1;
 
-            if (0 >= driver.orderCount < 2) {
+            if (driver.orderCount < 2) {
                 driver.availability = "free";
             }
 
             await driver.save();
-        }
+        
     }else{
         return next(new AppError(`That order is no longar available`, 404));
     }
 
     // For E-commerce
-   // await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
+    await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
 
     response.status(200).json({message: "Order delivered"});
 });
@@ -119,28 +121,27 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
     const orderID = request.params._id;
 
     const order = await orderSchema.findOne({_id: orderID, Status: "picked"});
+    const driver = await driverSchema.findOne({_id: driverID});
 
-    if (order) {
+    if (order && driver && (driver._id == order.DriverID)){
+
         order.Status = "cancelled";
         await order.save();
 
-        const driver = await driverSchema.findOne({_id: driverID});
-
-        if (driver) {
             driver.orderCount -= 1;
 
-            if (0 >= driver.orderCount < 2) {
+            if ( driver.orderCount < 2) {
                 driver.availability = "free";
             }
 
             await driver.save();
-        }
+       
     }else{
         return next(new AppError(`That order is no longar available`, 404));
     }
 
     // For E-commerce
-   // await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/cancel`);
+    await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/cancel`);
 
     response.status(200).json({message: "Order cancelled"});
 });
