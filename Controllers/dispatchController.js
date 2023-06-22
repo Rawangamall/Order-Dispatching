@@ -55,8 +55,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     .findOne({
       areas: area._id,
       availability: "free",
-    })
-    .limit(1);
+    }).sort({ orderCount: 1 }).limit(1);
 
   console.log(area._id);
    if (driver) {
@@ -92,81 +91,54 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 });
 
 
-// exports.ReAssignedOrder = async (request, response, next) => {
-//   try {
-//     console.log('Updating orders...');
+// const scheduleReAssignedOrder = () => {
+//   const updateAssignedOrders = async () => {
+//     try {
+//       console.log('Updating orders...');
 
-//     const filteredOrders = await orderSchema.find({
-//       status: 'assign',
-//       updated_status: { $lt: new Date(Date.now()).toISOString() },
-//     });
+//       const filter = {
+//         status: 'assign',
+//         // updated_status: { $lt: new Date().toISOString() },
+//       };
 
-//     // ...
-// console.log(response)
-//     // Send a response back to the client
-//     response.status(200).json({ message: 'Orders updated successfully' });
-//     console.log('Orders updated successfully:', filteredOrders);
-//   } catch (error) {
-//     console.error('Error updating orders:', error);
-//     // Send an error response back to the client
-//     response.status(500).json({ error: 'An error occurred' });
-//   }
+//       const filteredAssignedOrders = await orderSchema.find(filter);
+//       const reassignedOrderIds = [];
+
+//       for (const order of filteredAssignedOrders) {
+//         order.status = 'reassigned';
+//         reassignedOrderIds.push(order._id);
+
+//         await order.save();
+//       }
+
+//       await orderSchema.updateMany(
+//         { _id: { $in: reassignedOrderIds } },
+//         { status: 'reassigned' }
+//       );
+
+//       // call assign function
+
+//       const reassignedOrders = await orderSchema.find({
+//         status: 'reassigned',
+//       });
+
+
+//       reassignedOrders.forEach(async (order) => {
+//         console.log("reassigned orderss: ",order._id);
+//         await exports.assignOrder({ params: { _id: order._id } });
+//       });
+
+//       console.log('Orders updated successfully:', reassignedOrderIds);
+//     } catch (error) {
+//       console.error('Error updating orders:', error);
+//     }
+//   };
+
+//   updateAssignedOrders();
+//   setInterval(updateAssignedOrders, 10 * 60 * 1000);
 // };
 
-
-// // Schedule the task to run every 5 minutes (adjust the interval as needed)
-// setInterval(() => exports.ReAssignedOrder(request, response, next), 1 * 60 * 200);
-
-
-
-const scheduleReAssignedOrder = () => {
-  const updateAssignedOrders = async () => {
-    try {
-      console.log('Updating orders...');
-
-      const filter = {
-        status: 'assign',
-        // updated_status: { $lt: new Date().toISOString() },
-      };
-
-      const filteredAssignedOrders = await orderSchema.find(filter);
-      const reassignedOrderIds = [];
-
-      for (const order of filteredAssignedOrders) {
-        order.status = 'reassigned';
-        reassignedOrderIds.push(order._id);
-
-        await order.save();
-      }
-
-      await orderSchema.updateMany(
-        { _id: { $in: reassignedOrderIds } },
-        { status: 'reassigned' }
-      );
-
-      // call assign function
-
-      const reassignedOrders = await orderSchema.find({
-        status: 'reassigned',
-      });
-
-
-      reassignedOrders.forEach(async (order) => {
-        console.log("reassigned orderss: ",order._id);
-        await exports.assignOrder({ params: { _id: order._id } });
-      });
-
-      console.log('Orders updated successfully:', reassignedOrderIds);
-    } catch (error) {
-      console.error('Error updating orders:', error);
-    }
-  };
-
-  updateAssignedOrders();
-  setInterval(updateAssignedOrders, 10 * 60 * 1000);
-};
-
-scheduleReAssignedOrder();
+// scheduleReAssignedOrder();
 
 
 // router.post('/posts/:id', (req, res, next) => {
