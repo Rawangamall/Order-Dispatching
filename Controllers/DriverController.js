@@ -212,38 +212,3 @@ exports.deleteDriver = (request, response, next) => {
     });
 };
 
-
-exports.getDriversToBeAssignedOrderTo = async (request, response, next) => {
-  try {
-    const areaId = request.params.id;
-
-    // Find one driver with the specified area_id and availability
-    const driver = await DriverSchema.findOne({
-      areas: areaId,
-      availability: "free",
-    }).limit(1);
-
-    if (driver) {
-      // Update the driver's availability to 'busy'
-      if (driver.orderCount == 1) {
-        driver.orderCount = 2;
-        driver.availability = "busy";
-      }
-
-      await driver.save();
-
-      // Assign the driver_id in the order data
-      const orderId = request.body.orderId;
-      const order = await OrderSchema.findById(orderId);
-      order.DriverID = driver._id;
-      await order.save();
-
-      // Return the driver data
-      response.json(driver);
-    } else {
-      response.json({ message: "No available drivers found" });
-    }
-  } catch (error) {
-    next(error);
-  }
-};

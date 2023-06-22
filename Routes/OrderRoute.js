@@ -50,7 +50,7 @@ router.route("/orders/NewOrders")
 
 router.route("/orders/:_id")    
       .get(orderController.getoneOrder)
-      .patch(orderController.updateOrder)
+     // .patch(orderController.updateOrder)
 
  //router.route("/orders/add").post(orderController.addOrder)
 

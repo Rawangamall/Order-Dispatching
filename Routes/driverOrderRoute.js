@@ -26,5 +26,8 @@ router.route("/driver/deliver/:_id")
 
 router.route("/driver/cancel/:_id")
       .patch(authorizationMW.authorize("driver","cancel"),validateMW,DriverOrderController.cancelAction);        //cancelling one after picked
- 
+
+router.route("/driver/profile/:_id")
+      .get(authenticationMW.auth,validateMW,DriverOrderController.getDriverById);        //cancelling one after picked
+  
 module.exports=router;
