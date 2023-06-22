@@ -15,6 +15,7 @@ router.route("/roles")
 router.route("/roles/:id")
         .get( validateMW , RoleController.getRoleById)
         .put( validateMW,RoleController.updateRole)
+        .delete( validateMW,RoleController.deleteRole)
 
       
 

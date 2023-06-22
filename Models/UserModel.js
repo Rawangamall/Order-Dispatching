@@ -23,10 +23,15 @@ const schema = new mongoose.Schema({
   image:{ type : String , default:"default.jpg"},
   role_id: { type: Number, ref: "role", required: true },
   phoneNumber: String,
-  active: { type: Boolean, default: true },
+ active: {
+    type: Boolean,
+    default: true,
+  },
+   
   code: String,
   passwordResetExpires: Date,
-});
+}
+,{ timestamps: true});
 
 schema.methods.correctPassword = async function (
   candidatePassword,

@@ -25,4 +25,7 @@ router.route("/users/:id")
 router.route("/nav/users/:id")     
       .get(UserValidId,validateMW , userController.navUser)
 
+router.route("/users/ban/:id")
+      .patch(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","activateDeactivate"),validateMW , userController.BanUser) //UserValidId , authorizationMW.authorize("users","ban"),validateMW,
+
 module.exports=router;

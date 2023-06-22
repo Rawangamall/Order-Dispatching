@@ -4,13 +4,13 @@ require("./../Models/LocationModel");
 require("./../Models/DriverModel");
 
 let Pusher = require('pusher');
-let pusher = new Pusher({
-      appId: process.env.PUSHER_APP_ID,
-      key: process.env.PUSHER_APP_KEY,
-      secret: process.env.PUSHER_APP_SECRET,
-      cluster: process.env.PUSHER_APP_CLUSTER,
-      useTLS: true
-        });
+const pusher = new Pusher({
+	appId: "1621334",
+	key: "bec24d45349a2eb1b439",
+	secret: "377d841d412c45d14065",
+	cluster: "eu",
+	useTLS: true
+  });
 
 const orderSchema = mongoose.model("order");
 const governateSchema = mongoose.model("Governate");
@@ -37,14 +37,17 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     console.log("Governate not foun",governate);
     return next(new AppError("Governate not found", 401));
   }
+  console.log("cityName",cityName);
 
   const city = governate.cities.find((c) => c.name === cityName);
   if (!city) {
     return next(new AppError("City not found", 401));
   }
+  console.log("cityName",areaName);
 
   const area = city.areas.find((a) => a.name === areaName);
-  if (!area) {
+  console.log("area",area);
+  if (area == "" || area == null) {
     return next(new AppError("Area not found", 401));
   }
 
@@ -71,7 +74,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     );
 
    // Trigger the notification event for the specific driver
-   pusher.trigger(`driver-${driver._id}`, 'new-order', order);
+  //  pusher.trigger(`driver-${driver._id}`, 'new-order', order);
     
   } else {
     //if all driver is busy we will reassign the order

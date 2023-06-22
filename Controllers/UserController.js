@@ -31,9 +31,9 @@ exports.getAll = async (request, response, next) => {
   if (active == "true") query.$and.push({ active: true });
   else if (active == "false") query.$and.push({ active: false });
 
-  // if (typeof active === "boolean") {
-  //   query.$and.push({ active: active });
-  // }
+  if (typeof active === "boolean") {
+    query.$and.push({ active: active });
+  }
 
   if (role) {
     const role_id = await RoleSchema.findOne({ name: role });
@@ -57,6 +57,7 @@ exports.getAll = async (request, response, next) => {
   UserSchema.aggregate([
     { $match: query },
     { $limit: limit },
+    { $sort: { createdAt: -1 } },
     {
       $lookup: {
         from: "roles", // Assuming the collection name for roles is "roles"
@@ -119,7 +120,7 @@ exports.addUser = async (request, response, next) => {
 exports.getUserById = (request, response, next) => {
   UserSchema.findById(request.params.id)
     .then((data) => {
-      response.status(200).json(data);
+      response.active(200).json(data);
     })
     .catch((error) => {
       next(error);
@@ -187,3 +188,21 @@ exports.navUser = CatchAsync(async (request, response, next) => {
   }
 
 })
+
+
+
+exports.BanUser = CatchAsync(async (request, response, next) => {
+  const user = await UserSchema.findOne({ _id: request.params.id });
+  let result = "";
+  if (user.active == true) {
+    user.active = false;
+    result = "not active";
+  } else {
+    user.active = true;
+    result = "active";
+  }
+
+  await user.save();
+
+  response.status(200).json(result);
+});
