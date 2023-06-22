@@ -27,17 +27,18 @@ exports.login = catchAsync(async (req,res,next)=>{
     }
 
 const user = await UserSchema.findOne({email:email}).select("+password");
-
+console.log((await user.correctPassword(password, user.password)))
 if(!user || !(await user.correctPassword(password, user.password))){
     return next(new AppError(`Incorrect email or password`, 401));
 }
 
-console.log(user);
+if(user.active == false){
+    return next(new AppError(`You're not allowed to login!, U're not active now`, 401));
+}
+
 const role_id = user.role_id;
-console.log(role_id);
 const role = await RoleSchema.findById(role_id).exec();
 const RoleName = role ? role.name : null;
-console.log(RoleName);
 const token = JWT.sign({id:user._id , roleName:RoleName , roleId: user.role_id},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
 res.status(200).json({
@@ -142,7 +143,9 @@ console.log(driver)
 if(!driver || !(await driver.correctPassword(password, driver.password))){
     return next(new AppError(`Incorrect email or password`, 401));
 }
-
+if(driver.status == "not active"){
+    return next(new AppError(`You're not allowed to login!, U're not active now`, 401));
+}
 
 const token = JWT.sign({id:driver._id ,roleName:"driver"},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
