@@ -122,38 +122,12 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 const scheduleReAssignedOrder = () => {
   const updateAssignedOrders = async () => {
     try {
-      console.log('Updating orders...');
+      console.log('select reassigned orders...');
+      const reassignedOrderIds = await orderSchema.find({ status: 'reassigned'},{_id:1});
 
-      const filter = {
-        status: 'assign',
-        // updated_status: { $lt: new Date().toISOString() },
-      };
-
-      const filteredAssignedOrders = await orderSchema.find(filter);
-      const reassignedOrderIds = [];
-
-      for (const order of filteredAssignedOrders) {
-        order.status = 'reassigned';
-        reassignedOrderIds.push(order._id);
-
-        await order.save();
-      }
-
-      await orderSchema.updateMany(
-        { _id: { $in: reassignedOrderIds } },
-        { status: 'reassigned' }
-      );
-
-      // call assign function
-
-      const reassignedOrders = await orderSchema.find({
-        status: 'reassigned',
-      });
-
-
-      reassignedOrders.forEach(async (order) => {
-        console.log("reassigned orderss: ",order._id);
-        await exports.assignOrder({ params: { _id: order._id } });
+      reassignedOrderIds.forEach(async (order_id) => {
+        console.log("reassigned orderss: ",order_id);
+         exports.assignOrder({ params: { _id:order_id } });
       });
 
       console.log('Orders updated successfully:', reassignedOrderIds);
