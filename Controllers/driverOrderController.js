@@ -32,7 +32,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 exports.pickedOrder = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id
-
+    
     const orders = await orderSchema.find({DriverID:driverID , Status:"picked"}).sort({ createdAt: -1 })
 	const totalOrders = orders.length;
 

@@ -16,12 +16,16 @@ router.route("/users")
        .post(UserValidPOST , userController.addUser) //authenticationMW.auth , authorizationMW.authorize("users","add")  , validateMW
 
 router.route("/users/:id")
+      
         .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
-        .patch(addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
-        .delete(removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
+        .patch(authenticationMW.auth,UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
+        .delete(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","delete"),validateMW,removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
          
  
 router.route("/nav/users/:id")     
       .get(UserValidId,validateMW , userController.navUser)
+
+router.route("/users/ban/:id")
+      .patch(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","activateDeactivate"),validateMW , userController.BanUser) //UserValidId , authorizationMW.authorize("users","ban"),validateMW,
 
 module.exports=router;

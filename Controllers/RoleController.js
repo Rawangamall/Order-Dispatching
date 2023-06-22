@@ -182,3 +182,37 @@ exports.getRoleById = (request, response, next) => {
 			next(error);
 		});
 };
+
+exports.deleteRole = async (request, response, next) => {
+	try {
+		const { id } = request.params;
+
+		// Find the role by its ID
+		const role = await RoleSchema.findById(id);
+
+		if (!role) {
+			return response.status(404).json({ error: "Role not found" });
+		}
+
+		const usershaveRole = await UserSchema.find({ role_id: id });
+		if (usershaveRole.length > 0) {
+			return response
+				.status(400)
+				.json({ error: "Role is assigned to users, cannot delete" });
+		}
+		
+
+		// Delete the role
+		await role.remove();
+
+		response.json({ message: "Role deleted successfully" });
+	} catch (error) {
+		console.error(error);
+		response
+			.status(500)
+			.json({
+				error: "An error occurred while deleting the role",
+				details: error.message,
+			});
+	}
+}

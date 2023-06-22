@@ -127,6 +127,7 @@ res.status(200).json({
 
 
 exports.driverlogin = catchAsync(async (req,res,next)=>{
+   
     const {email , password }  = req.body;
 
     if(!email || !password){
@@ -142,7 +143,7 @@ if(driver.status == "not active"){
     return next(new AppError(`You're not allowed to login!, U're not active now`, 401));
 }
 
-const token = JWT.sign({id:driver._id },process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
+const token = JWT.sign({id:driver._id ,roleName:"driver"},process.env.JWT_SECRET,{expiresIn:process.env.JWT_EXPIRE_IN});
 
 res.status(200).json({
     status:"success" , 

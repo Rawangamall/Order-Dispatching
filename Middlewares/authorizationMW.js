@@ -1,5 +1,5 @@
 // Assuming you have your Express routes and controllers set up
-const JWT= require("jsonwebtoken");
+const JWT = require("jsonwebtoken");
 const mongoose = require('mongoose');
 const { defaultMaxListeners } = require('nodemailer/lib/xoauth2');
 const RoleModel = mongoose.model('role');
@@ -37,6 +37,22 @@ exports.authorize = (model, permission) => async (req, res, next) => {
     const roleName = req.roleName; // Assuming you have the user's role ID in the request
     // console.log(req);
     console.log(roleName);
+    console.log(req.headers.driver_id, req.userId)
+    
+    if (roleName === "driver") {
+      const driver_id = Number(req.headers.driver_id);
+      if (driver_id === req.userId) {
+        
+        // User is authorized to access the endpoint
+        next();
+        
+        return; // Stop execution here and don't proceed to the subsequent code
+      } else {
+        res.status(403).json({ error: 'Unauthorized' });
+        return; // Stop execution here and don't proceed to the subsequent code
+      }
+    }
+    
     const role = await RoleModel.findOne({ name: roleName });
 
     // Check if the user has permissions for the specific model and permission
@@ -52,4 +68,3 @@ exports.authorize = (model, permission) => async (req, res, next) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
-
