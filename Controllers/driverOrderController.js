@@ -141,7 +141,7 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
     }
 
     // For E-commerce
-    await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/cancel`);
+ //   await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/cancel`);
 
     response.status(200).json({message: "Order cancelled"});
 });

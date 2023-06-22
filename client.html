@@ -26,6 +26,7 @@ let pusher = new Pusher('bec24d45349a2eb1b439', {
           axios.get(`${baseURL}/orders`)
             .then(function (response) {
               console.log('Orders retrieved:', response.data);
+              
               // Send a request to dispatchController.assignOrder()
               axios.get(`${baseURL}/dispatch/${orderData._id}`)
                 .catch(function (error) {
