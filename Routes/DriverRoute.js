@@ -21,6 +21,8 @@ router
   .get(authenticationMW.auth, DriverValidId,authorizationMW.authorize("drivers","viewAll") , validateMW, DriverController.getDriverById)
   .patch(authenticationMW.auth, DriverValidPUT, authorizationMW.authorize("drivers","edit") ,validateMW,addIMG, DriverController.updateDriver)
   .delete(authenticationMW.auth,DriverValidId,authorizationMW.authorize("drivers","delete") , validateMW, removeDriverIMG, DriverController.deleteDriver)
+ 
+  router.route("/driver/ban/:id") 
   .patch(DriverController.BanDriver);//add authorize in schema to this route
 
 router

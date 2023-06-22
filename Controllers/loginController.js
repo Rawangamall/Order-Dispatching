@@ -32,6 +32,10 @@ if(!user || !(await user.correctPassword(password, user.password))){
     return next(new AppError(`Incorrect email or password`, 401));
 }
 
+if(user.active == false){
+    return next(new AppError(`You're not allowed to login!, U're not active now`, 401));
+}
+
 const role_id = user.role_id;
 const role = await RoleSchema.findById(role_id).exec();
 const RoleName = role ? role.name : null;
