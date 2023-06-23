@@ -128,7 +128,7 @@ exports.getUserById = (request, response, next) => {
 };
 
 exports.updateUser = (request, response, next) => {
-  console.log(request.image);
+  console.log(request.image , "in controller");
 
   const strpass = request.body.password;
   let hash;
