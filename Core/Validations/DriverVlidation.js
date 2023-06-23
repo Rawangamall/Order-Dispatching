@@ -1,8 +1,19 @@
 const {body,param}=require("express-validator");
+const mongoose = require("mongoose");
+require("./../../Models/DriverModel");
+const DriverSchema = mongoose.model("driver");
 
 exports.DriverValidPOST =[
 body("driverName").isString().withMessage("Driver name should string") ,
-body("email").isEmail().withMessage("should be valid email form") ,
+body("email").isEmail().withMessage("should be valid email form").custom(async (value) => {
+    const user = await DriverSchema.findOne({ email: value });
+
+    if (user) {
+      throw new Error('Email is already taken');
+    }
+
+    return true;
+  }),,
 body("phoneNumber").isNumeric().withMessage("The number should be integer"),
 //body("status").isString().withMessage("Status should string") ,
 //body("availability").isString().withMessage("Status should string") ,
