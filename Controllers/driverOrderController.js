@@ -110,7 +110,7 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
     }
 
     // For E-commerce
-    await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
+   // await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
 
     response.status(200).json({message: "Order delivered"});
 });
@@ -165,3 +165,14 @@ exports.cancelAssign = catchAsync(async (request, response, next) => {
 
 
 })
+
+exports.getDriverById = (request, response, next) => {
+  
+    driverSchema.findById(request.params._id)
+      .then((data) => {
+        response.status(200).json(data);
+      })
+      .catch((error) => {
+        next(error);
+      });
+  };

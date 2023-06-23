@@ -22,11 +22,7 @@ router
   .patch(authenticationMW.auth, DriverValidPUT, authorizationMW.authorize("drivers","edit") ,validateMW,addIMG, DriverController.updateDriver)
   .delete(authenticationMW.auth,DriverValidId,authorizationMW.authorize("drivers","delete") , validateMW, removeDriverIMG, DriverController.deleteDriver)
  
-  router.route("/driver/ban/:id") 
+  router.route("/driver/:id") 
   .patch(DriverController.BanDriver);//add authorize in schema to this route
-
-router
-  .route("/drivers/assignedOrderTo/:id") //add authorize in schema to this route
-  .get(DriverController.getDriversToBeAssignedOrderTo);
 
 module.exports = router;

@@ -153,30 +153,30 @@ exports.getAll = catchAsync(async (req, res, next) => {
   
   
   
-exports.updateOrder = catchAsync(async (req, res, next) => {
-  if (!req.body.Status) {
-    next(new AppError("Please enter the new Status to change!", 404));
-  }
+// exports.updateOrder = catchAsync(async (req, res, next) => {
+//   if (!req.body.Status) {
+//     next(new AppError("Please enter the new Status to change!", 404));
+//   }
 
-  const orderId = req.params._id;
+//   const orderId = req.params._id;
 
-  if (!mongoose.Types.ObjectId.isValid(orderId)) {
-    next(new AppError("Invalid order ID!", 400));
-  }
+//   if (!mongoose.Types.ObjectId.isValid(orderId)) {
+//     next(new AppError("Invalid order ID!", 400));
+//   }
 
-  await orderSchema.updateOne(
-    {
-      _id: orderId,
-    },
-    {
-      $set: {
-        Status: req.body.Status,
-      },
-    }
-  );
+//   await orderSchema.updateOne(
+//     {
+//       _id: orderId,
+//     },
+//     {
+//       $set: {
+//         Status: req.body.Status,
+//       },
+//     }
+//   );
 
-  res.status(200).json({ message: "Updated!" });
-});
+//   res.status(200).json({ message: "Updated!" });
+// });
 
 exports.getoneOrder = catchAsync(async (req, res, next) => {
   const orderId = req.params._id;
