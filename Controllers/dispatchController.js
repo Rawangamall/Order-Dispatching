@@ -70,7 +70,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     );
 
    // Trigger the notification event for the specific driver
-  //  pusher.trigger(`driver-${driver._id}`, 'new-order', order);
+   pusher.trigger(`driver-${driver._id}`, 'new-order');
     
    }
    else {

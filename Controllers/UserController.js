@@ -23,6 +23,7 @@ exports.getAll = async (request, response, next) => {
           { firstName: { $regex: searchKey, $options: "i" } },
           { lastName: { $regex: searchKey, $options: "i" } },
           { email: { $regex: searchKey, $options: "i" } },
+          { phoneNumber: { $regex: searchKey, $options: "i" }}
         ],
       },
     ],
@@ -120,7 +121,7 @@ exports.addUser = async (request, response, next) => {
 exports.getUserById = (request, response, next) => {
   UserSchema.findById(request.params.id)
     .then((data) => {
-      response.active(200).json(data);
+      response.status(200).json(data);
     })
     .catch((error) => {
       next(error);

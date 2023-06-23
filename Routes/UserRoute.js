@@ -18,7 +18,7 @@ router.route("/users")
 router.route("/users/:id")
       
         .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
-        .patch(authenticationMW.auth,UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
+        .patch(authenticationMW.auth , authorizationMW.authorize("users","edit"),validateMW,addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
         .delete(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","delete"),validateMW,removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
          
  
