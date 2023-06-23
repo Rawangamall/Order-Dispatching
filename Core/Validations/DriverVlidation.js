@@ -13,7 +13,7 @@ body("email").isEmail().withMessage("should be valid email form").custom(async (
     }
 
     return true;
-  }),,
+  }),
 body("phoneNumber").isNumeric().withMessage("The number should be integer"),
 //body("status").isString().withMessage("Status should string") ,
 //body("availability").isString().withMessage("Status should string") ,
