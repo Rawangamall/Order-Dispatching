@@ -90,7 +90,6 @@ exports.getAll = async (request, response, next) => {
 };
 
 exports.addUser = async (request, response, next) => {
-
   try {
     const hash = await bcrypt.hash(request.body.password, salt);
 
@@ -129,7 +128,7 @@ exports.getUserById = (request, response, next) => {
 };
 
 exports.updateUser = (request, response, next) => {
-  console.log(request.image);
+  console.log(request.image, "in controller");
 
   const strpass = request.body.password;
   let hash;
@@ -177,20 +176,15 @@ exports.deleteUser = (request, response, next) => {
 exports.navUser = CatchAsync(async (request, response, next) => {
   const userID = request.params.id;
 
-  if(userID){
-
- const data = await UserSchema.findById(userID);
- const image = data.image;
- const name = data.firstName
- response.status(200).json({image,name});
-
-  }else{
+  if (userID) {
+    const data = await UserSchema.findById(userID);
+    const image = data.image;
+    const name = data.firstName;
+    response.status(200).json({ image, name });
+  } else {
     return next(new AppError(`That User is not found`, 404));
   }
-
-})
-
-
+});
 
 exports.BanUser = CatchAsync(async (request, response, next) => {
   const user = await UserSchema.findOne({ _id: request.params.id });
