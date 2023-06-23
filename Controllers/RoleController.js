@@ -102,8 +102,9 @@ exports.getRoles = async (request, response, next) => {
 exports.updateRole = async (request, response, next) => {
 	try {
 		const { id } = request.params;
-		const { permissions } = request.body;
-		const { name } = request.body;
+		const { permissions } = request.headers;
+		const { name } = request.headers;
+	
 
 		// Find the role by its ID
 		const role = await RoleSchema.findById(id);
@@ -114,6 +115,7 @@ exports.updateRole = async (request, response, next) => {
 
 		// Update specific fields of the role
 		if (name) {
+
 			role.name = name;
 		}
 

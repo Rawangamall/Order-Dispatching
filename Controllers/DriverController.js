@@ -48,6 +48,7 @@ exports.getAll = CatchAsync(async (request, response, next) => {
   const driverNum = request.headers.drivernum || null;
 
   let query = {};
+  console.log("search key",searchKey);
 
   if (searchKey) {
     query = {
