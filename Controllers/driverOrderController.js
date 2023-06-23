@@ -21,9 +21,10 @@ exports.allOrder = catchAsync(async (request, response, next) => {
 exports.assignOrder = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id
-
+console.log(driverID)
     const orders = await orderSchema.find({DriverID:driverID , Status:"assign"}).sort({ createdAt: -1 })
-	const totalOrders = orders.length;
+	console.log(orders)
+    const totalOrders = orders.length;
 
     response.status(200).json({orders , totalOrders});
 
@@ -32,9 +33,9 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 exports.pickedOrder = catchAsync(async (request, response, next) => {
 
     const driverID = request.headers.driver_id
-    
     const orders = await orderSchema.find({DriverID:driverID , Status:"picked"}).sort({ createdAt: -1 })
 	const totalOrders = orders.length;
+    console.log("picksssorder" , driverID , orders)
 
     response.status(200).json({orders , totalOrders});
 
@@ -45,16 +46,17 @@ exports.pickAction = catchAsync(async (request, response, next) => {
     const driverID = request.headers.driver_id;
     const orderID = request.params._id;
 
-    console.log(request.headers.driver_id);
 
     const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
     const driver = await driverSchema.findOne({_id: driverID});
+    console.log(order, "in pick action");
 
     if (order && driver && (driver._id == order.DriverID)) {
 
         if (driver.orderCount < 2) 
          {   
               order.Status = "picked";
+              console.log("in pick action the status" , order.Status)
               await order.save();
               driver.orderCount += 1;
          }
@@ -162,7 +164,6 @@ exports.cancelAssign = catchAsync(async (request, response, next) => {
     }
 
     response.status(200).json({message: "Order reassigned"});
-
 
 })
 
