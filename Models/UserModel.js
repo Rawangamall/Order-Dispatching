@@ -22,7 +22,7 @@ const schema = new mongoose.Schema({
   password: { type: String, select: false },
   image:{ type : String , default:"default.jpg"},
   role_id: { type: Number, ref: "role", required: true },
-  phoneNumber: String,
+  phoneNumber: {type:String, unique:true},
  active: {
     type: Boolean,
     default: true,
