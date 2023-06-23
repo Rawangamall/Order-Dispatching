@@ -127,6 +127,7 @@ exports.updateRole = async (request, response, next) => {
 			role.permissions.users.viewAll = permissions.users.viewAll;
 			role.permissions.users.add = permissions.users.add;
 			role.permissions.users.edit = permissions.users.edit;
+			role.permissions.users.delete = permissions.users.delete;
 			role.permissions.users.activateDeactivate =
 				permissions.users.activateDeactivate;
 		}
