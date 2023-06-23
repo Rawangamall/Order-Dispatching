@@ -138,7 +138,34 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 //   setInterval(updateAssignedOrders, 10 * 60 * 1000);
 // };
 
-// scheduleReAssignedOrder();
+
+// // Schedule the task to run every 5 minutes (adjust the interval as needed)
+// setInterval(() => exports.ReAssignedOrder(request, response, next), 1 * 60 * 200);
+
+
+
+const scheduleReAssignedOrder = () => {
+  const updateAssignedOrders = async () => {
+    try {
+      console.log('select reassigned orders...');
+      const reassignedOrderIds = await orderSchema.find({ status: 'reassigned'},{_id:1});
+
+      reassignedOrderIds.forEach(async (order_id) => {
+        console.log("reassigned orderss: ",order_id);
+         exports.assignOrder({ params: { _id:order_id } });
+      });
+
+      console.log('Orders sent to assign api successfully:', reassignedOrderIds);
+    } catch (error) {
+      console.error('Error updating orders:', error);
+    }
+  };
+
+  updateAssignedOrders();
+  setInterval(updateAssignedOrders, 10 * 60 * 1000);
+};
+
+scheduleReAssignedOrder();
 
 
 // router.post('/posts/:id', (req, res, next) => {
