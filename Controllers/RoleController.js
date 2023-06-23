@@ -102,8 +102,8 @@ exports.getRoles = async (request, response, next) => {
 exports.updateRole = async (request, response, next) => {
 	try {
 		const { id } = request.params;
-		const { permissions } = request.headers;
-		const { name } = request.headers;
+		const { permissions } = request.body;
+		const { name } = request.body;
 	
 
 		// Find the role by its ID
