@@ -20,157 +20,96 @@ const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 
 // search by location name and return with area id for driver search
+exports.assignOrder = catchAsync(async (request, response, next) => {
+  const id = request.params._id;
 
-///////////////////////with method 1//////////////////////////
-// exports.assignOrder = catchAsync(async (request, response, next) => {
-//   const id = request.params._id;
+  const order = await orderSchema.findById(id);
+  // console.log("orderrrrrrrrr",order.Address.Governate);
 
-//   const order = await orderSchema.findById(id);
-//   // console.log("orderrrrrrrrr",order.Address.Governate);
+  const governateName = order.Address.Governate;
+  const cityName = order.Address.City;
+  const areaName = order.Address.Area;
 
-//   const governateName = order.Address.Governate;
-//   const cityName = order.Address.City;
-//   const areaName = order.Address.Area;
+  const governate = await governateSchema.findOne({ governate: governateName });
 
-//   const governate = await governateSchema.findOne({ governate: governateName });
+  if (governate == "" || governate == null) {
 
-//   if (governate == "" || governate == null) {
+    return next(new AppError("Governate not found", 401));
+  }
 
-//     console.log("Governate not foun",governate);
-//     return next(new AppError("Governate not found", 401));
-//   }
-//   console.log("cityName",cityName);
+  const city = governate.cities.find((c) => c.name === cityName);
+  if (!city) {
+    return next(new AppError("City not found", 401));
+  }
 
-//   const city = governate.cities.find((c) => c.name === cityName);
-//   if (!city) {
-//     return next(new AppError("City not found", 401));
-//   }
-//   console.log("cityName",areaName);
+  const area = city.areas.find((a) => a.name === areaName);
+  if (area == "" || area == null) {
+    return next(new AppError("Area not found", 401));
+  }
 
-//   const area = city.areas.find((a) => a.name === areaName);
-//   console.log("area",area);
-//   if (area == "" || area == null) {
-//     return next(new AppError("Area not found", 401));
-//   }
+  const driver = await driverSchema
+    .findOne({
+      areas: area._id,
+      availability: "free",
+    }).sort({ orderCount: 1 }).limit(1);
 
-//   const driver = await driverSchema
-//     .findOne({
-//       areas: area._id,
-//       availability: "free",
-//     }).sort({ orderCount: 1 }).limit(1);
+    console.log(driver);
 
-//   console.log(area._id);
-//    if (driver) {
+   if (driver) {
 
-//     //assign order to the specific driver
-//     await orderSchema.updateOne(
-//       { _id: order._id },
-//       {
-//         $set: {
-//           DriverID: driver._id,
-//           Status: "assign",
-//           updated_status: Date.now() + 10 * 60 * 1000
-//         },
-//       }
-//     );
+    //assign order to the specific driver
+    await orderSchema.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          DriverID: driver._id,
+          Status: "assign",
+          updated_status: Date.now() + 10 * 60 * 1000
+        },
+      }
+    );
 
-//    // Trigger the notification event for the specific driver
-//   //  pusher.trigger(`driver-${driver._id}`, 'new-order', order);
+   // Trigger the notification event for the specific driver
+  //  pusher.trigger(`driver-${driver._id}`, 'new-order', order);
     
-//   } else {
-//     //if all driver is busy we will reassign the order
-//     await orderSchema.updateOne(
-//       { _id: order._id },
-//       {
-//         $set: {
-//           Status: "reassigned",
-//         },
-//       }
-//     );
-//   }
+   }
+   else {
+  //  if all driver is busy we will reassign the order
+    await orderSchema.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          Status: "reassigned",
+        },
+      }
+    );
+    console.log(order.Status);
+  }
 
-//   // response.status(200).json({ message: "success" });
-// });
-
-///////////////////////with method 1dn//////////////////////////
-
-
-// const scheduleReAssignedOrder = () => {
-//   const updateAssignedOrders = async () => {
-//     try {
-//       console.log('Updating orders...');
-
-//       const filter = {
-//         status: 'assign',
-//         // updated_status: { $lt: new Date().toISOString() },
-//       };
-
-//       const filteredAssignedOrders = await orderSchema.find(filter);
-//       const reassignedOrderIds = [];
-
-//       for (const order of filteredAssignedOrders) {
-//         order.status = 'reassigned';
-//         reassignedOrderIds.push(order._id);
-
-//         await order.save();
-//       }
-
-//       await orderSchema.updateMany(
-//         { _id: { $in: reassignedOrderIds } },
-//         { status: 'reassigned' }
-//       );
-
-//       // call assign function
-
-//       const reassignedOrders = await orderSchema.find({
-//         status: 'reassigned',
-//       });
+});
 
 
-//       reassignedOrders.forEach(async (order) => {
-//         console.log("reassigned orderss: ",order._id);
-//         await exports.assignOrder({ params: { _id: order._id } });
-//       });
+const scheduleReAssignedOrder = () => {
+  const updateAssignedOrders = async () => {
+    try {
+      console.log('select reassigned orders...');
+      const reassignedOrderIds = await orderSchema.find({ Status: 'reassigned'},{_id:1});
 
-//       console.log('Orders updated successfully:', reassignedOrderIds);
-//     } catch (error) {
-//       console.error('Error updating orders:', error);
-//     }
-//   };
+      reassignedOrderIds.forEach(async (order_id) => {
+        console.log("reassigned orderss: ",order_id);
+         exports.assignOrder({ params: { _id:order_id } });
+      });
 
-//   updateAssignedOrders();
-//   setInterval(updateAssignedOrders, 10 * 60 * 1000);
-// };
+    } catch (error) {
+      console.error('Error updating orders:', error);
+    }
+  };
 
+  updateAssignedOrders();
+  setInterval(updateAssignedOrders, 1 * 60 * 1000);
+};
 
-// // Schedule the task to run every 5 minutes (adjust the interval as needed)
-// setInterval(() => exports.ReAssignedOrder(request, response, next), 1 * 60 * 200);
-
-///////////////////////with me method 2//////////////////////////
-
-// const scheduleReAssignedOrder = () => {
-//   const updateAssignedOrders = async () => {
-//     try {
-//       console.log('select reassigned orders...');
-//       const reassignedOrderIds = await orderSchema.find({ status: 'reassigned'},{_id:1});
-
-//       reassignedOrderIds.forEach(async (order_id) => {
-//         console.log("reassigned orderss: ",order_id);
-//          exports.assignOrder({ params: { _id:order_id } });
-//       });
-
-//       console.log('Orders sent to assign api successfully:', reassignedOrderIds);
-//     } catch (error) {
-//       console.error('Error updating orders:', error);
-//     }
-//   };
-
-//   updateAssignedOrders();
-//   setInterval(updateAssignedOrders, 10 * 60 * 1000);
-// };
-
-// scheduleReAssignedOrder();
-///////////////////////with me method 2//////////////////////////
+scheduleReAssignedOrder();
 
 
 // router.post('/posts/:id', (req, res, next) => {
@@ -214,8 +153,3 @@ const catchAsync = require("./../utils/CatchAsync");
                 }
             });
 </script> */}
-
-
-
-
-

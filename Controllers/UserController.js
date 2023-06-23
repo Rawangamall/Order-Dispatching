@@ -146,7 +146,7 @@ exports.updateUser = (request, response, next) => {
         lastName: request.body.lastName,
         email: request.body.email,
         phoneNumber: request.body.phoneNumber,
-        Role: request.body.Role,
+        role_id: request.body.role_id,
         password: hash,
         image: request.image,
         active: request.body.active,

@@ -29,5 +29,5 @@ router.route("/driver/cancel/:_id")
 
 router.route("/driver/profile/:_id")
       .get(authenticationMW.auth,validateMW,DriverOrderController.getDriverById);        //cancelling one after picked
-  
+
 module.exports=router;
