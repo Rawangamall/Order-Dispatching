@@ -71,6 +71,37 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
                 },
             }
         );
+   if (driver) {
+
+    //assign order to the specific driver
+    await orderSchema.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          DriverID: driver._id,
+          Status: "assign",
+          updated_status: Date.now() + 10 * 60 * 1000
+        },
+      }
+    );
+    const totalAssignOrdersNum = await orderSchema.countDocuments({ Status: 'assign' });
+
+   // Trigger the notification event for the specific driver
+   pusher.trigger(`driver-${driver._id}`, 'new-order', totalAssignOrdersNum);
+
+   }
+   else {
+  //  if all driver is busy we will reassign the order
+    await orderSchema.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          Status: "reassigned",
+        },
+      }
+    );
+    console.log(order.Status);
+  }
 
         // Trigger the notification event for the specific driver
         pusher.trigger(`driver-${driver._id}`, "new-order", {
