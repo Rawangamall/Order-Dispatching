@@ -131,10 +131,11 @@ exports.updateUser = (request, response, next) => {
   console.log(request.image, "in controller");
 
   const strpass = request.body.password;
+  console.log(strpass)
   let hash;
-  if (strpass && strpass.length > 8) {
+  // if (strpass && strpass.length > 8) {
     hash = bcrypt.hashSync(request.body.password, salt);
-  }
+  // }
 
   UserSchema.updateOne(
     {
