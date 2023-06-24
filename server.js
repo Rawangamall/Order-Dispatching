@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 var bodyParser = require("body-parser");
 require("dotenv").config({ path: "config.env" });
+const path=require("path");
 
 const UserRoute = require("./Routes/UserRoute");
 const RoleRoute = require("./Routes/RoleRoute");
@@ -50,6 +51,7 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use('/images', express.static(path.join(__dirname, 'Core/images/User')));
 
 //Routes
 app.use("/refresh", refresh);
