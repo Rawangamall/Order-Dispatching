@@ -18,7 +18,7 @@ router
 
 router
   .route("/drivers/:id")
-  .get(authenticationMW.auth, DriverValidId,authorizationMW.authorize("driver","viewAll") , validateMW, DriverController.getDriverById)
+  .get(authenticationMW.auth, DriverValidId,authorizationMW.authorize("drivers","viewAll") , validateMW, DriverController.getDriverById)
   .patch(authenticationMW.auth, DriverValidPUT, authorizationMW.authorize("drivers","edit") ,validateMW,addIMG, DriverController.updateDriver)
   .delete(authenticationMW.auth,DriverValidId,authorizationMW.authorize("drivers","delete") , validateMW, removeDriverIMG, DriverController.deleteDriver)
  

@@ -102,8 +102,8 @@ exports.getRoles = async (request, response, next) => {
 exports.updateRole = async (request, response, next) => {
 	try {
 		const { id } = request.params;
-		const { permissions } = request.headers;
-		const { name } = request.headers;
+		const { permissions } = request.body;
+		const { name } = request.body;
 	
 
 		// Find the role by its ID
@@ -127,6 +127,7 @@ exports.updateRole = async (request, response, next) => {
 			role.permissions.users.viewAll = permissions.users.viewAll;
 			role.permissions.users.add = permissions.users.add;
 			role.permissions.users.edit = permissions.users.edit;
+			role.permissions.users.delete = permissions.users.delete;
 			role.permissions.users.activateDeactivate =
 				permissions.users.activateDeactivate;
 		}
