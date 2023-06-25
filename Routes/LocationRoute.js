@@ -45,4 +45,7 @@ router
   .delete(LocationController.deletearea)
   .get(LocationController.getOneArea);
 
+router.route("/fullLocations")
+      .get(LocationController.FullLocation);
+      
 module.exports = router;
