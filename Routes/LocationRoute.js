@@ -18,31 +18,33 @@ const {
   AreaValidId,
 } = require("./../Core/Validations/LocationValidation");
 const authenticationMW = require("./../Middlewares/authenticationMW");
+const authorizationMW = require("./../Middlewares/authorizationMW");
 
-router.route("/locations").post(LocationController.addLocation);
 
-router.route("/locations/governates").get(LocationController.getallgovernate);
+router.route("/locations").post(authenticationMW.auth, authorizationMW.authorize("locations","add"),validateMW, LocationController.addLocation);
+
+router.route("/locations/governates").get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getallgovernate);
 
 router
   .route("/locations/governates/:_id")
-  .get(LocationController.getOneGovernate)
-  .patch(LocationController.editgovernate)
-  .delete(LocationController.deleteGovernate);
+  .get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getOneGovernate)
+  .patch(authenticationMW.auth, authorizationMW.authorize("locations","edit"),validateMW,LocationController.editgovernate)
+  .delete(authenticationMW.auth, authorizationMW.authorize("locations","delete"),validateMW,LocationController.deleteGovernate);
 
-router.route("/locations/cities").get(LocationController.getallcities);
+router.route("/locations/cities").get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getallcities);
 
 router
   .route("/locations/cities/:_id")
-  .patch(LocationController.editcity)
-  .delete(LocationController.deleteCity)
-  .get(LocationController.getOneCity);
+  .patch(authenticationMW.auth, authorizationMW.authorize("locations","edit"),validateMW,LocationController.editcity)
+  .delete(authenticationMW.auth, authorizationMW.authorize("locations","delete"),validateMW,LocationController.deleteCity)
+  .get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getOneCity);
 
-router.route("/locations/areas").get(LocationController.getallareas);
+router.route("/locations/areas").get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getallareas);
 
 router
   .route("/locations/areas/:_id")
-  .patch(LocationController.editarea)
-  .delete(LocationController.deletearea)
-  .get(LocationController.getOneArea);
+  .patch(authenticationMW.auth, authorizationMW.authorize("locations","edit"),validateMW,LocationController.editarea)
+  .delete(authenticationMW.auth, authorizationMW.authorize("locations","delete"),validateMW,LocationController.deletearea)
+  .get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getOneArea);
 
 module.exports = router;
