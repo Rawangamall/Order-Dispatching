@@ -68,8 +68,8 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
         },
       }
     );
-console.log("triger ay hagaaa")
-   // Trigger the notification event for the specific driver
+
+    // Trigger the notification event for the specific driver
    const assignOrdersCount = await orderSchema.countDocuments({ DriverID: driver._id, Status: "assign" });
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
     
