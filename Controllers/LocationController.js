@@ -380,3 +380,12 @@ exports.editarea = catchAsync(async (request, response, next) => {
   }
   response.status(200).json({ message: "Area updated successfully" });
 });
+
+exports.FullLocation = catchAsync(async (request, response, next) => {
+  const data = await governateSchema.find({});
+  if (!data || !data.length) {
+    return response.status(404).json({ message: "No areas found" });
+  }
+  response.status(200).json({data});
+
+});

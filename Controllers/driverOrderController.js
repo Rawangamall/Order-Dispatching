@@ -53,8 +53,8 @@ exports.pickAction = catchAsync(async (request, response, next) => {
 
     if (order && driver && (driver._id == order.DriverID)) {
 
-        if (driver.orderCount < 2) 
-         {   
+        if (driver.orderCount < 2)
+         {
               order.Status = "picked";
               console.log("in pick action the status" , order.Status)
               await order.save();
@@ -93,12 +93,12 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
 
         const differenceInSeconds = Math.floor(diff / 1000);
         const minutes = Math.floor((differenceInSeconds % 3600) / 60);
-        
+
         order.updated_status = minutes
         await order.save();
 
 
-   
+
             driver.orderCount -= 1;
 
             if (driver.orderCount < 2) {
@@ -106,7 +106,7 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
             }
 
             await driver.save();
-        
+
     }else{
         return next(new AppError(`That order is no longar available`, 404));
     }
@@ -137,7 +137,7 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
             }
 
             await driver.save();
-       
+
     }else{
         return next(new AppError(`That order is no longar available`, 404));
     }
@@ -152,7 +152,7 @@ exports.cancelAssign = catchAsync(async (request, response, next) => {
     const orderID = request.params._id;
 
     const order = await orderSchema.findOne({_id: orderID, Status: "assign"});
-
+``
     if (order) {
 
         order.Status = "reassigned";
@@ -168,7 +168,7 @@ exports.cancelAssign = catchAsync(async (request, response, next) => {
 })
 
 exports.getDriverById = (request, response, next) => {
-  
+
     driverSchema.findById(request.params._id)
       .then((data) => {
         response.status(200).json(data);

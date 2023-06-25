@@ -69,7 +69,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
       }
     );
 
-   // Trigger the notification event for the specific driver
+    // Trigger the notification event for the specific driver
    const assignOrdersCount = await orderSchema.countDocuments({ DriverID: driver._id, Status: "assign" });
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
     
@@ -95,6 +95,7 @@ const scheduleReAssignedOrder = () => {
     try {
       console.log('select reassigned orders...');
       const reassignedOrderIds = await orderSchema.find({ Status: 'reassigned'},{_id:1});
+      console.log("array res: ",reassignedOrderIds);
 
       reassignedOrderIds.forEach(async (order_id) => {
         console.log("reassigned orderss: ",order_id);

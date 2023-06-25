@@ -47,4 +47,7 @@ router
   .delete(authenticationMW.auth, authorizationMW.authorize("locations","delete"),validateMW,LocationController.deletearea)
   .get(authenticationMW.auth, authorizationMW.authorize("locations","view"),validateMW,LocationController.getOneArea);
 
+router.route("/fullLocations")
+      .get(LocationController.FullLocation);
+      
 module.exports = router;
