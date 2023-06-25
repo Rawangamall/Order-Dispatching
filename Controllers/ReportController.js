@@ -3,15 +3,13 @@ require("./../Models/OrderModel");
 require("./../Models/DriverModel");
 
 const OrderSchema = mongoose.model("order");
-const DriverSchema = mongoose.model("driver");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
 
 exports.finalReport = catchAsync(async (request, response, next) => {
-
 	const data = await OrderSchema.aggregate([
-	  { $match:{ Status: "delivered" } },
+	  { $match: { Status: "delivered" } },
 	  {
 		$group: {
 		  _id: "$DriverID",
@@ -30,6 +28,17 @@ exports.finalReport = catchAsync(async (request, response, next) => {
 	  {
 		$unwind: "$driver",
 	  },
+	  ...(request.headers.searchkey
+		? [
+			{
+			  $match: {
+				"driver.driverName": {
+				  $regex: new RegExp(request.headers.searchkey, "i"),
+				},
+			  },
+			},
+		  ]
+		: []),
 	  {
 		$project: {
 		  _id: 0,
@@ -42,7 +51,7 @@ exports.finalReport = catchAsync(async (request, response, next) => {
 				$toDate: {
 				  $multiply: [
 					{ $divide: ["$totalTime", "$count"] },
-					1000 * 60 ,
+					1000 * 60,
 				  ],
 				},
 			  },
@@ -51,9 +60,9 @@ exports.finalReport = catchAsync(async (request, response, next) => {
 		  },
 		},
 	  },
+	  { $sort: { averageTime: request.headers.sortvalue === 'desc' ? -1 : 1 } }
 	]);
   
-	
 	response.status(200).json(data);
   });
   
