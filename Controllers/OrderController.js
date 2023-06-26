@@ -52,7 +52,7 @@ exports.recieveOrder = catchAsync(async (req, res) => {
 });
 
 
-exports.saveOrder = catchAsync(async (req, res) => {
+exports.saveOrder = catchAsync(async (req, res , next) => {
   const orderData = req.body;
 
   const products = orderData.Product.map((product) => {
@@ -86,7 +86,6 @@ exports.saveOrder = catchAsync(async (req, res) => {
 
     await order.save();
     res.status(200).json({ message: "Order saved" });
-
   } catch (error) {
 
 	console.log(error)

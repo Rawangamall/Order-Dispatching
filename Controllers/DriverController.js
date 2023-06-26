@@ -80,22 +80,18 @@ exports.addDriver = async (req, res) => {
     const {
       driverName,
       status,
-      availability,
       email,
       phoneNumber,
       areas,
-      orderCount,
     } = req.body;
 
     // Create a new driver object
     const driver = new DriverSchema({
       driverName,
       status,
-      availability,
       email,
       phoneNumber,
       areas,
-      orderCount,
       password : hash
     });
 

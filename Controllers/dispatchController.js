@@ -21,7 +21,7 @@ const catchAsync = require("./../utils/CatchAsync");
 
 // search by location name and return with area id for driver search
 exports.assignOrder = catchAsync(async (request, response, next) => {
-  const id = request.params._id;
+  try{const id = request.params._id;
 
   const order = await orderSchema.findById(id);
   // console.log("orderrrrrrrrr",order.Address.Governate);
@@ -33,7 +33,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   const governate = await governateSchema.findOne({ governate: governateName });
 
   if (governate == "" || governate == null) {
-
+console.log(governate)
     return next(new AppError("Governate not found", 401));
   }
 
@@ -86,7 +86,9 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     );
     console.log(order.Status);
   }
-
+  }catch(error){
+    
+  }
 });
 
 
