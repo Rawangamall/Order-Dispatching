@@ -112,7 +112,7 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
     }
 
     // For E-commerce
-   // await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
+    await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
 
     response.status(200).json({message: "Order delivered"});
 });

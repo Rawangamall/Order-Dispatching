@@ -60,7 +60,7 @@ exports.finalReport = catchAsync(async (request, response, next) => {
 		  },
 		},
 	  },
-	  { $sort: { averageTime: request.headers.sortvalue === 'desc' ? -1 : 1 } }
+	      { $sort: { averageTime: request.headers.sortvalue === 'desc' ? -1 : 1 } }
 	]);
   
 	response.status(200).json(data);
