@@ -21,27 +21,7 @@ exports.getDriverById = (request, response, next) => {
     });
 };
 
-// exports.getAll = (request, response, next) => {
-//   const searchkey = request.headers.searchkey?.toLowerCase() || "";
-//   const query = {
-//     $and: [
-//       {
-//         $or: [
-//           { DriverName: { $regex: searchkey, $options: "i" } },
-//           { availability: { $regex: searchkey, $options: "i" } },
-//         ],
-//       },
-//     ],
-//   };
 
-//
-//     .then((data) => {
-//       response.status(200).json({ data});
-//     })
-//     .catch((error) => {
-//       next(error);
-//     });
-// };
 
 exports.getAll = CatchAsync(async (request, response, next) => {
   const searchKey = request.headers.searchkey || "";

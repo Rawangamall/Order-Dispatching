@@ -57,8 +57,8 @@ exports.getAll = async (request, response, next) => {
 
   UserSchema.aggregate([
     { $match: query },
-    { $limit: limit },
     { $sort: { createdAt: -1 } },
+    { $limit: limit },
     {
       $lookup: {
         from: "roles", // Assuming the collection name for roles is "roles"

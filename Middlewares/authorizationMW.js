@@ -17,7 +17,6 @@ exports.authorize = (model, permission) => async (req, res, next) => {
     // Verify and decode the token
     const [bearerPrefix, actualToken] = token.split(' ');
     const decoded = JWT.verify(actualToken, process.env.JWT_SECRET);
-    console.log(decoded); 
     // Access the id and roleName from the decoded token
     const { id, roleName } = decoded;
     
@@ -35,9 +34,7 @@ exports.authorize = (model, permission) => async (req, res, next) => {
 
   try {
     const roleName = req.roleName; // Assuming you have the user's role ID in the request
-    // console.log(req);
-    console.log(roleName);
-    console.log(req.headers.driver_id, req.userId)
+   
     
     if (roleName === "driver") {
       const driver_id = Number(req.headers.driver_id);

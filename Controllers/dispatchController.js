@@ -24,7 +24,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   const id = request.params._id;
 
   const order = await orderSchema.findById(id);
-  // console.log("orderrrrrrrrr",order.Address.Governate);
 
   const governateName = order.Address.Governate;
   const cityName = order.Address.City;
@@ -95,10 +94,10 @@ const scheduleReAssignedOrder = () => {
     try {
       console.log('select reassigned orders...');
       const reassignedOrderIds = await orderSchema.find({ Status: 'reassigned'},{_id:1});
-      console.log("array res: ",reassignedOrderIds);
+      // console.log("array res: ",reassignedOrderIds);
 
       reassignedOrderIds.forEach(async (order_id) => {
-        console.log("reassigned orderss: ",order_id);
+        // console.log("reassigned orderss: ",order_id);
          exports.assignOrder({ params: { _id:order_id } });
       });
 
@@ -114,44 +113,5 @@ const scheduleReAssignedOrder = () => {
 scheduleReAssignedOrder();
 
 
-// router.post('/posts/:id', (req, res, next) => {
-//   Post.findByIdAndUpdate(req.params.id, {body: req.body.body}, (err, post) => {
-//           let Pusher = require('pusher');
-//           let pusher = new Pusher({
-//               appId: process.env.PUSHER_APP_ID,
-//               key: process.env.PUSHER_APP_KEY,
-//               secret: process.env.PUSHER_APP_SECRET,
-//               cluster: process.env.PUSHER_APP_CLUSTER
-//           });
 
-//           pusher.trigger('notifications', 'post_updated', post, req.headers['x-socket-id']);
-//           res.send('');
-//       });
-// });
-
-{/* <script src="https://js.pusher.com/4.1/pusher.min.js"></script>
-<script>
-    var pusher = new Pusher('your-app-key', { cluster: 'your-app-cluster' });
-
-    // retrieve the socket ID once we're connected
-    pusher.connection.bind('connected', function () {
-        // attach the socket ID to all outgoing Axios requests
-        axios.defaults.headers.common['X-Socket-Id'] = pusher.connection.socket_id;
-    });
-
-    // request permission to display notifications, if we don't alreay have it
-    Notification.requestPermission();
-    pusher.subscribe('notifications')
-            .bind('post_updated', function (post) {
-                // if we're on the home page, show an "Updated" badge
-                if (window.location.pathname === "/") {
-                    $('a[href="/posts/' + post._id + '"]').append('<span class="badge badge-primary badge-pill">Updated</span>');
-                }
-                var notification = new Notification(post.title + " was just updated. Check it out.");
-                notification.onclick = function (event) {
-                    window.location.href = '/posts/' + post._id;
-                    event.preventDefault();
-                    notification.close();
-                }
-            });
-</script> */}
+    
