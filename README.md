@@ -4,8 +4,7 @@ The Order-Dispatching System is an integration system designed for e-commerce bu
 It includes a user dashboard with different roles (currently: Admin-dispatcher) and a website specifically for drivers.
 
 ## Features
-
-1. **Automated Assignment:** When orders are received, they are automatically assigned to the most suitable driver based on their location and workload. The system selects the driver with the least number of assigned orders, considering a maximum of 2 orders as the threshold for being busy.
+1. **Automated Assignment:** When orders are received in Real Time, they are automatically assigned to the most suitable driver based on their location and workload. The system selects the driver with the least number of assigned orders, considering a maximum of 2 orders as the threshold for being busy.
 
 2. **Reassignment Cases:**
    - Case 1: If all matched drivers are busy, the system reassigns the order to another available driver.
@@ -18,6 +17,18 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
    - Cancel Assigned Order: Request the system to reassign an order to another available driver.
    - Deliver: Indicate successful delivery of an order.
    - Cancel: Cancel an order that has been picked up.
+   - 
+5. **Notifaction System:** Its real time notifaction for both:
+       1- In dashboard for any logged in user when new order recieved
+       2-In website for specific driver when there's new assigned order
+   
+6. **Full CRUD Operations:**
+    -Roles
+    -Users management
+    -Locations
+    -Drivers
 
-5. **Driver Reports:** The system generates a comprehensive report for each driver, including the number of orders they have handled and their average delivery time. These reports can be conveniently generated in PDF format.
+7. **Driver Reports:** The system generates a comprehensive report for each driver, including the number of orders they have handled and their average delivery time. These reports can be conveniently generated in PDF format.
+
+8. **Deactivation login with forget & reset password service during Gmail**
 
