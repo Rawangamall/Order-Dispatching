@@ -14,7 +14,7 @@ const AppError = require("./../../utils/appError");
 exports.addIMG = multer({
 
     fileFilter: function (req, file, cb) {
-        console.log(file.mimetype)
+
         if (file.mimetype != "image/png" && file.mimetype != "image/jpg" && file.mimetype != "image/jpeg" ) {
             return cb(new Error('Only images are allowed'))
         }
@@ -25,7 +25,7 @@ exports.addIMG = multer({
         destination:(req,file,cb)=>{
           
             var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-            console.log(fullUrl)
+
             if(fullUrl.includes("users")){
                 cb(null,path.join(__dirname,"..","images","User"));
             }else if(fullUrl.includes("drivers")){
@@ -37,12 +37,11 @@ exports.addIMG = multer({
         } , 
         filename:(request, file, cb)=>{
             var fullUrl = request.protocol + '://' + request.get('host') + request.originalUrl;
-            console.log(fullUrl,"link url")
           
                 userId = request.params.id;
-                console.log(userId , "in img multer")
                 imageName = userId + "." + "jpg";
                 request.image = imageName
+
                 cb(null, imageName);
 
             
@@ -54,7 +53,7 @@ exports.removeUserIMG=function(req,res,next){
     UserSchema.findOne({_id:req.params.id}).then((data)=>{
         if(data != null && data.image != "default.jpg"){
         imageName = data._id+ "." + "jpg";
-        console.log(imageName)
+
         fs.unlink(path.join(__dirname,"..","images","User",imageName), function (err) {
             if (err)
                 next(new Error("User not found"));
@@ -70,7 +69,7 @@ exports.removeDriverIMG=function(req,res,next){
     DriverSchema.findOne({_id:req.params.id}).then((data)=>{
         if(data != null && data.image != "default.jpg"){
         imageName = data._id+ "." + "jpg";
-        console.log(imageName,"in img valid")
+
         fs.unlink(path.join(__dirname,"..","images","Driver",imageName), function (err) {
             if (err)
                 next(new Error("Driver not found"));

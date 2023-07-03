@@ -8,14 +8,14 @@ const authenticationMW = require("./../Middlewares/authenticationMW")
 
   
 router.route("/roles")
-       .get(RoleController.getRoles )
-       .post(RoleValidPOST ,validateMW, RoleController.addRole)
+       .get(authenticationMW.auth,RoleController.getRoles )
+       .post(authenticationMW.auth,RoleValidPOST ,validateMW, RoleController.addRole)
        
 
 router.route("/roles/:id")
-        .get( validateMW , RoleController.getRoleById)
-        .put( validateMW,RoleController.updateRole)
-        .delete( validateMW,RoleController.deleteRole)
+        .get(authenticationMW.auth, validateMW , RoleController.getRoleById)
+        .put( authenticationMW.auth,validateMW,RoleController.updateRole)
+        .delete(authenticationMW.auth, validateMW,RoleController.deleteRole)
 
       
 

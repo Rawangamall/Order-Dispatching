@@ -18,40 +18,38 @@ function apiKeyAuth(req, res, next) {
 }
 
 router.route("/orders/recieve")
-      .post(orderController.recieveOrder);   //apiKeyAuth   
+      .post(apiKeyAuth, orderController.recieveOrder);  
 
 router.route("/orders/save")
       .post(orderController.saveOrder);   
 
 router.route("/orders/status")
-      .get(orderController.getAllStatus);   
+      .get(authenticationMW.auth,orderController.getAllStatus);   
 
       
 router.route("/orders")
-      .get(orderController.getAll);  //authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,
+      .get(authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,orderController.getAll);  
 
 router.route("/orders/Assigned")
-      .get(orderController.getAssignedOrders);  //authenticationMW.auth ,validateMW
+      .get(authenticationMW.auth ,validateMW ,orderController.getAssignedOrders);  
 
 router.route("/orders/Reassigned")
-      .get(orderController.getReassignedOrders);  //authenticationMW.auth ,validateMW
+      .get(authenticationMW.auth ,validateMW,orderController.getReassignedOrders);  
 
 router.route("/orders/Picked")
-      .get(orderController.getPickedOrders);  //authenticationMW.auth ,validateMW
+      .get(authenticationMW.auth ,validateMW ,orderController.getPickedOrders);  
 
 router.route("/orders/Cancelled")
-      .get(orderController.getCancelledOrders);  //authenticationMW.auth ,validateMW
+      .get(authenticationMW.auth ,validateMW,orderController.getCancelledOrders); 
 
 router.route("/orders/Delivered")
-      .get(orderController.getDeliveredOrders);  //authenticationMW.auth ,validateMW
+      .get(authenticationMW.auth ,validateMW ,orderController.getDeliveredOrders);  
 
 router.route("/orders/NewOrders")
-      .get(orderController.getNewOrdersOrders);  //authenticationMW.auth ,validateMW
-
+      .get(authenticationMW.auth ,validateMW ,orderController.getNewOrdersOrders); 
+      
 router.route("/orders/:_id")    
-      .get(orderController.getoneOrder)
-     // .patch(orderController.updateOrder)
+      .get(authenticationMW.auth ,validateMW ,orderController.getoneOrder)
 
- //router.route("/orders/add").post(orderController.addOrder)
 
  module.exports=router;

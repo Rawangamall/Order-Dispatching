@@ -28,7 +28,6 @@ exports.getAllCustomers = async(request, response, next) => {
 	
 	  const total = totalCunstomers[0].totalCustomers;
 	  
-console.log(totalCunstomers[0].totalCustomers);
 	OrderSchema.aggregate([
 		{
 			$group: {
@@ -73,7 +72,6 @@ console.log(totalCunstomers[0].totalCustomers);
 exports.getCustomerById = (request, response, next) => {
 	const id = mongoose.Types.ObjectId(request.params.id); 
   
-	console.log(id);
 	OrderSchema.aggregate([
 	  {
 		$match: { CustomerID: id } // Match documents with the specified CustomerID

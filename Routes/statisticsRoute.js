@@ -5,24 +5,25 @@ const authenticationMW = require("./../Middlewares/authenticationMW");
 const validateMW = require("./../Core/Validations/validateMW");
 const authorizationMW = require("./../Middlewares/authorizationMW");
 
-router.route("/total/orders").get(statisticsController.allOrder);
+router.route("/total/orders")
+      .get(authenticationMW.auth,statisticsController.allOrder);
 
-router.route("/total/assignorders").get(statisticsController.allAssignOrder);
+router.route("/total/assignorders")
+      .get(authenticationMW.auth,statisticsController.allAssignOrder);
 
-router
-  .route("/total/reassignorders")
-  .get(statisticsController.allReassignOrder);
+router.route("/total/reassignorders")
+      .get(authenticationMW.auth,statisticsController.allReassignOrder);
 
-router.route("/total/pickedorders").get(statisticsController.allPickedOrder);
+router.route("/total/pickedorders")
+      .get(authenticationMW.auth,statisticsController.allPickedOrder);
 
-router
-  .route("/total/deliveredorders")
-  .get(statisticsController.allDeliveredOrder);
+router.route("/total/deliveredorders")
+      .get(authenticationMW.auth,statisticsController.allDeliveredOrder);
 
-router
-  .route("/total/cancelledorders")
-  .get(statisticsController.allCancelledOrder);
+router.route("/total/cancelledorders")
+      .get(authenticationMW.auth,statisticsController.allCancelledOrder);
 
-router.route("/total/neworders").get(statisticsController.allNewOrder);
+router.route("/total/neworders")
+      .get(authenticationMW.auth,statisticsController.allNewOrder);
 
 module.exports = router;

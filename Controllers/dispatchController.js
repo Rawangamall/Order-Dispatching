@@ -32,7 +32,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   const governate = await governateSchema.findOne({ governate: governateName });
 
   if (governate == "" || governate == null) {
-console.log(governate)
     return next(new AppError("Governate not found", 401));
   }
 
@@ -52,7 +51,6 @@ console.log(governate)
       availability: "free",
     }).sort({ orderCount: 1 }).limit(1);
 
-    console.log(driver);
 
    if (driver) {
 
@@ -83,7 +81,6 @@ console.log(governate)
         },
       }
     );
-    console.log(order.Status);
   }
   }catch(error){
     
@@ -94,12 +91,9 @@ console.log(governate)
 const scheduleReAssignedOrder = () => {
   const updateAssignedOrders = async () => {
     try {
-      console.log('select reassigned orders...');
       const reassignedOrderIds = await orderSchema.find({ Status: 'reassigned'},{_id:1});
-      // console.log("array res: ",reassignedOrderIds);
 
       reassignedOrderIds.forEach(async (order_id) => {
-        // console.log("reassigned orderss: ",order_id);
          exports.assignOrder({ params: { _id:order_id } });
       });
 

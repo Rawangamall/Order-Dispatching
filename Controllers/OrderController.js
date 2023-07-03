@@ -32,8 +32,6 @@ const pusher = new Pusher({
 exports.recieveOrder = catchAsync(async (req, res) => {
   const orderData = req.body;
 
-  console.log("Emitting newOrder event");
-
   try {
     // Trigger the newOrder event on the "orders" channel
     await pusher.trigger('orders', 'newOrder', orderData);
@@ -43,7 +41,6 @@ exports.recieveOrder = catchAsync(async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error triggering Pusher event:", error);
     res.status(500).json({
       status: 'error',
       message: 'Failed to trigger Pusher event',
@@ -87,11 +84,9 @@ exports.saveOrder = catchAsync(async (req, res , next) => {
     await order.save();
     res.status(200).json({ message: "Order saved" });
   } catch (error) {
-
-	console.log(error)
  res.status(400).json({ error: "Error saving in database" });
-   
   }
+
 });
 
 exports.getAll = catchAsync(async (req, res, next) => {
@@ -151,32 +146,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
   });
   
   
-  
-// exports.updateOrder = catchAsync(async (req, res, next) => {
-//   if (!req.body.Status) {
-//     next(new AppError("Please enter the new Status to change!", 404));
-//   }
-
-//   const orderId = req.params._id;
-
-//   if (!mongoose.Types.ObjectId.isValid(orderId)) {
-//     next(new AppError("Invalid order ID!", 400));
-//   }
-
-//   await orderSchema.updateOne(
-//     {
-//       _id: orderId,
-//     },
-//     {
-//       $set: {
-//         Status: req.body.Status,
-//       },
-//     }
-//   );
-
-//   res.status(200).json({ message: "Updated!" });
-// });
-
+ 
 exports.getoneOrder = catchAsync(async (req, res, next) => {
   const orderId = req.params._id;
   if (!mongoose.Types.ObjectId.isValid(orderId)) {
@@ -190,42 +160,7 @@ exports.getoneOrder = catchAsync(async (req, res, next) => {
   res.status(200).json(data);
 });
 
-//manual order
 
-// exports.addorder = async (request, response, next) => {
-//   try {
-
-//    const products = request.body.Product.map((product) => {
-//   return {
-//     product_id: product.product_id,
-//     name_en: product.name_en,
-//     price: product.price,
-//     quantity: product.quantity
-//   };
-// });
-
-// const order = new orderSchema({
-//   _id: request.body._id,
-//   CustomerID: request.body.CustomerID,
-//   CustomerName: request.body.CustomerName,
-//   CustomerEmail: request.body.CustomerEmail,
-//   Address: {
-//     Area: request.body.Address.Area,
-//     City: request.body.Address.City,
-//     Governate: request.body.Address.Governate
-//   },
-//   Product: products,
-//   PaymentMethod: request.body.PaymentMethod,
-//   Status: request.body.Status,
-//   TotalPrice: request.body.TotalPrice
-// });
-
-//     const data = await order.save();
-//     response.status(201).json(data);
-//   } catch (error) {
-//     next(error);
-//   }
-// };
 exports.getAssignedOrders = catchAsync(async (req, res, next) => {
 	const searchKey = req.headers.searchkey || "";
 	const city = req.headers.city || "";

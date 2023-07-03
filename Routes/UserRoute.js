@@ -13,11 +13,11 @@ const authorizationMW = require("./../Middlewares/authorizationMW");
   
 router.route("/users")
        .get(authenticationMW.auth , authorizationMW.authorize("users","viewAll") , validateMW,userController.getAll )
-       .post(UserValidPOST ,validateMW, userController.addUser) //authenticationMW.auth , authorizationMW.authorize("users","add")  , validateMW
+       .post(authenticationMW.auth , authorizationMW.authorize("users","add") ,UserValidPOST ,validateMW, userController.addUser) 
 
 router.route("/users/:id")
       
-        .get(UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
+        .get(authenticationMW.auth  , UserValidId , authorizationMW.authorize("users","viewAll") ,validateMW , userController.getUserById)
         .patch(authenticationMW.auth , authorizationMW.authorize("users","edit"),validateMW,addIMG,userController.updateUser) //UserValidPUT , authorizationMW.authorize("users","edit"),validateMW,
         .delete(authenticationMW.auth,UserValidId , authorizationMW.authorize("users","delete"),validateMW,removeUserIMG , userController.deleteUser ) //UserValidId , authorizationMW.authorize("users","delete"),validateMW,
          

@@ -250,7 +250,7 @@ exports.deleteCity = catchAsync(async (request, response, next) => {
 
   const cityIndex = data.cities.findIndex((city) => city._id.toString() === _id);
   const deletedAreas = data.cities[cityIndex].areas;
-  console.log(deletedAreas)
+
   data.cities.splice(cityIndex, 1);
   await data.save();
 

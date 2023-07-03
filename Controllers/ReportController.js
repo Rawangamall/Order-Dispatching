@@ -1,15 +1,13 @@
+const PDFDocument = require('pdfkit');
+const fs = require('fs');
 const mongoose = require("mongoose");
 require("./../Models/OrderModel");
 require("./../Models/DriverModel");
 
 const OrderSchema = mongoose.model("order");
-const DriverSchema = mongoose.model("driver"); 
-
-const PDFDocument = require('pdfkit');
-const fs = require('fs');
-
-const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
+
+
 
 exports.finalReport = catchAsync(async (request, response, next) => {
 	const data = await OrderSchema.aggregate([

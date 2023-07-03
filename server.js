@@ -13,7 +13,6 @@ const OrderRoute = require("./Routes/OrderRoute");
 const locationRoute = require("./Routes/LocationRoute");
 const DispatchRoute = require("./Routes/DispatchRoute");
 const CustomersRoute = require("./Routes/CustomerRoute");
-const ProductsRoute = require("./Routes/ProductsRoute");
 const statisticsRoute = require("./Routes/statisticsRoute");
 const driverOrderRoute = require("./Routes/driverOrderRoute");
 const reportRoute = require("./Routes/ReportRoute");
@@ -64,7 +63,6 @@ app.use(DriverRoute);
 app.use(locationRoute);
 app.use(DispatchRoute);
 app.use(CustomersRoute);
-app.use(ProductsRoute);
 app.use(driverOrderRoute);
 app.use(reportRoute);
 
