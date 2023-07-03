@@ -17,10 +17,10 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
    - Cancel Assigned Order: Request the system to reassign an order to another available driver.
    - Deliver: Indicate successful delivery of an order.
    - Cancel: Cancel an order that has been picked up.
-   - 
+     
 5. **Notifaction System:** Its real time notifaction for both:
-       1- In dashboard for any logged in user when new order recieved
-       2-In website for specific driver when there's new assigned order
+   - In dashboard for any logged in user when new order recieved
+   -In website for specific driver when there's new assigned order
    
 6. **Full CRUD Operations:**
     -Roles
