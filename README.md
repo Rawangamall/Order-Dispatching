@@ -23,10 +23,10 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
    - In website for specific driver when there's new assigned order.
    
 6. **Full CRUD Operations:**
-    -Roles
-    -Users management
-    -Locations
-    -Drivers
+    - Roles
+    - Users management
+    - Locations
+    - Drivers
 
 7. **Driver Reports:** The system generates a comprehensive report for each driver, including the number of orders they have handled and their average delivery time. These reports can be conveniently generated in PDF format.
 
