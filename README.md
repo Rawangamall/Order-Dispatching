@@ -19,8 +19,8 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
    - Cancel: Cancel an order that has been picked up.
      
 5. **Notifaction System:** Its real time notifaction for both:
-   - In dashboard for any logged in user when new order recieved
-   -In website for specific driver when there's new assigned order
+   - In dashboard for any logged in user when new order recieved.
+   - In website for specific driver when there's new assigned order.
    
 6. **Full CRUD Operations:**
     -Roles
