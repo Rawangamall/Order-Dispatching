@@ -51,5 +51,8 @@ router.route("/orders/NewOrders")
 router.route("/orders/:_id")    
       .get(authenticationMW.auth ,validateMW ,orderController.getoneOrder)
 
+router.route("/status/logs")    
+      .get(authenticationMW.auth ,validateMW ,orderController.getoneOrder)
+
 
  module.exports=router;

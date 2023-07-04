@@ -417,3 +417,8 @@ exports.getAllStatus = catchAsync(async (req, res, next) => {
 	const statuses = await orderSchema.distinct('Status');
 	res.status(200).json(statuses);
   });
+
+exports.statuslogs = catchAsync(async (req, res, next) => {
+
+
+})
