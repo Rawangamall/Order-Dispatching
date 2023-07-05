@@ -56,6 +56,8 @@ exports.pickAction = catchAsync(async (request, response, next) => {
               order.Status = "picked";
 
               await order.save();
+              order.changeOrderStatus(order._id,order.Status)
+
               driver.orderCount += 1;
          }
          if (driver.orderCount >= 2) {
@@ -85,6 +87,7 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
 
         order.Status = "delivered";
         await order.save();
+        order.changeOrderStatus(order._id,order.Status)
 
         const after = order.updatedAt
         const diff = after - before;
@@ -110,7 +113,7 @@ exports.deliverAction = catchAsync(async (request, response, next) => {
     }
 
     // For E-commerce
-    await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
+  //  await axios.post(`http://e-commerce.nader-mo.tech/dispatch/orders/${order._id}/complete`);
 
     response.status(200).json({message: "Order delivered"});
 });
@@ -127,6 +130,7 @@ exports.cancelAction = catchAsync(async (request, response, next) => {
 
         order.Status = "cancelled";
         await order.save();
+        order.changeOrderStatus(order._id,order.Status)
 
             driver.orderCount -= 1;
 
@@ -156,6 +160,7 @@ exports.cancelAssign = catchAsync(async (request, response, next) => {
         order.Status = "reassigned";
         order.DriverID = undefined;
         await order.save();
+        order.changeOrderStatus(order._id,order.Status)
 
     }else{
         return next(new AppError(`That order is no longar available`, 404));

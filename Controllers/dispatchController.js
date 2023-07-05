@@ -14,7 +14,7 @@ const pusher = new Pusher({
 
 const orderSchema = mongoose.model("order");
 const governateSchema = mongoose.model("Governate");
-const driverSchema = mongoose.model("driver");``
+const driverSchema = mongoose.model("driver");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -55,7 +55,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
    if (driver) {
 
     //assign order to the specific driver
-    await orderSchema.updateOne(
+   const Assignorder = await orderSchema.findOneAndUpdate(
       { _id: order._id },
       {
         $set: {
@@ -63,28 +63,38 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
           Status: "assign",
           updated_status: Date.now() + 10 * 60 * 1000
         },
-      }
+      },
+      { new: true }
     );
+
+    //For status logs
+   order.changeOrderStatus(Assignorder._id,Assignorder.Status)
 
     // Trigger the notification event for the specific driver
    const assignOrdersCount = await orderSchema.countDocuments({ DriverID: driver._id, Status: "assign" });
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
-    
+
+ 
    }
    else {
   //  if all driver is busy we will reassign the order
-    await orderSchema.updateOne(
+   const Reassignorder = await orderSchema.findOneAndUpdate(
       { _id: order._id },
       {
         $set: {
           Status: "reassigned",
         },
-      }
+      },
+      {new:true}
     );
+
+    order.changeOrderStatus(Reassignorder._id,Reassignorder.Status)
   }
+  
   }catch(error){
-    
+    console.log(error)
   }
+
 });
 
 
@@ -103,7 +113,7 @@ const scheduleReAssignedOrder = () => {
   };
 
   updateAssignedOrders();
-  setInterval(updateAssignedOrders, 1 * 60 * 1000);
+  setInterval(updateAssignedOrders, 2 * 60 * 1000);
 };
 
 scheduleReAssignedOrder();

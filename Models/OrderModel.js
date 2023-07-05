@@ -1,11 +1,16 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const validateEmail = function(email) {
     const regex = /^\w+([\.-]?\w+)@\w+([\.-]?\w+)(\.\w{2,3})+$/;
     return regex.test(email);
   };
 
+const StatusLogsSchema = new mongoose.Schema({
+  Status: { type: String, enum: ['confirm', 'picked', 'cancelled', 'assign', 'reassigned', 'delivered'], default: 'confirm', required: true },
+  Time:{ type: Date, default: Date.now }
+  })
+   
+   
 const orderSchema = new mongoose.Schema({
    _id: { type: mongoose.Schema.Types.ObjectId}, //order code
   CustomerID: { type: mongoose.Schema.Types.ObjectId},
@@ -26,10 +31,17 @@ const orderSchema = new mongoose.Schema({
   }],
   PaymentMethod: { type: String, enum: ['Cash', 'Credit Card'], required: true },
  DriverID: { type: Number,ref: "Driver"},
- updated_status:{type:Number}
+ updated_status:{type:Number} ,
+ statusLogs: [StatusLogsSchema]
+
 },{ timestamps: true});
 
-
-// orderSchema.plugin(AutoIncrement,{id:'Order_Code',inc_field:" _id"});
+orderSchema.methods.changeOrderStatus = async function (orderId, newStatus) {
+  return await this.model('order').findOneAndUpdate(
+    { _id: orderId },
+    { $push: { statusLogs: { Status: newStatus, Time: new Date() } } },
+    { new: true }
+  );
+}
 
  mongoose.model('order', orderSchema);

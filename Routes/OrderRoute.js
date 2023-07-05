@@ -28,7 +28,7 @@ router.route("/orders/status")
 
       
 router.route("/orders")
-      .get(authenticationMW.auth , authorizationMW.authorize("orders","viewAll"), validateMW ,orderController.getAll);  
+      .get(orderController.getAll);  
 
 router.route("/orders/Assigned")
       .get(authenticationMW.auth ,validateMW ,orderController.getAssignedOrders);  
@@ -52,7 +52,7 @@ router.route("/orders/:_id")
       .get(authenticationMW.auth ,validateMW ,orderController.getoneOrder)
 
 router.route("/status/logs")    
-      .get(authenticationMW.auth ,validateMW ,orderController.getoneOrder)
+      .get(authenticationMW.auth ,validateMW ,orderController.statuslogs)
 
 
  module.exports=router;

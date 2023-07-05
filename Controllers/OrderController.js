@@ -1,23 +1,13 @@
 const mongoose = require("mongoose");
+const moment = require('moment');
+
 require("./../Models/OrderModel");
+
 const orderSchema = mongoose.model("order");
+
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
-// const { io } = require("./../utils/socket");
 
-// exports.recieveOrder = catchAsync(async (req, res) => {
-
-//   const orderData = req.body;
-// //console.log(req.body , "request body ")
-
-  
-//   console.log("Emitting newOrder event");
-//   io.emit("newOrder", orderData);
-
-//   res.status(200).json({
-//     status: orderData,
-//   });
-// });
 
 const Pusher = require('pusher');
 
@@ -51,7 +41,6 @@ exports.recieveOrder = catchAsync(async (req, res) => {
 
 exports.saveOrder = catchAsync(async (req, res , next) => {
   const orderData = req.body;
-
   const products = orderData.Product.map((product) => {
     return {
       product_id: product.product_id,
@@ -80,9 +69,10 @@ exports.saveOrder = catchAsync(async (req, res , next) => {
   
 
   try {
-
     await order.save();
+	order.changeOrderStatus(order._id,order.Status)
     res.status(200).json({ message: "Order saved" });
+
   } catch (error) {
  res.status(400).json({ error: "Error saving in database" });
   }
@@ -419,6 +409,22 @@ exports.getAllStatus = catchAsync(async (req, res, next) => {
   });
 
 exports.statuslogs = catchAsync(async (req, res, next) => {
-
-
-})
+	const orders = await orderSchema.find().select('_id statusLogs');
+  
+	const data = orders.map(order => {
+	  const formattedLogs = order.statusLogs.map(log => {
+		return {
+		  Status: log.Status,
+		  Time: moment(log.Time).format('YYYY MMMM Do, h:mm a')
+		};
+	  });
+  
+	  return {
+		_id: order._id,
+		statusLogs: formattedLogs
+	  };
+	});
+  
+	res.status(200).json(data);
+});
+  
