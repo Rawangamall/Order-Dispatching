@@ -29,6 +29,8 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
     - Drivers
 
 7. **Driver Reports:** The system generates a comprehensive report for each driver, including the number of orders they have handled and their average delivery time. These reports can be conveniently generated in PDF format.
-
-8. **Deactivation login with forget & reset password service during Gmail**
+   
+8. **Status Logs:** To track each order with its different status within its changable time.
+   
+9. **Deactivation login with forget & reset password service during Gmail**
 
