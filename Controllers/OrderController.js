@@ -2,8 +2,12 @@ const mongoose = require("mongoose");
 const moment = require('moment');
 
 require("./../Models/OrderModel");
+require("./../Models/DriverModel");
+require("./../Models/LocationModel");
 
 const orderSchema = mongoose.model("order");
+const governateSchema = mongoose.model("Governate");
+const driverSchema = mongoose.model("driver");
 
 const AppError = require("./../utils/appError");
 const catchAsync = require("./../utils/CatchAsync");
@@ -92,7 +96,9 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	let query = {};
   
 	if (searchKey) {
-	  const objectId = mongoose.Types.ObjectId.isValid(searchKey) ? mongoose.Types.ObjectId(searchKey) : null;
+	  const objectId = mongoose.Types.ObjectId.isValid(searchKey)
+		? mongoose.Types.ObjectId(searchKey)
+		: null;
   
 	  const regexSearchKey = new RegExp(searchKey, "i");
   
@@ -128,12 +134,59 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	}
   
 	const data = await orderSchema.find(query).sort({ createdAt: -1 }).limit(limit);
- 	const totalOrders = await orderSchema.countDocuments(); // Retrieve total number of orders from the entire database
- 
-	
-	 res.status(200).json({ data, totalOrders }); 	
+  
+	// Filter the orders by confirmed status
+	const confirmedOrders = data.filter(order => order.Status === 'confirm');
+  
+	const matchedDrivers = await Promise.all(confirmedOrders.map(async (order) => {
+	  const governateName = order.Address.Governate;
+	  const cityName = order.Address.City;
+	  const areaName = order.Address.Area;
+  
+	  const governate = await governateSchema.findOne({ governate: governateName });
+  
+	  if (!governate) {
+		throw new AppError("Governate not found", 401);
+	  }
+  
+	  const city = governate.cities.find((c) => c.name === cityName);
+	  if (!city) {
+		throw new AppError("City not found", 401);
+	  }
+  
+	  const area = city.areas.find((a) => a.name === areaName);
+	  if (!area) {
+		throw new AppError("Area not found", 401);
+	  }
+  
+	  const drivers = await driverSchema
+		.find({
+		  areas: area._id,
+		  availability: "free",
+		})
+		.sort({ orderCount: 1 }).select("_id driverName");
+  
+	  return { order, drivers };
+	}));
+  
+	// Add matchedDrivers to each order in the data 
+	const updatedData = data.map((order) => {
+	  const matchedDriverObj = matchedDrivers.find((md) => md.order._id.equals(order._id));
+	  if (matchedDriverObj) {
+		return {
+		  ...order._doc,
+		  matchedDrivers: matchedDriverObj.drivers,
+		};
+	  }
+	  return order;
+	});
+  
 
+	const totalOrders = await orderSchema.countDocuments(); // Retrieve total number of orders from the entire database
+  
+	res.status(200).json({ data: updatedData, totalOrders });
   });
+  
   
   
  
