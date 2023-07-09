@@ -50,21 +50,13 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   }
 
    driver = await driverSchema
-    .findOne({
-      areas: area._id,
-      availability: "free",
-    }).sort({ orderCount: 1 }).limit(1);
+    .findOne({areas: area._id,availability: "free"}).sort({ orderCount: 1 }).limit(1);
 
   }else{
-
-     driver = await driverSchema
-    .findOne({
-      _id: request.body.DriverID,
-    });
+     driver = await driverSchema.findOne({_id: request.body.DriverID});
   }
 
    if (driver) {
-
 
     //assign order to the specific driver
    const Assignorder = await orderSchema.findOneAndUpdate(
@@ -86,8 +78,8 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
    const assignOrdersCount = await orderSchema.countDocuments({ DriverID: driver._id, Status: "assign" });
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
  
-   }
-   else {
+   }else {
+    
   //  if all driver is busy we will reassign the order
    const Reassignorder = await orderSchema.findOneAndUpdate(
       { _id: order._id },
