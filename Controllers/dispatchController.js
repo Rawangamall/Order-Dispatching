@@ -57,12 +57,10 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
 
   }else{
 
-    console.log("driver id is exist")
      driver = await driverSchema
     .findOne({
       _id: request.body.DriverID,
     });
-    console.log(driver);
   }
 
    if (driver) {
@@ -87,8 +85,6 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     // Trigger the notification event for the specific driver
    const assignOrdersCount = await orderSchema.countDocuments({ DriverID: driver._id, Status: "assign" });
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
-   console.log("order assigned to driver");
-
  
    }
    else {
