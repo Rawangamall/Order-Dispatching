@@ -28,7 +28,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
   const order = await orderSchema.findById(id);
   var driver = null;
 
-  if(!request.body.DriverID){
+  if(!request.headers.DriverID){
   const governateName = order.Address.Governate;
   const cityName = order.Address.City;
   const areaName = order.Address.Area;
@@ -53,7 +53,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     .findOne({areas: area._id,availability: "free"}).sort({ orderCount: 1 }).limit(1);
 
   }else{
-     driver = await driverSchema.findOne({_id: request.body.DriverID});
+     driver = await driverSchema.findOne({_id: request.headers.DriverID});
   }
 
    if (driver) {
@@ -79,7 +79,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
  
    }else {
-    
+
   //  if all driver is busy we will reassign the order
    const Reassignorder = await orderSchema.findOneAndUpdate(
       { _id: order._id },
