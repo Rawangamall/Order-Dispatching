@@ -350,13 +350,63 @@ exports.getPickedOrders = catchAsync(async (req, res, next) => {
 	
 	const data = await orderSchema.find(query);
 	
-	if (data.length === 0) {
-	  return res.status(200).json({ message: "There's no data" });
-	}
+	const matchedDrivers = await Promise.all(data.map(async (order) => {
+		const governateName = order.Address.Governate;
+		const cityName = order.Address.City;
+		const areaName = order.Address.Area;	
+			
+		if (data.length === 0) {
+		  return res.status(200).json({ message: "There's no data" });
+		}
+	
+		const totalOrders = data.length
+	
+		res.status(200).json({ data, totalOrders });
+	
+		const governate = await governateSchema.findOne({ governate: governateName });
+	
+		if (!governate) {
+		   return next(new AppError("Governate not found", 401));
+		}
+	
+		const city = governate.cities.find((c) => c.name === cityName);
+		if (!city) {
+			return next(new AppError("City not found", 401));
+		}
+	
+		const area = city.areas.find((a) => a.name === areaName);
+		if (!area) {
+			return next(new AppError("Area not found", 401));
+		}
+	
+		const drivers = await driverSchema
+		  .find({
+			areas: area._id,
+			availability: "free",
+		  })
+		  .sort({ orderCount: 1 }).select("_id driverName");
+	
+		return { order, drivers };
+	  }));
+	
+	  // Add matchedDrivers to each order in the data 
+	  const updatedData = data.map((order) => {
+		const matchedDriverObj = matchedDrivers.find((md) => md.order._id.equals(order._id));
+		if (matchedDriverObj) {
+		  return {
+			...order._doc,
+			matchedDrivers: matchedDriverObj.drivers,
+		  };
+		}
+		return order;
+	  });
+	
+	  if (data.length === 0) {
+		return res.status(200).json({ message: "There's no data" });
+	  }
 
-	const totalOrders = data.length
-
-	res.status(200).json({ data, totalOrders });
+	  const totalOrders = data.length
+	  res.status(200).json({ data: updatedData, totalOrders });
 });
 
 exports.getCancelledOrders = catchAsync(async (req, res, next) => {
@@ -488,12 +538,12 @@ exports.getNewOrdersOrders = catchAsync(async (req, res, next) => {
 	
 		const city = governate.cities.find((c) => c.name === cityName);
 		if (!city) {
-		  throw new AppError("City not found", 401);
+			return next(new AppError("City not found", 401));
 		}
 	
 		const area = city.areas.find((a) => a.name === areaName);
 		if (!area) {
-		  throw new AppError("Area not found", 401);
+			return next(new AppError("Area not found", 401));
 		}
 	
 		const drivers = await driverSchema
