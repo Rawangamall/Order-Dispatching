@@ -21,10 +21,14 @@ const catchAsync = require("./../utils/CatchAsync");
 
 // search by location name and return with area id for driver search
 exports.assignOrder = catchAsync(async (request, response, next) => {
-  try{const id = request.params._id;
+  try{
 
+    
+  const id = request.params._id;
   const order = await orderSchema.findById(id);
+  var driver = null;
 
+  if(!request.body.DriverID){
   const governateName = order.Address.Governate;
   const cityName = order.Address.City;
   const areaName = order.Address.Area;
@@ -45,14 +49,24 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     return next(new AppError("Area not found", 401));
   }
 
-  const driver = await driverSchema
+   driver = await driverSchema
     .findOne({
       areas: area._id,
       availability: "free",
     }).sort({ orderCount: 1 }).limit(1);
 
+  }else{
+
+    console.log("driver id is exist")
+     driver = await driverSchema
+    .findOne({
+      _id: request.body.DriverID,
+    });
+    console.log(driver);
+  }
 
    if (driver) {
+
 
     //assign order to the specific driver
    const Assignorder = await orderSchema.findOneAndUpdate(
@@ -73,6 +87,7 @@ exports.assignOrder = catchAsync(async (request, response, next) => {
     // Trigger the notification event for the specific driver
    const assignOrdersCount = await orderSchema.countDocuments({ DriverID: driver._id, Status: "assign" });
    pusher.trigger(`driver-${driver._id}`, 'new-order', assignOrdersCount);
+   console.log("order assigned to driver");
 
  
    }
