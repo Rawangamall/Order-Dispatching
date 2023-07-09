@@ -23,8 +23,28 @@ const pusher = new Pusher({
 	useTLS: true
   });
   
-exports.recieveOrder = catchAsync(async (req, res) => {
+exports.recieveOrder = catchAsync(async (req, res , next) => {
   const orderData = req.body;
+
+  const governateName = orderData.Address.Governate;
+  const cityName = orderData.Address.City;
+  const areaName = orderData.Address.Area;
+
+  const governate = await governateSchema.findOne({ governate: governateName });
+
+  if (!governate) {
+    return next(new AppError("Governate not found", 401));
+  }
+
+  const city = governate.cities.find((c) => c.name === cityName);
+  if (!city) {
+	return next(new AppError("City not found", 401));
+  }
+
+  const area = city.areas.find((a) => a.name === areaName);
+  if (!area) {
+   return next(new AppError("Area not found", 401));
+  }
 
   try {
     // Trigger the newOrder event on the "orders" channel
@@ -45,6 +65,7 @@ exports.recieveOrder = catchAsync(async (req, res) => {
 
 exports.saveOrder = catchAsync(async (req, res , next) => {
   const orderData = req.body;
+
   const products = orderData.Product.map((product) => {
     return {
       product_id: product.product_id,
@@ -146,7 +167,7 @@ exports.getAll = catchAsync(async (req, res, next) => {
 	  const governate = await governateSchema.findOne({ governate: governateName });
   
 	  if (!governate) {
-		throw new AppError("Governate not found", 401);
+         return next(new AppError("Governate not found", 401));
 	  }
   
 	  const city = governate.cities.find((c) => c.name === cityName);
