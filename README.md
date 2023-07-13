@@ -12,25 +12,27 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
 
 3. **Automatic Reassignment:** Reassigned orders are automatically assigned to other matched drivers with a timer set at 2-minute intervals. This ensures prompt action and minimizes delays.
 
-4. **Driver Actions:** Drivers have four actions available to them:
+4. **Manual Assignment & Reassignment:**In case if the user want to handle the assign or reassign(before the 2 mins timer of automatic reassign) to specific driver we provide all the free matched drivers for each order needs to assign and reassign so he can select within the provided list.
+
+5. **Driver Actions:** Drivers have four actions available to them:
    - Pick Order: Accept and assign an order to themselves for delivery.
    - Cancel Assigned Order: Request the system to reassign an order to another available driver.
    - Deliver: Indicate successful delivery of an order.
    - Cancel: Cancel an order that has been picked up.
      
-5. **Notifaction System:** Its real time notifaction for both:
+6. **Notifaction System:** Its real time notifaction for both:
    - In dashboard for any logged in user when new order recieved.
    - In website for specific driver when there's new assigned order.
    
-6. **Full CRUD Operations:**
+7. **Full CRUD Operations:**
     - Roles
     - Users management
     - Locations
     - Drivers
 
-7. **Driver Reports:** The system generates a comprehensive report for each driver, including the number of orders they have handled and their average delivery time. These reports can be conveniently generated in PDF format.
+8. **Driver Reports:** The system generates a comprehensive report for each driver, including the number of orders they have handled and their average delivery time. These reports can be conveniently generated in PDF format.
    
-8. **Status Logs:** To track each order with its different status within its changable time.
+9. **Status Logs:** To track each order with its different status within its changable time.
    
-9. **Deactivation login with forget & reset password service during Gmail**
+10. **Deactivation login with forget & reset password service during Gmail**
 
