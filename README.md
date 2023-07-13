@@ -12,7 +12,7 @@ It includes a user dashboard with different roles (currently: Admin-dispatcher) 
 
 3. **Automatic Reassignment:** Reassigned orders are automatically assigned to other matched drivers with a timer set at 2-minute intervals. This ensures prompt action and minimizes delays.
 
-4. **Manual Assignment & Reassignment:**In case if the user want to handle the assign or reassign(before the 2 mins timer of automatic reassign) to specific driver we provide all the free matched drivers for each order needs to assign and reassign so he can select within the provided list.
+4. **Manual Assignment & Reassignment:** In case if the user want to handle the assign or reassign(before the 2 mins timer of automatic reassign) to specific driver we provide all the free matched drivers for each order needs to assign and reassign so he can select within the provided list.
 
 5. **Driver Actions:** Drivers have four actions available to them:
    - Pick Order: Accept and assign an order to themselves for delivery.
